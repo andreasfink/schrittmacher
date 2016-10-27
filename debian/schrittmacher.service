@@ -1,0 +1,21 @@
+#
+#  This file is part of MessageMover
+#
+
+[Unit]
+Description=Schrittmacher Service
+Requires=syslog.socket
+Documentation=man:schrittmacher
+Documentation=http://www.messagemover.com/doc/
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=10
+ExecStart=/usr/local/sbin/schrittmacher /etc/schrittmacher/schrittmacher.conf
+StandardOutput=null
+
+[Install]
+WantedBy=multi-user.target
+Alias=schrittmacher.service
+
