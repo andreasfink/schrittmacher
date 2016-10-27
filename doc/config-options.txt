@@ -1,0 +1,39 @@
+
+group = core
+local-address = ip-addr
+remote-address = ip-addr
+shared-address = ip-addr
+name = name of this instance
+http-port       = port number
+port            = udp port number
+#Linux:
+#interface-activate = ip addr add 85.195.199.151/24 dev eth0 label eth0:9
+#interface-deactivate = ip addr del 85.195.199.151/24 dev eth0 label eth0:9
+#osx
+#interface-activate = ifconfig en3 alias 85.195.199.57 netmask 255.255.255.0
+#interface-deactivate = ifconfig en3 -alias 85.195.199.57
+
+group = resource
+name   = "main-resource"
+
+
+example:
+
+group = core
+remote-address = ipv4:85.195.199.55
+local-address = ipv4:185.22.52.32
+shared-address = 3.3.3.3
+http-port = 7700
+port = 7700
+resource-name = main-resource
+heartbeat = 2
+timeout = 6
+
+group = resource
+name = smsc-1
+start = /bin/true
+stop = /bin/true
+pid-file = /tmp/pid.null
+priority = 1
+interface-activate = ifconfig en3 alias 85.195.199.57 255.255.255.0
+interface-deactivate =

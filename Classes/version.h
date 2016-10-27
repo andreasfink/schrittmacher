@@ -1,0 +1,10 @@
+//
+//  version.h
+//  schrittmacher
+//
+//  Created by Andreas Fink on 21/05/15.
+//  Copyright (c) 2015 SMSRelay AG. All rights reserved.
+//
+
+
+#define VERSION "1.0"

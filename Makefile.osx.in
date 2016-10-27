@@ -1,0 +1,59 @@
+##
+# File: Makefile
+# Project "schrittmacher"
+# (c) 2002 -2016 Andreas Fink
+# Create: Andreas Fink (andreas@fink.org)
+#
+#
+
+PROJECT_NAME=@PROJECT_NAME@
+VERSION=`cat VERSION`
+PROJECT_ID=me.fink.@PROJECT_NAME@
+
+
+CC=@CC@
+CURRENT_DIR=`pwd`
+XCODE_CONFIG=-configuration Release
+XCODE_TARGET=-target @PROJECT_NAME@
+EXE=schrittmacher
+BUILD_DIR=./build
+BUILD_EXE=$(BUILD_DIR)/$(EXE)
+
+all:
+	rm -rf tmproot
+	mkdir tmproot
+	xcodebuild ${XCODESIGN} DSTROOT=tmproot ${XCODE_TARGET} ${XCODE_CONFIG} install
+	mv tmproot/usr/local/bin/$(EXE) $(BUILD_EXE)
+	rm -rf tmproot
+	
+unlock:
+	security unlock-keychain ~/Library/Keychains/login.keychain
+
+clean:
+	xcodebuild ${XCODESIGN} ${XCODE_TARGET} ${XCODE_CONFIG} clean
+
+install:
+	mkdir -p $(DESTDIR)/usr/local/sbin
+	-install -b -g bin -o root -m 4755 $(BUILD_EXE) $(DESTDIR)/usr/local/sbin/$(EXE)
+
+
+docs_install:
+	make DSTROOT=$(DSTROOT) -f doc/Makefile install
+	
+install_root_prepare:
+	-rm -rf install_root
+	mkdir -p install_root/usr/local/sbin
+	mkdir -p install_scripts/
+	-rm -rf tmproot
+	mkdir tmproot
+	(cd doc; make DSTROOT=${CURRENT_DIR}/tmproot install2; cd ..)
+	./codesign_environment.sh
+	xcodebuild ${XCODESIGN} DSTROOT=tmproot ${XCODE_TARGET} ${XCODE_CONFIG} install
+	mv tmproot/usr/local/bin/schrittmacher install_root/usr/local/sbin/$(EXE)
+	rm -rf tmproot
+
+pkg:	install_root_prepare
+	./make_pkg.sh "$(PROJECT_NAME$)" "$(PROJECT_ID)" install_root "`cat VERSION`" "$(PROJECT_NAME)_`cat VERSION`_`date +%Y%m%d%H%M`.pkg"
+
+pkg2: install_root_prepare
+	./make_pkg.sh "$(PROJECT_NAME$)" "$(PROJECT_ID)" install_root "`cat VERSION`" "$(PROJECT_NAME).pkg"

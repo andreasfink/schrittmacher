@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>E0B80A42-B9A8-4B6E-8755-EAA634FAE9DC</string>
+	<key>IDESourceControlProjectName</key>
+	<string>schrittmacher</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>048B31D59B44CA87FBD92836C8733D2E7297C6BD</key>
+		<string>ssh://metropolis.fink.org/git/schrittmacherclient.git</string>
+		<key>085BE7C13559F85C1C23FFA06B4D5BDD7B7B6575</key>
+		<string>ssh://metropolis.fink.org/git/schrittmacher.git</string>
+		<key>8185A7EFCBEC0847BDC40BAB6D03D2132D388B9C</key>
+		<string>ssh://metropolis.fink.org/git/ulib</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>schrittmacher.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>048B31D59B44CA87FBD92836C8733D2E7297C6BD</key>
+		<string>..client</string>
+		<key>085BE7C13559F85C1C23FFA06B4D5BDD7B7B6575</key>
+		<string>..</string>
+		<key>8185A7EFCBEC0847BDC40BAB6D03D2132D388B9C</key>
+		<string>../../ulib</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>ssh://metropolis.fink.org/git/schrittmacher.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>085BE7C13559F85C1C23FFA06B4D5BDD7B7B6575</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>085BE7C13559F85C1C23FFA06B4D5BDD7B7B6575</string>
+			<key>IDESourceControlWCCName</key>
+			<string>schrittmacher</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>048B31D59B44CA87FBD92836C8733D2E7297C6BD</string>
+			<key>IDESourceControlWCCName</key>
+			<string>schrittmacherclient</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>8185A7EFCBEC0847BDC40BAB6D03D2132D388B9C</string>
+			<key>IDESourceControlWCCName</key>
+			<string>ulib</string>
+		</dict>
+	</array>
+</dict>
+</plist>

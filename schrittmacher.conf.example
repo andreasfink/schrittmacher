@@ -1,0 +1,31 @@
+#
+# schrittmacher config
+#
+group = core
+local-address = 10.2.1.88
+remote-address = 10.2.1.69
+shared-address = 10.2.1.99
+name = smsc
+http-port       = 20000
+port            = 20000
+#Linux:
+interface-activate = ip addr add 10.2.1.99/24 dev eth0 label eth0:9
+interface-deactivate = ip addr del 10.2.1.99/24 dev eth0 label eth0:9
+#osx
+#interface-activate = ifconfig en3 alias 85.195.199.57 netmask 255.255.255.0
+#interface-deactivate = ifconfig en3 -alias 85.195.199.57
+
+group = resource
+name = smsc-1
+start = service messagemover start
+stop = service messagemover stop
+pid-file = /tmp/messagemover.pid
+priority = 1
+
+#Note:
+# these files should be edited:
+#  /etc/systemd/system/messagemover.service
+#  /etc/systemd/system/smsproxy.service
+# to include parameters like 
+#    --schrittmacher-port 20000 -- schrittmacher-id smsc-1
+# matching the port statement (the UDP port) and the resource name above
