@@ -64,7 +64,7 @@
                             @"random"   : @(r)};
     
     NSString *msg = [dict jsonString];
-    NSLog(@"TX: %@",dict);
+    NSLog(@"TX %@->%@: %@",localAddress,remoteAddress,dict);
     [listener sendString:msg toAddress:remoteAddress toPort:remotePort];
 }
 
@@ -109,7 +109,13 @@
 - (void)eventReceived:(NSString *)event
          withPriority:(int)prio
           randomValue:(DaemonRandomValue)r
+          fromAddress:(NSString *)address
 {
+    if(![address isEqualToString:remoteAddress])
+    {
+        NSLog(@"  message from unexpected IP[%@] ignored",address);
+        return;
+    }
     NSString *oldstate = [currentState name];
    /* the other side says it doesnt know its status */
     if ([event isEqualToString:MESSAGE_UNKNOWN])

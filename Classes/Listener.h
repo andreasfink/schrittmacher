@@ -32,5 +32,6 @@
 - (NSDictionary *)status;
 - (void)failover:(NSString *)name;
 - (void)checkIfUp;
+- (void)receiveStatus:(NSData *)statusData fromAddress:(NSString *)address;
 
 @end

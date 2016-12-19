@@ -84,7 +84,12 @@
 @property (readwrite,assign) NSTimeInterval  startupDelay;
 @property (readwrite,assign) NSTimeInterval  intervallDelay;
 
-- (void)eventReceived:(NSString *)event withPriority:(int)prio randomValue:(DaemonRandomValue)r;
+- (void)eventReceived:(NSString *)event
+         withPriority:(int)prio
+          randomValue:(DaemonRandomValue)r
+          fromAddress:(NSString *)address;
+
+
 - (void)eventTimer;
 
 - (void)actionStart;

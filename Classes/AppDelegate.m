@@ -271,14 +271,14 @@ AppDelegate *_global_appdel= NULL;
             intervallDelay = 5;
         }
         Daemon *d = [[Daemon alloc]init];
+        d.localAddress = localAddress;
         d.remoteAddress =remoteAddress;
+        d.sharedAddress = sharedAddress;
         d.remotePort = port;
         d.resourceId = resourceName;
         d.startAction = startAction;
         d.stopAction = stopAction;
         d.localPriority = priority;
-        d.localAddress = localAddress;
-        d.sharedAddress = sharedAddress;
         d.activateInterfaceCommand = activate;
         d.deactivateInterfaceCommand = deactivate;
         d.startupDelay = startupDelay;

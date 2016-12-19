@@ -25,7 +25,7 @@
     return self;
 }
 
-- (void)receiveStatus:(NSData *)statusData
+- (void)receiveStatus:(NSData *)statusData fromAddress:(NSString *)address
 {
     @autoreleasepool
     {
@@ -38,12 +38,12 @@
             NSString *status    = [dict[@"status"] stringValue];
             int priority        = [dict[@"priority"] intValue];
             DaemonRandomValue r = (DaemonRandomValue)[dict[@"random"] longValue];
-            NSLog(@"RX: %@",dict);
-
+            NSLog(@"RX <-%@: %@",address,dict);
             Daemon *d = [self daemonByName:name];
             [d eventReceived:status
                 withPriority:priority
-                 randomValue:r];
+                 randomValue:r
+                 fromAddress:address];
         }
     }
 }
@@ -117,8 +117,7 @@
                                                  @"host" : localHost}]);
     }
 */
-    
-    
+
     NSArray *allKeys;
     @synchronized(daemons)
     {
@@ -154,7 +153,7 @@
                 {
                     if(data)
                     {
-                        [self receiveStatus:data];
+                        [self receiveStatus:data fromAddress:address];
                     }
                 }
             }
