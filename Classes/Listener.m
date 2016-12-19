@@ -27,23 +27,27 @@
 
 - (void)receiveStatus:(NSData *)statusData
 {
-    UMJsonParser *parser = [[UMJsonParser alloc]init];
-    id obj = [parser objectWithData:statusData];
-    if([obj isKindOfClass:[NSDictionary class]])
+    @autoreleasepool
     {
-        NSDictionary *dict  = obj;
-        NSString *name      = [dict[@"resource"] stringValue];
-        NSString *status    = [dict[@"status"] stringValue];
-        int priority        = [dict[@"priority"] intValue];
-        DaemonRandomValue r = (DaemonRandomValue)[dict[@"random"] longValue];
-        NSLog(@"RX: %@",dict);
+        UMJsonParser *parser = [[UMJsonParser alloc]init];
+        id obj = [parser objectWithData:statusData];
+        if([obj isKindOfClass:[NSDictionary class]])
+        {
+            NSDictionary *dict  = obj;
+            NSString *name      = [dict[@"resource"] stringValue];
+            NSString *status    = [dict[@"status"] stringValue];
+            int priority        = [dict[@"priority"] intValue];
+            DaemonRandomValue r = (DaemonRandomValue)[dict[@"random"] longValue];
+            NSLog(@"RX: %@",dict);
 
-        Daemon *d = [self daemonByName:name];
-        [d eventReceived:status
-            withPriority:priority
-             randomValue:r];
+            Daemon *d = [self daemonByName:name];
+            [d eventReceived:status
+                withPriority:priority
+                 randomValue:r];
+        }
     }
 }
+
 
 - (void) attachDaemon:(Daemon *)d
 {
@@ -56,22 +60,25 @@
 
 - (NSDictionary *)status
 {
-    NSMutableDictionary *dict = [[NSMutableDictionary alloc]init];
-    
-    NSArray *allKeys;
-    @synchronized(daemons)
+    @autoreleasepool
     {
-        allKeys =[daemons allKeys];
-    }
-    for(NSString *key in allKeys)
-    {
-        Daemon *d = [self daemonByName:key];
-        if(d)
+        NSMutableDictionary *dict = [[NSMutableDictionary alloc]init];
+
+        NSArray *allKeys;
+        @synchronized(daemons)
         {
-            dict[key] = [d status];
+            allKeys =[daemons allKeys];
         }
+        for(NSString *key in allKeys)
+        {
+            Daemon *d = [self daemonByName:key];
+            if(d)
+            {
+                dict[key] = [d status];
+            }
+        }
+        return dict;
     }
-    return dict;
 }
 
 - (void)start
@@ -133,19 +140,22 @@
     int receivePollTimeoutMs = 100;
     do
     {
-        err = [uc dataIsAvailable:receivePollTimeoutMs];
-
-        if(err == UMSocketError_has_data)
+        @autoreleasepool
         {
-            NSData  *data = NULL;
-            NSString *address = NULL;
-            int rxport;
-            UMSocketError err2 = [uc receiveData:&data fromAddress:&address fromPort:&rxport];
-            if(err2 == UMSocketError_no_error)
+            err = [uc dataIsAvailable:receivePollTimeoutMs];
+
+            if(err == UMSocketError_has_data)
             {
-                if(data)
+                NSData  *data = NULL;
+                NSString *address = NULL;
+                int rxport;
+                UMSocketError err2 = [uc receiveData:&data fromAddress:&address fromPort:&rxport];
+                if(err2 == UMSocketError_no_error)
                 {
-                    [self receiveStatus:data];
+                    if(data)
+                    {
+                        [self receiveStatus:data];
+                    }
                 }
             }
         }
