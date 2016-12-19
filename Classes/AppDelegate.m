@@ -119,9 +119,9 @@ AppDelegate *_global_appdel= NULL;
     [config read];
     
     NSDictionary *coreConfig = [config getSingleGroup:@"core"];
-    localAddress     = [coreConfig[@"local-address"]stringValue];
-    remoteAddress    = [coreConfig[@"remote-address"]stringValue];
-    sharedAddress    = [coreConfig[@"shared-address"]stringValue];
+    localAddress     = [UMSocket unifyIP:[coreConfig[@"local-address"]stringValue]];
+    remoteAddress    = [UMSocket unifyIP:[coreConfig[@"remote-address"]stringValue]];
+    sharedAddress    = [UMSocket unifyIP:[coreConfig[@"shared-address"]stringValue]];
     port             = [coreConfig[@"port"]intValue];
     webPort          = [coreConfig[@"http-port"]intValue];
     logDirectory     = [coreConfig[@"log-dir"]  stringValue];

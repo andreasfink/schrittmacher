@@ -136,7 +136,7 @@
 - (void) checkForPackets
 {
     UMSocketError err;
-    int receivePollTimeoutMs = 100;
+    int receivePollTimeoutMs = 10000;
     do
     {
         @autoreleasepool
