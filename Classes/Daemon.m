@@ -111,11 +111,6 @@
           randomValue:(DaemonRandomValue)r
           fromAddress:(NSString *)address
 {
-    if(![address isEqualToString:remoteAddress])
-    {
-        NSLog(@"  message from unexpected IP[%@] ignored",address);
-        return;
-    }
     NSString *oldstate = [currentState name];
    /* the other side says it doesnt know its status */
     if ([event isEqualToString:MESSAGE_UNKNOWN])
