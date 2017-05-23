@@ -25,13 +25,12 @@
     NSTimeInterval      heartbeat;
     NSTimeInterval      timeout;
     
-    NSString *localAddress;
-    NSString *remoteAddress;
-    NSString *sharedAddress;    
-    NSTimer *updateTimer;
-    NSTimer *pollTimer;
-    NSTimer *checkIfUpTimer;
-    
+    NSString            *localAddress;
+    NSString            *remoteAddress;
+    NSString            *sharedAddress;
+    NSTimer             *updateTimer;
+    NSTimer             *pollTimer;
+    NSTimer             *checkIfUpTimer;
     Listener            *listener;
 }
 

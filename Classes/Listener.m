@@ -25,25 +25,33 @@
     return self;
 }
 
-- (void)receiveStatus:(NSData *)statusData fromAddress:(NSString *)address
+- (void)receiveStatus:(NSData *)statusData
+          fromAddress:(NSString *)address
 {
     @autoreleasepool
     {
-        UMJsonParser *parser = [[UMJsonParser alloc]init];
-        id obj = [parser objectWithData:statusData];
-        if([obj isKindOfClass:[NSDictionary class]])
+        @try
         {
-            NSDictionary *dict  = obj;
-            NSString *name      = [dict[@"resource"] stringValue];
-            NSString *status    = [dict[@"status"] stringValue];
-            int priority        = [dict[@"priority"] intValue];
-            DaemonRandomValue r = (DaemonRandomValue)[dict[@"random"] longValue];
-            NSLog(@"RX <-%@: %@",address,dict);
-            Daemon *d = [self daemonByName:name];
-            [d eventReceived:status
-                withPriority:priority
-                 randomValue:r
-                 fromAddress:address];
+            UMJsonParser *parser = [[UMJsonParser alloc]init];
+            id obj = [parser objectWithData:statusData];
+            if([obj isKindOfClass:[NSDictionary class]])
+            {
+                NSDictionary *dict  = obj;
+                NSString *name      = [dict[@"resource"] stringValue];
+                NSString *status    = [dict[@"status"] stringValue];
+                int priority        = [dict[@"priority"] intValue];
+                DaemonRandomValue r = (DaemonRandomValue)[dict[@"random"] longValue];
+                NSLog(@"RX <-%@: %@",address,dict);
+                Daemon *d = [self daemonByName:name];
+                [d eventReceived:status
+                    withPriority:priority
+                     randomValue:r
+                     fromAddress:address];
+            }
+        }
+        @catch(NSException *e)
+        {
+            NSLog(@"Exception: %@",e);
         }
     }
 }

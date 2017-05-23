@@ -105,19 +105,19 @@
 - (void)sendStatus:(NSString *)status;
 
 - (int)goToHot; /* returns success */
-- (void)goToStandby;
-- (void)fireUp;
-- (void)shutItDown;
+- (int)goToStandby;
+- (int)fireUp;
+- (int)shutItDown;
 - (void)checkForTimeouts;
 - (NSDictionary *)status;
 - (void)eventForceFailover;
 
 
-- (void)callDeactivateInterface;
-- (void)callActivateInterface;
-- (void)callStopAction;
-- (void)callStartAction;
-- (void)executeScript:(NSString *)command;
+- (int)callDeactivateInterface;
+- (int)callActivateInterface;
+- (int)callStopAction;
+- (int)callStartAction;
+- (int)executeScript:(NSString *)command;
 - (void)checkIfUp;
 
 @end

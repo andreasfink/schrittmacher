@@ -80,7 +80,7 @@ void open_tlog(void);
 int main(int argc, char *argv[])
 {
     
-    const char	*config_files[] = { "schrittmacher.conf", "/etc/messagemover/schrittmacher.conf",NULL };
+    const char	*config_files[] = { "schrittmacher.conf", "/etc/schrittmacher/schrittmacher.conf",NULL };
     const char *gConfigFile=NULL;
 
 #if defined(LINUX_BUNDLE)
@@ -121,11 +121,24 @@ int main(int argc, char *argv[])
             {
                 g_daemonize = 1;
             }
-            
+
+            if(0==strcmp(option,"--config-file"))
+            {
+                i++;
+                if(i<argc)
+                {
+                    gConfigFile = argv[i];
+                    global_argv2[global_argc2++] = "--config-file";
+                    global_argv2[global_argc2++] = argv[i];
+
+                }
+            }
+
             else if(0==strcmp(option,"--make-pidfile"))
             {
                 g_make_pid = 1;
             }
+
             else if(0==strcmp(option,"--pidfile"))
             {
                 i++;
@@ -164,8 +177,9 @@ int main(int argc, char *argv[])
                 if(gConfigFile==NULL)
                 {
                     gConfigFile = argv[i];
+                    global_argv2[global_argc2++] = "--config-file";
+                    global_argv2[global_argc2++] = argv[i];
                 }
-                global_argv2[global_argc2++] = argv[i];
             }
         }
     }

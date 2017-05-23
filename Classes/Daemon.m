@@ -112,85 +112,95 @@
           fromAddress:(NSString *)address
 {
     NSString *oldstate = [currentState name];
-   /* the other side says it doesnt know its status */
-    if ([event isEqualToString:MESSAGE_UNKNOWN])
-    {
-        lastRx = [NSDate date];
-        DEBUGLOG(currentState,@"eventUnknown");
-        currentState = [currentState eventUnknown:prio randomValue:(long int)r];
-    }
 
-    /* the other side says it doesnt know its status */
-    else if ([event isEqualToString:MESSAGE_FAILED])
+    if(([address isEqualToString:@"127.0.0.1"])
+       || ([address isEqualToString:@"::1"])
+       || ([address isEqualToString:@"localhost"]))
     {
-        lastRx = [NSDate date];
-        DEBUGLOG(currentState,@"eventRemoteFailed");
-        currentState = [currentState eventRemoteFailed];
-    }
-    /* the other side says it doesnt know its status */
-    else if ([event isEqualToString:MESSAGE_TAKEOVER_REQUEST])
-    {
-        lastRx = [NSDate date];
-        DEBUGLOG(currentState,@"eventTakeoverRequest");
-        currentState = [currentState eventTakeoverRequest:prio randomValue:r];
-    }
-    else if ([event isEqualToString:MESSAGE_TAKEOVER_REJECT])
-    {
-        lastRx = [NSDate date];
-        DEBUGLOG(currentState,@"eventTakeoverReject");
-        currentState = [currentState eventTakeoverReject:prio];
-    }
-
-    else if ([event isEqualToString:MESSAGE_TAKEOVER_CONF])
-    {
-        lastRx = [NSDate date];
-        DEBUGLOG(currentState,@"eventTakeoverConf");
-        currentState = [currentState eventTakeoverConf:prio];
-    }
-    else if ([event isEqualToString:MESSAGE_STANDBY])
-    {
-        lastRx = [NSDate date];
-        DEBUGLOG(currentState,@"eventStatusStandby");
-        currentState = [currentState eventStatusStandby:prio];
-    }
-    /* the other side says it doesnt know its status */
-    else if ([event isEqualToString:MESSAGE_HOT])
-    {
-        lastRx = [NSDate date];
-        DEBUGLOG(currentState,@"eventStatusHot");
-        currentState = [currentState eventStatusHot:prio];
-    }
-    else if ([event isEqualToString:MESSAGE_LOCAL_HOT])
-    {
-        lastLocalRx = [NSDate date];
-        DEBUGLOG(currentState,@"localHotIndication");
-        currentState = [currentState localHotIndication];
-        inStartupPhase = NO;
-    }
-    else if ([event isEqualToString:MESSAGE_LOCAL_STANDBY])
-    {
-        lastLocalRx = [NSDate date];
-        DEBUGLOG(currentState,@"localStandbyIndication");
-        currentState = [currentState localStandbyIndication];
-        inStartupPhase = NO;
-    }
-    else if ([event isEqualToString:MESSAGE_LOCAL_UNKNOWN])
-    {
-        lastLocalRx = [NSDate date];
-        DEBUGLOG(currentState,@"localUnknownIndication");
-        currentState = [currentState localUnknownIndication];
-        inStartupPhase = NO;
-    }
-    else if ([event isEqualToString:MESSAGE_LOCAL_FAIL])
-    {
-        lastLocalRx = [NSDate date];
-        DEBUGLOG(currentState,@"localFailureIndication");
-        currentState = [currentState localFailureIndication];
-        inStartupPhase = NO;
+        /*local message */
+        if ([event isEqualToString:MESSAGE_LOCAL_HOT])
+        {
+            lastLocalRx = [NSDate date];
+            DEBUGLOG(currentState,@"localHotIndication");
+            currentState = [currentState localHotIndication];
+            inStartupPhase = NO;
+        }
+        else if ([event isEqualToString:MESSAGE_LOCAL_STANDBY])
+        {
+            lastLocalRx = [NSDate date];
+            DEBUGLOG(currentState,@"localStandbyIndication");
+            currentState = [currentState localStandbyIndication];
+            inStartupPhase = NO;
+        }
+        else if ([event isEqualToString:MESSAGE_LOCAL_UNKNOWN])
+        {
+            lastLocalRx = [NSDate date];
+            DEBUGLOG(currentState,@"localUnknownIndication");
+            currentState = [currentState localUnknownIndication];
+            inStartupPhase = NO;
+        }
+        else if ([event isEqualToString:MESSAGE_LOCAL_FAIL])
+        {
+            lastLocalRx = [NSDate date];
+            DEBUGLOG(currentState,@"localFailureIndication");
+            currentState = [currentState localFailureIndication];
+            inStartupPhase = NO;
+        }
+        else
+        {
+            NSString *s = [NSString stringWithFormat:@"Unexpected event '%@'",event];
+            DEBUGLOG(currentState,s);
+        }
     }
     else
     {
-        DEBUGLOG(currentState,event);
+       /* the other side says it doesnt know its status */
+        if ([event isEqualToString:MESSAGE_UNKNOWN])
+        {
+            lastRx = [NSDate date];
+            DEBUGLOG(currentState,@"eventUnknown");
+            currentState = [currentState eventUnknown:prio randomValue:(long int)r];
+        }
+
+        /* the other side says it doesnt know its status */
+        else if ([event isEqualToString:MESSAGE_FAILED])
+        {
+            lastRx = [NSDate date];
+            DEBUGLOG(currentState,@"eventRemoteFailed");
+            currentState = [currentState eventRemoteFailed];
+        }
+        else if ([event isEqualToString:MESSAGE_TAKEOVER_REQUEST])
+        {
+            lastRx = [NSDate date];
+            DEBUGLOG(currentState,@"eventTakeoverRequest");
+            currentState = [currentState eventTakeoverRequest:prio randomValue:r];
+        }
+        else if ([event isEqualToString:MESSAGE_TAKEOVER_REJECT])
+        {
+            lastRx = [NSDate date];
+            DEBUGLOG(currentState,@"eventTakeoverReject");
+            currentState = [currentState eventTakeoverReject:prio];
+        }
+
+        else if ([event isEqualToString:MESSAGE_TAKEOVER_CONF])
+        {
+            lastRx = [NSDate date];
+            DEBUGLOG(currentState,@"eventTakeoverConf");
+            currentState = [currentState eventTakeoverConf:prio];
+        }
+        else if ([event isEqualToString:MESSAGE_STANDBY])
+        {
+            lastRx = [NSDate date];
+            DEBUGLOG(currentState,@"eventStatusStandby");
+            currentState = [currentState eventStatusStandby:prio];
+        }
+        /* the other side says it doesnt know its status */
+        else if ([event isEqualToString:MESSAGE_HOT])
+        {
+            lastRx = [NSDate date];
+            DEBUGLOG(currentState,@"eventStatusHot");
+            currentState = [currentState eventStatusHot:prio];
+        }
     }
     NSAssert(currentState,@"State is now null");
     NSString *newstate = [currentState name];
@@ -224,8 +234,8 @@
 {
     if(!iAmHot)
     {
-        [self fireUp];
-        if([self isRunning])
+        int r = [self fireUp];
+        if(r==0)
         {
             iAmHot = YES;
             return GOTO_HOT_SUCCESS;
@@ -238,36 +248,13 @@
     }
     else
     {
-        if([self isRunning])
-        {
-            iAmHot = YES;
-            return GOTO_HOT_ALREADY_HOT;
-        }
-        else
-        {
-            [self fireUp];
-            if([self isRunning])
-            {
-                iAmHot = YES;
-                return GOTO_HOT_SUCCESS;
-            }
-            else
-            {
-                iAmHot = NO;
-                return GOTO_HOT_FAILED;
-            }
-        }
+        return GOTO_HOT_ALREADY_HOT;
     }
 }
 
-- (void)goToStandby
+- (int)goToStandby
 {
-    [self shutItDown];
-}
-
-- (BOOL)isRunning
-{
-    return NO;
+    return [self shutItDown];
 }
 
 #define     SETENV(a,b)   if(b!=NULL) { setenv(a,b.UTF8String,1);  } else { unsetenv(a); }
@@ -298,86 +285,117 @@
     unsetenv("HEARTBEAT_INTERVAL");
 }
 
-- (void)executeScript:(NSString *)command
+- (int)executeScript:(NSString *)command
 {
+    if(command.length==0) /* empty script is always a success */
+    {
+        return 0;
+    }
     const char *cmd = command.UTF8String;
     NSLog(@" Executing: %s",cmd);
-    system(cmd);
+    return system(cmd);
 }
 
 
-- (void)callActivateInterface
+- (int)callActivateInterface
 {
-    if(!activateInterfaceCommand)
+    if(activateInterfaceCommand.length == 0)
     {
-        return;
+        return 0;
     }
     [self setEnvVars];
     setenv("ACTION", "activate", 1);
-    [self executeScript:activateInterfaceCommand];
+    int r = [self executeScript:activateInterfaceCommand];
     [self unsetEnvVars];
-    activatedAt = [NSDate date];
+    if(r==0)
+    {
+        activatedAt = [NSDate date];
+    }
+    return r;
 
 }
 
 
-- (void) callDeactivateInterface
+- (int) callDeactivateInterface
 {
-    if(!deactivateInterfaceCommand)
+    if(deactivateInterfaceCommand.length == 0)
     {
-        return;
+        return 0;
     }
     
     [self setEnvVars];
     setenv("ACTION", "deactivate", 1);
-    [self executeScript:deactivateInterfaceCommand];
+    int r = [self executeScript:deactivateInterfaceCommand];
     [self unsetEnvVars];
-    deactivatedAt = [NSDate date];
+    if(r==0)
+    {
+        deactivatedAt = [NSDate date];
+    }
+    return r;
 
 }
 
-- (void)callStartAction
+- (int)callStartAction
 {
-    if(!startAction)
+    if(startAction.length == 0)
     {
-        return;
+        return 0;
     }
     [self setEnvVars];
     setenv("ACTION", "start", 1);
-    [self executeScript:startAction];
+    int r = [self executeScript:startAction];
     [self unsetEnvVars];
-    startedAt = [NSDate date];
+    if(r==0)
+    {
+        startedAt = [NSDate date];
+    }
+    return r;
 }
 
--(void)callStopAction
+-(int)callStopAction
 {
-    if(!stopAction)
+    if(stopAction.length == 0)
     {
-        return;
+        return 0;
     }
     [self setEnvVars];
     setenv("ACTION", "stop", 1);
     const char *cmd = stopAction.UTF8String;
     NSLog(@" Executing: %s",cmd);
-    system(cmd);
+    int r = system(cmd);
     [self unsetEnvVars];
-    stoppedAt = [NSDate date];
+    if(r==0)
+    {
+        stoppedAt = [NSDate date];
+    }
+    return r;
 }
 
 
-- (void)shutItDown
+- (int)shutItDown
 {
-    [self callDeactivateInterface];
-    [self callStopAction];
+    int r1 = [self callStopAction];
+    int r2 = [self callDeactivateInterface];
     inStartupPhase = YES;
+    if(r1!=0)
+    {
+        return r1;
+    }
+    return r2;
 }
 
 
-- (void)fireUp
+- (int)fireUp
 {
-    [self callActivateInterface];
-    [self callStartAction];
+    int r1 = [self callActivateInterface];
+    int r2 = [self callStartAction];
     inStartupPhase = YES;
+    if(r1!=0)
+    {
+        return r1;
+    }
+    return r2;
+
 }
 
 - (NSDictionary *)status
@@ -405,8 +423,10 @@
     return dict;
 }
 
+
 - (void)checkIfUp
 {
+    /* we check if we have received the heartbeat from the local instance */
     if(lastLocalRx == NULL)
     {
         lastLocalRx = [NSDate date];

@@ -144,7 +144,7 @@ AppDelegate *_global_appdel= NULL;
     NSString *configFileName = notif[@"fileName"];
     if (!configFileName)
     {
-        configFileName = @"/etc/messagemover/schrittmacher.conf";
+        configFileName = @"/etc/schrittmacher/schrittmacher.conf";
     }
     
     [self readConfig:configFileName];
@@ -156,18 +156,18 @@ AppDelegate *_global_appdel= NULL;
 
     [self setupWebserver];
     [self startupListener];
-    updateTimer      = [NSTimer timerWithTimeInterval:2.0
+    updateTimer     = [NSTimer timerWithTimeInterval:2.0
                                               target:self
                                             selector:@selector(heartbeatAction)
                                             userInfo:@""
                                              repeats:YES];
-    pollTimer      = [NSTimer timerWithTimeInterval:0.05
+    pollTimer       = [NSTimer timerWithTimeInterval:0.05
                                                target:self
                                              selector:@selector(pollAction)
                                              userInfo:@""
                                               repeats:YES];
 
-    checkIfUpTimer      = [NSTimer timerWithTimeInterval:(double)0.5
+    checkIfUpTimer  = [NSTimer timerWithTimeInterval:(double)0.5
                                                   target:self
                                                 selector:@selector(checkIfUp)
                                                 userInfo:@""
@@ -289,8 +289,10 @@ AppDelegate *_global_appdel= NULL;
     [listener start];
 }
 
+
 - (void)checkIfUp
 {
     [listener checkIfUp];
 }
+
 @end
