@@ -1,0 +1,119 @@
+<html>
+
+<head>
+<title>schrittmacher-manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+	body {background-color: #bac0c7}
+    p.binderItem {margin: 10.0px 0.0px 0.0px 05.0px; font-family:Cochin, Times, Courier, Arial, serif; font-size:14.0px;}
+    .page {border: 1px solid #727272; background: #fff}
+    hr {
+      border-top: 1px dashed #000;
+      border-bottom: 0px solid #fff;
+      color: #fff;
+      background-color: #fff;
+      height: 0px;
+  </style>
+</head>
+
+<body>
+
+<table border="0" width="100%" cellspacing="3">
+<tr>
+<td>
+
+<table class="page" width="100%" cellspacing="10" cellpadding="2">
+<tr>
+<td valign="top">
+
+<ul>
+<li>
+<p class="binderItem"><strong>Ohne Titel</strong><br/><br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+Schrittmacher 1.8<br/>
+Users Manual<br/>
+© Andreas Fink, Basel, Switzerland</p>
+</li>
+<li>
+<p class="binderItem"><strong>1. General Operation</strong></p>
+</li>
+<hr/>
+<ul>
+<li>
+<p class="binderItem"><strong>1. Purpose</strong><br/>Purpose<br/>
+Schrittmacher's purpose is to keep a pair of applications up and running at all times. If one instance is up, the other will be on standby. If the first one fails, the second one will go into "hot" mode and take over the load.<br/>
+<br/>
+It was developed for the MessageMover SMSC, a software based on UniversalSS7 stack.<br/>
+</p>
+</li>
+<li>
+<p class="binderItem"><strong>2. Operation</strong><br/>Operation<br/>
+Schrittmacher runs as a daemon on a Unix system. It talks to another Schrittmacher instance on another host by sending each other UDP packets over a common lan. Both instances send each other heartbeats at predefined intervalls where they negotiate who is HOT and who is STANDBY.<br/>
+<br/>
+The application which wants to be protected makes uses of Schrittmacherclient library. It has to instantiate a schrittmacherClient object and set the resource-id and the schrittmacher UDP port. And start sendi...</p>
+</li>
+<li>
+<p class="binderItem"><strong>3. command line options</strong><br/>Command line options<br/>
+--config-file {filename}  read the filename for its configuration<br/>
+--daemonize     put the application to background and return<br/>
+--make-pidfile    create the pid file for schrittmacher itself<br/>
+--pidfile {filename}   specifiy the filename where the pid is written to<br/>
+--parachute     create a parachute process which watches the schrittmacher daemon<br/>
+--version     print the version and exit<br/>
+<br/>
+<br/>
+Schrittmacher's config file is normally  ./schrittmacher.conf  or /etc/schrittmacher/schrit...</p>
+</li>
+<li>
+<p class="binderItem"><strong>3. config file</strong><br/>The config file<br/>
+Schrittmacher's config file is normally  ./schrittmacher.conf  or /etc/schrittmacher/schrittmacher.conf<br/>
+<br/>
+It contains the following sections<br/>
+<br/>
+<br/>
+group = core<br/>
+local-address   = the local IP we are listening to<br/>
+remote-address  = the peer's IP address<br/>
+shared-address  = a virtual IP which is shared between the two<br/>
+port    = udp port number<br/>
+http-port  = tcp port number for the admin interface<br/>
+log-dir   = directory where the log is written<br/>
+heartbeat  = how often the heartbeat is sent (Def...</p>
+</li>
+<li>
+<p class="binderItem"><strong>4. the environment</strong><br/>The environment<br/>
+the scripts called from schrittmacher can use the following environmental variables<br/>
+LOCAL_ADDRESS the local ip address (from core config)<br/>
+REMOTE_ADDRESS the remote ip address (from core config)<br/>
+SHARED_ADDRESS the shared ip address (from core config)<br/>
+RESOURCE_NAME the resource name (from resource config)<br/>
+PID_FILE   the pid file (from resource coding)<br/>
+HEARTBEAT_INTERVAL the heartbeat intervall (from resource config)<br/>
+ACTION   the action to take:<br/>
+    'activate','deactivate','start' o...</p>
+</li>
+</ul>
+</ul>
+
+</td>
+<td width="8">
+</td>
+</tr>
+</table>
+
+</td>
+</tr>
+</table>
+
+</body>
+</html>

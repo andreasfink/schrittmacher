@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SearchIndexes Version="1.0">
+    <Documents>
+        <Document ID="7">
+            <Title>3. config file</Title>
+            <Text>The config file
+Schrittmacher's config file is normally  ./schrittmacher.conf  or /etc/schrittmacher/schrittmacher.conf
+
+It contains the following sections
+
+
+group = core
+local-address   = the local IP we are listening to
+remote-address  = the peer's IP address
+shared-address  = a virtual IP which is shared between the two
+port				= udp port number
+http-port		= tcp port number for the admin interface
+log-dir			= directory where the log is written
+heartbeat		= how often the heartbeat is sent (Default 2.0 seconds)
+timeout			= how long until other side is considered dead (default: 3*heartbeat)
+
+group = resource
+name						= name of the resource
+start-action				= script to call on start
+stop-action				= script to call on stop
+priority					= default priority on this daemon.
+pid-file					= pid file name
+interface-activate 		= activate action script
+interface-deactivate		= deactivate action script
+startup-delay			= seconds to wait before starting
+heartbeat-intervall		= heartbeat intervall in seconds
+
+
+
+
+</Text>
+        </Document>
+        <Document ID="3">
+            <Title>Ohne Titel</Title>
+            <Text>
+
+
+
+
+
+
+
+
+#
+
+
+Schrittmacher 1.8
+Users Manual
+© Andreas Fink, Basel, Switzerland
+</Text>
+        </Document>
+        <Document ID="8">
+            <Title>3. command line options</Title>
+            <Text>Command line options
+--config-file {filename}		read the filename for its configuration
+--daemonize					put the application to background and return
+--make-pidfile				create the pid file for schrittmacher itself
+--pidfile {filename}			specifiy the filename where the pid is written to
+--parachute					create a parachute process which watches the schrittmacher daemon
+--version					print the version and exit
+
+
+Schrittmacher's config file is normally  ./schrittmacher.conf  or /etc/schrittmacher/schrittmacher.conf
+
+It contains the following sections
+</Text>
+        </Document>
+        <Document ID="4">
+            <Title>1. General Operation</Title>
+        </Document>
+        <Document ID="9">
+            <Title>4. the environment</Title>
+            <Text>The environment
+the scripts called from schrittmacher can use the following environmental variables
+LOCAL_ADDRESS	the local ip address (from core config)
+REMOTE_ADDRESS	the remote ip address (from core config)
+SHARED_ADDRESS	the shared ip address (from core config)
+RESOURCE_NAME	the resource name (from resource config)
+PID_FILE			the pid file (from resource coding)
+HEARTBEAT_INTERVAL the heartbeat intervall (from resource config)
+ACTION			the action to take:
+				'activate','deactivate','start' or 'stop'
+
+
+if it goes from Standby to hot
+the actions activate &amp; start are called
+
+if it goes from Hot to Standby
+the actions stop &amp; deactivate are called</Text>
+        </Document>
+        <Document ID="5">
+            <Title>1. Purpose</Title>
+            <Text>Purpose
+Schrittmacher's purpose is to keep a pair of applications up and running at all times. If one instance is up, the other will be on standby. If the first one fails, the second one will go into "hot" mode and take over the load.
+
+It was developed for the MessageMover SMSC, a software based on UniversalSS7 stack.
+
+</Text>
+        </Document>
+        <Document ID="6">
+            <Title>2. Operation</Title>
+            <Text>Operation
+Schrittmacher runs as a daemon on a Unix system. It talks to another Schrittmacher instance on another host by sending each other UDP packets over a common lan. Both instances send each other heartbeats at predefined intervalls where they negotiate who is HOT and who is STANDBY.
+
+The application which wants to be protected makes uses of Schrittmacherclient library. It has to instantiate a schrittmacherClient object and set the resource-id and the schrittmacher UDP port. And start sending status messages at regular intervall. The client library will signal to the schrittmacher daemon over localhost UDP packets its statuts which are
+
+LHOT	Local Application is considering itself "Hot"
+LSBY	Local Application is considering itself "Standby"
+LUNK	Local Application doesnt know its status (because it just started after a crash for example)
+LFAI	Local Application is requesting a failover (asking the other side to go Hot and itself going standby)
+
+The Schrittmacher daemon signals back to the application by the use of signals
+
+SIG_USR1	The Application should go to HOT status (if not already)
+SIG_USR2	The Application should go to Standby status (if not already)
+
+
+The communication between the schrittmacher daemons happens over the following messages:
+
+HOTT	Local Daemon is considering itself "Hot"
+STBY	Local Daemon is considering itself "Standby"
+UNK	Local Daemon doesnt know its status (because it just started after a crash for example)
+TREQ Local Daemon tells the remote it wishes to take over
+TCNF	Daemon confirms the takeover to the remote
+TREJ	Daemon rejects the takeover
+FAIL	Daemon tells it is in failed state and implies a takeover confirmation
+</Text>
+        </Document>
+    </Documents>
+</SearchIndexes>

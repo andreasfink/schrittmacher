@@ -1,0 +1,36 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\deftab720
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab720\sa360
+
+\f0\b\fs32 \cf0 \expnd0\expndtw0\kerning0
+Operation
+\b0\fs24 \
+\pard\pardeftab720\parhyphenfactor20
+\cf0 Schrittmacher runs as a daemon on a Unix system. It talks to another Schrittmacher instance on another host by sending each other UDP packets over a common lan. Both instances send each other heartbeats at predefined intervalls where they negotiate who is HOT and who is STANDBY.\
+\
+The application which wants to be protected makes uses of Schrittmacherclient library. It has to instantiate a schrittmacherClient object and set the resource-id and the schrittmacher UDP port. And start sending status messages at regular intervall. The client library will signal to the schrittmacher daemon over localhost UDP packets its statuts which are\
+\
+LHOT	Local Application is considering itself "Hot"\
+LSBY	Local Application is considering itself "Standby"\
+LUNK	Local Application doesnt know its status (because it just started after a crash for example)\
+LFAI	Local Application is requesting a failover (asking the other side to go Hot and itself going standby)\
+\
+The Schrittmacher daemon signals back to the application by the use of signals\
+\
+SIG_USR1	The Application should go to HOT status (if not already)\
+SIG_USR2	The Application should go to Standby status (if not already)\
+\
+\
+The communication between the schrittmacher daemons happens over the following messages:\
+\
+HOTT	Local Daemon is considering itself "Hot"\
+STBY	Local Daemon is considering itself "Standby"\
+UNK	Local Daemon doesnt know its status (because it just started after a crash for example)\
+TREQ Local Daemon tells the remote it wishes to take over\
+TCNF	Daemon confirms the takeover to the remote\
+TREJ	Daemon rejects the takeover\
+FAIL	Daemon tells it is in failed state and implies a takeover confirmation\
+}

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ScrivenerProject Version="1.5" Creator="SCRMAC-2.8.1-26322" Device="macropolis" Modified="2017-05-23 20:20:36 +0200" ModID="B6C28159-093E-4A32-9E72-59AE2810B79D">
+    <Binder>
+        <BinderItem ID="0" UUID="40DC0B6A-B5DF-41A9-9312-6E5B3EA1AE71" Type="DraftFolder" Created="2017-05-23 19:26:44 +0200" Modified="2017-05-23 19:26:44 +0200">
+            <Title>Entwurf</Title>
+            <MetaData>
+                <IncludeInCompile>Yes</IncludeInCompile>
+            </MetaData>
+            <Children>
+                <BinderItem ID="3" UUID="47C6DEB8-126E-4E3F-B64D-78090AF6AA6A" Type="Text" Created="2017-05-23 19:26:44 +0200" Modified="2017-05-23 19:27:11 +0200">
+                    <Title>Ohne Titel</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>40,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem ID="4" UUID="C15AF035-266B-45B1-92D1-3FAF0DE03296" Type="Folder" Created="2017-05-23 19:27:18 +0200" Modified="2017-05-23 19:27:25 +0200">
+                    <Title>1. General Operation</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <NotesTextSelection>0,0</NotesTextSelection>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>0,0</TextSelection>
+                    </TextSettings>
+                    <Children>
+                        <BinderItem ID="5" UUID="44F67F9A-910D-4423-BCD0-9FD1577367BC" Type="Text" Created="2017-05-23 19:27:53 +0200" Modified="2017-05-23 19:29:41 +0200">
+                            <Title>1. Purpose</Title>
+                            <MetaData>
+                                <IncludeInCompile>Yes</IncludeInCompile>
+                                <NotesTextSelection>0,0</NotesTextSelection>
+                            </MetaData>
+                            <TextSettings>
+                                <TextSelection>0,321</TextSelection>
+                            </TextSettings>
+                        </BinderItem>
+                        <BinderItem ID="6" UUID="E2982A92-5A6B-4DAE-AF15-10914B468EF8" Type="Text" Created="2017-05-23 19:29:36 +0200" Modified="2017-05-23 19:54:17 +0200">
+                            <Title>2. Operation</Title>
+                            <MetaData>
+                                <IncludeInCompile>Yes</IncludeInCompile>
+                                <NotesTextSelection>0,0</NotesTextSelection>
+                            </MetaData>
+                            <TextSettings>
+                                <TextSelection>0,1673</TextSelection>
+                            </TextSettings>
+                        </BinderItem>
+                        <BinderItem ID="8" UUID="8D088183-0687-486D-ABFD-26A632FA7AE0" Type="Text" Created="2017-05-23 20:01:36 +0200" Modified="2017-05-23 20:05:49 +0200">
+                            <Title>3. command line options</Title>
+                            <MetaData>
+                                <IncludeInCompile>Yes</IncludeInCompile>
+                                <NotesTextSelection>0,0</NotesTextSelection>
+                            </MetaData>
+                            <TextSettings>
+                                <TextSelection>21,0</TextSelection>
+                            </TextSettings>
+                        </BinderItem>
+                        <BinderItem ID="7" UUID="798F171F-58B5-40F6-9D1C-A6AFBC5FDEFB" Type="Text" Created="2017-05-23 19:55:21 +0200" Modified="2017-05-23 20:14:57 +0200">
+                            <Title>3. config file</Title>
+                            <MetaData>
+                                <IncludeInCompile>Yes</IncludeInCompile>
+                                <NotesTextSelection>0,0</NotesTextSelection>
+                            </MetaData>
+                            <TextSettings>
+                                <TextSelection>1010,0</TextSelection>
+                            </TextSettings>
+                        </BinderItem>
+                        <BinderItem ID="9" UUID="F2DE64E0-4D7D-4F9E-9F36-521E5ECDADE0" Type="Text" Created="2017-05-23 19:55:21 +0200" Modified="2017-05-23 20:20:36 +0200">
+                            <Title>4. the environment</Title>
+                            <MetaData>
+                                <IncludeInCompile>Yes</IncludeInCompile>
+                                <NotesTextSelection>0,0</NotesTextSelection>
+                            </MetaData>
+                            <TextSettings>
+                                <TextSelection>644,0</TextSelection>
+                            </TextSettings>
+                        </BinderItem>
+                    </Children>
+                </BinderItem>
+            </Children>
+        </BinderItem>
+        <BinderItem ID="1" UUID="7BCAE1EB-820D-49D2-A81E-0253ADB52C0C" Type="ResearchFolder" Created="2017-05-23 19:26:44 +0200" Modified="2017-05-23 19:26:44 +0200">
+            <Title>Recherche</Title>
+            <MetaData>
+                <IncludeInCompile>Yes</IncludeInCompile>
+            </MetaData>
+        </BinderItem>
+        <BinderItem ID="2" UUID="C6CEFE6A-56AE-445C-99B4-47317641198E" Type="TrashFolder" Created="2017-05-23 19:26:44 +0200" Modified="2017-05-23 19:26:44 +0200">
+            <Title>Papierkorb</Title>
+            <MetaData>
+                <IncludeInCompile>Yes</IncludeInCompile>
+            </MetaData>
+        </BinderItem>
+    </Binder>
+    <Collections>
+        <Collection Type="Binder" ID="2E1415BC-8062-40C8-AB40-82EFFD1AC021" Color="0.962266 0.962266 0.962266">
+            <Title>Mappe</Title>
+        </Collection>
+        <Collection Type="RecentSearch" ID="5C10894D-449D-4812-AE39-D03472C1E7C0" Color="0.922 0.91 0.98">
+            <Title>Suchergebnisse</Title>
+        </Collection>
+    </Collections>
+    <LabelSettings>
+        <Title>Etikett</Title>
+        <DefaultLabelID>-1</DefaultLabelID>
+        <Labels>
+            <Label ID="-1">Kein Etikett</Label>
+            <Label ID="0" Color="0.9 0.92 0.95">Konzept</Label>
+            <Label ID="1" Color="0.985 0.875 0.85">Kapitel</Label>
+        </Labels>
+    </LabelSettings>
+    <StatusSettings>
+        <Title>Status</Title>
+        <DefaultStatusID>-1</DefaultStatusID>
+        <StatusItems>
+            <Status ID="-1">Kein Status</Status>
+            <Status ID="0">To Do</Status>
+            <Status ID="1">Erstentwurf</Status>
+            <Status ID="2">Überarbeiteter Entwurf</Status>
+            <Status ID="3">Final Draft</Status>
+            <Status ID="4">Fertig</Status>
+        </StatusItems>
+    </StatusSettings>
+    <ProjectTargets Notify="No">
+        <DraftTarget Type="Words" CountIncludedOnly="Yes" CurrentCompileGroupOnly="No" Deadline="2017-05-23 19:26:43 +0200" IgnoreDeadline="Yes">0</DraftTarget>
+        <SessionTarget Type="Words" CountDraftOnly="Yes" AllowNegatives="Yes" ResetType="Midnight" DeterminedFromDeadline="No" WritingDays="" CanWriteOnDeadlineDate="No">0</SessionTarget>
+        <PreviousSession Words="494" Characters="3276" Date="2017-05-23 19:26:43 +0200"></PreviousSession>
+    </ProjectTargets>
+    <PrintSettings PaperSize="595.0,842.0" LeftMargin="72.0" RightMargin="72.0" TopMargin="90.0" BottomMargin="90.0" PaperType="iso-a4" Orientation="Portrait" HorizontalPagination="Clip" VerticalPagination="Auto" ScaleFactor="1.0" HorizontallyCentered="Yes" VerticallyCentered="Yes" Collates="Yes" PagesAcross="1" PagesDown="1"></PrintSettings>
+</ScrivenerProject>
