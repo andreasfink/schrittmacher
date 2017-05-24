@@ -17,6 +17,7 @@
     Daemon *daemon;
 }
 - (NSString *)name;
+
 - (DaemonState *)initWithDaemon:(Daemon *)d;
 - (DaemonState *)eventUnknown:(int)prio randomValue:(long int)r;
 - (DaemonState *)eventRemoteFailed;
@@ -26,10 +27,12 @@
 - (DaemonState *)eventStatusStandby:(int)prio;
 - (DaemonState *)eventStatusHot:(int)prio;
 - (DaemonState *)localFailureIndication;
-
 - (DaemonState *)localUnknownIndication;
 - (DaemonState *)localHotIndication;
 - (DaemonState *)localStandbyIndication;
+- (DaemonState *)eventToStandbyTimer;
+- (DaemonState *)eventToHotTimer;
+- (DaemonState *)eventHeartbeatTimer;
 
 - (DaemonState *)eventTimer;
 - (DaemonState *)eventTimeout;

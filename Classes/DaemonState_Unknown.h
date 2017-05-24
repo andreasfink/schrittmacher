@@ -11,9 +11,7 @@
 
 @interface DaemonState_Unknown : DaemonState
 {
-    int unknownCounter;
-    DaemonRandomValue  randVal;
-    
+    int unknownCounter;    
 }
 
 - (DaemonState *)eventStart;

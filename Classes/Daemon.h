@@ -60,6 +60,7 @@
     NSDate          *deactivatedAt;
     NSDate          *startedAt;
     NSDate          *stoppedAt;
+    DaemonRandomValue _randVal;
 }
 
 @property (readwrite,strong) DaemonState *currentState;
@@ -83,6 +84,7 @@
 @property (readwrite,strong) NSString *deactivateInterfaceCommand;
 @property (readwrite,assign) NSTimeInterval  startupDelay;
 @property (readwrite,assign) NSTimeInterval  intervallDelay;
+@property (readwrite,assign,atomic) DaemonRandomValue  randVal;
 
 - (void)eventReceived:(NSString *)event
          withPriority:(int)prio
@@ -111,7 +113,8 @@
 - (void)checkForTimeouts;
 - (NSDictionary *)status;
 - (void)eventForceFailover;
-
+- (void)startTransitingToHotTimer;
+- (void)startTransitingToStandbyTimer;
 
 - (int)callDeactivateInterface;
 - (int)callActivateInterface;

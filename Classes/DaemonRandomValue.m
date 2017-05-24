@@ -11,5 +11,5 @@
 
 DaemonRandomValue GetDaemonRandomValue(void)
 {
-    return random();
+    return (DaemonRandomValue)arc4random();
 }

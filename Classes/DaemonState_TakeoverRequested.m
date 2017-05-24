@@ -15,7 +15,7 @@
     self = [super initWithDaemon:d];
     if(self)
     {
-        randVal = GetDaemonRandomValue();
+        daemon.randVal = GetDaemonRandomValue();
     }
     return self;
 }

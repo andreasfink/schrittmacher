@@ -16,7 +16,7 @@
     self = [super initWithDaemon:d];
     if(self)
     {
-        randVal = GetDaemonRandomValue();
+        d.randVal = GetDaemonRandomValue();
     }
     return self;
 }
@@ -28,19 +28,36 @@
 
 - (DaemonState *)eventStart
 {
-    [daemon actionSendUnknown:randVal];
+    daemon.randVal = GetDaemonRandomValue();
+    [daemon actionSendUnknown:daemon.randVal];
     return self;
 }
 
 - (DaemonState *)eventUnknown:(int)prio
                   randomValue:(DaemonRandomValue)r
 {
+    /* the other side doesnt know its state neither.
+     Lets start the negotiations */
+    daemon.randVal = GetDaemonRandomValue();
+    [daemon actionSendTakeoverRequest:daemon.randVal];
     return  [[DaemonState_TakeoverRequested alloc]initWithDaemon:daemon];
 }
 
 - (DaemonState *)eventRemoteFailed
 {
-    return [[DaemonState_Hot alloc]initWithDaemon:daemon];
+    int r1 = [daemon callActivateInterface];
+    int r2 = [daemon callStartAction];
+
+    if((r1==0) && (r2==0))
+    {
+        [daemon startTransitingToHotTimer];
+        return [[DaemonState_Unknown_transiting_to_Hot alloc]initWithDaemon:daemon];
+    }
+    else
+    {
+        [daemon startTransitingToStandbyTimer];
+        return [[DaemonState_Unknown_transiting_to_Standby alloc]initWithDaemon:daemon];
+    }
 }
 
 - (DaemonState *)eventTakeoverRequest:(int)prio randomValue:(long int)r
@@ -48,7 +65,7 @@
     [daemon actionSendTakeoverConfirm];
     [daemon goToStandby];
     [daemon actionSendStandby];
-    return [[DaemonState_Standby alloc]initWithDaemon:daemon];
+    return [[DaemonState_Unknown_transiting_to_Standby alloc]initWithDaemon:daemon];
 }
 
 - (DaemonState *)eventTakeoverConf:(int)prio
@@ -81,7 +98,7 @@
 
 - (DaemonState *)eventTimer
 {
-    [daemon actionSendUnknown:randVal];
+    [daemon actionSendUnknown:daemon.randVal];
     return self;
 }
 

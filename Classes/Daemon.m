@@ -395,7 +395,6 @@
         return r1;
     }
     return r2;
-
 }
 
 - (NSDictionary *)status
@@ -450,4 +449,15 @@
         }
     }
 }
+
+- (void)startTransitingToHotTimer
+{
+    /* FIXME */
+}
+
+- (void)startTransitingToStandbyTimer
+{
+    /* FIXME */
+}
+
 @end
