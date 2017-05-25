@@ -17,10 +17,10 @@ The config file
 \CocoaLigature1 It contains the following sections\
 \
 \
-group = core\
 \pard\tx543\pardeftab543\pardirnatural\partightenfactor0
 
-\f1\fs22 \cf2 \kerning1\expnd0\expndtw0 \CocoaLigature0 local-address   = the local IP we are listening to\
+\f1\fs22 \cf2 \kerning1\expnd0\expndtw0 \CocoaLigature0 group = core\
+local-address   = the local IP we are listening to\
 remote-address  = the peer's IP address\
 shared-address  = a virtual IP which is shared between the two\
 port				= udp port number\
@@ -30,7 +30,7 @@ heartbeat		= how often the heartbeat is sent (Default 2.0 seconds)\
 timeout			= how long until other side is considered dead (default: 3*heartbeat)\
 \
 group = resource\
-name						= name of the resource\
+name						= the resource-id\
 start-action				= script to call on start\
 stop-action				= script to call on stop\
 priority					= default priority on this daemon.\

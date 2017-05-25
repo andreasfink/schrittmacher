@@ -71,8 +71,7 @@ The application which wants to be protected makes uses of Schrittmacherclient li
 --parachute     create a parachute process which watches the schrittmacher daemon<br/>
 --version     print the version and exit<br/>
 <br/>
-<br/>
-Schrittmacher's config file is normally  ./schrittmacher.conf  or /etc/schrittmacher/schrit...</p>
+</p>
 </li>
 <li>
 <p class="binderItem"><strong>3. config file</strong><br/>The config file<br/>
@@ -101,6 +100,23 @@ PID_FILE   the pid file (from resource coding)<br/>
 HEARTBEAT_INTERVAL the heartbeat intervall (from resource config)<br/>
 ACTION   the action to take:<br/>
     'activate','deactivate','start' o...</p>
+</li>
+<li>
+<p class="binderItem"><strong>5. config example</strong><br/>#<br/>
+# schrittmacher config example<br/>
+#<br/>
+group = core<br/>
+local-address = 10.22.52.190<br/>
+remote-address = 10.22.52.191<br/>
+shared-address = 10.22.52.189<br/>
+http-port    = 7700<br/>
+port      = 7700<br/>
+group = resource<br/>
+name = smsc-i400<br/>
+start-action = "kill -10 `cat /var/run/MessageMover/i400.pid`"<br/>
+stop-action = "kill -12 `cat /var/run/MessageMover/i400.pid`"<br/>
+interface-activate = ip addr add 10.22.52.189/25 dev eth0 label eth0:9<br/>
+interface-deactivate = ip addr del 10.22.52.189/25 dev eth0 label eth0:9</p>
 </li>
 </ul>
 </ul>
