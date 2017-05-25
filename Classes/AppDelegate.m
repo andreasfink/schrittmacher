@@ -192,14 +192,21 @@ AppDelegate *_global_appdel= NULL;
 - (NSString *)htmlStatus
 {
     NSMutableString *s = [[NSMutableString alloc]init];
-    [s appendFormat:@"<H1>Status</H1>\n<p>%@</p>\n", @"running"];
-    [s appendFormat:@"<table border=1>"];
-    [s appendFormat:@"<tr>"];
-    [s appendFormat:@"<th>Resource</th>"];
-    [s appendFormat:@"<th>Status</th>"];
-    [s appendFormat:@"<th>LastRx</th>"];
-    [s appendFormat:@"<th>LastLocalRx</th>"];
-    [s appendFormat:@"<th>Action</th>"];
+    [s appendFormat:@"<H1>Status</H1>\n"];
+    [s appendFormat:@"<table border=1>\n"];
+    [s appendFormat:@"<tr>\n"];
+    [s appendFormat:@"<th rowspan=2>Resource</th>\n"];
+    [s appendFormat:@"<th rowspan=2>Status</th>\n"];
+    [s appendFormat:@"<th colspan=2>Heartbeat</th>\n"];
+    [s appendFormat:@"<th colspan=2>Failure</th>\n"];
+    [s appendFormat:@"<th rowspan=2>Action</th>\n"];
+    [s appendFormat:@"</tr>"];
+
+    [s appendFormat:@"<tr>\n"];
+    [s appendFormat:@"<th>Remote</th>\n"];
+    [s appendFormat:@"<th>Local</th>\n"];
+    [s appendFormat:@"<th>Remote</th>\n"];
+    [s appendFormat:@"<th>Local</th>\n"];
     [s appendFormat:@"</tr>"];
 
     NSDictionary *states = [listener status];
@@ -222,12 +229,36 @@ AppDelegate *_global_appdel= NULL;
         {
             failover=@"&nbsp;";
         }
+        /*
+         dict[@"resource-id"]= resourceId;
+         dict[@"current-state"]=[currentState name];
+         dict[@"lastRx"] = lastRx ? [lastRx stringValue] : @"-";
+         dict[@"lastLocalRx"] = lastLocalRx ? [lastLocalRx stringValue] : @"-";
+         dict[@"remoteAddress"] = remoteAddress;
+         dict[@"localAddress"] = localAddress;
+         dict[@"sharedAddress"] = sharedAddress;
+         dict[@"startAction"] = startAction;
+         dict[@"stopAction"] = stopAction;
+         dict[@"pidFile"] = pidFile;
+         dict[@"activateInterfaceCommand"] = activateInterfaceCommand;
+         dict[@"deactivateInterfaceCommand"] = deactivateInterfaceCommand;
+         dict[@"localPriority"] = [NSString stringWithFormat:@"%d",(int)localPriority];
+         dict[@"lastChecked"] = [lastChecked stringValue];
+         dict[@"startedAt"] = startedAt ? [startedAt stringValue] : @"never";
+         dict[@"stoppedAt"] = stoppedAt ? [stoppedAt stringValue] : @"never";
+         dict[@"activatedAt"] = activatedAt ? [activatedAt stringValue] : @"never";
+         dict[@"dectivatedAt"] = deactivatedAt ? [deactivatedAt stringValue] : @"never";
+         dict[@"remoteIsFailed"] = _remoteIsFailed ? @"YES" : @"NO";
+         dict[@"localIsFailed"] = _localIsFailed ? @"YES" : @"NO";
+*/
         
         [s appendFormat:@"<tr>"];
         [s appendFormat:@"<td>%@</td>",dict[@"resource-id"]];
         [s appendFormat:@"<td>%@</td>",dict[@"current-state"]];
         [s appendFormat:@"<td>%@</td>",dict[@"lastRx"]];
         [s appendFormat:@"<td>%@</td>",dict[@"lastLocalRx"]];
+        [s appendFormat:@"<td>%@</td>",dict[@"remoteIsFailed"]];
+        [s appendFormat:@"<td>%@</td>",dict[@"localIsFailed"]];
         [s appendFormat:@"<td>%@</td>",failover];
         [s appendFormat:@"</tr>"];
     }

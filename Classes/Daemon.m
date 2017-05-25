@@ -434,6 +434,8 @@ DaemonRandomValue GetDaemonRandomValue(void)
     dict[@"stoppedAt"] = stoppedAt ? [stoppedAt stringValue] : @"never";
     dict[@"activatedAt"] = activatedAt ? [activatedAt stringValue] : @"never";
     dict[@"dectivatedAt"] = deactivatedAt ? [deactivatedAt stringValue] : @"never";
+    dict[@"remoteIsFailed"] = _remoteIsFailed ? @"YES" : @"NO";
+    dict[@"localIsFailed"] = _localIsFailed ? @"YES" : @"NO";
     return dict;
 }
 
