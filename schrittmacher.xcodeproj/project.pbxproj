@@ -7,10 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A6007C321ED567C7009F381F /* DaemonState_Standby_transiting_to_Hot.m in Sources */ = {isa = PBXBuildFile; fileRef = A6007C311ED567C7009F381F /* DaemonState_Standby_transiting_to_Hot.m */; };
-		A6007C351ED567E2009F381F /* DaemonState_Hot_transiting_to_Standby.m in Sources */ = {isa = PBXBuildFile; fileRef = A6007C341ED567E2009F381F /* DaemonState_Hot_transiting_to_Standby.m */; };
-		A6007C381ED56807009F381F /* DaemonState_Unknown_transiting_to_Standby.m in Sources */ = {isa = PBXBuildFile; fileRef = A6007C371ED56807009F381F /* DaemonState_Unknown_transiting_to_Standby.m */; };
-		A6007C3B1ED56817009F381F /* DaemonState_Unknown_transiting_to_Hot.m in Sources */ = {isa = PBXBuildFile; fileRef = A6007C3A1ED56817009F381F /* DaemonState_Unknown_transiting_to_Hot.m */; };
 		A6018F7C1B0D388200854472 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = A6018F7B1B0D388200854472 /* main.m */; };
 		A6018F861B0D391000854472 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A6018F851B0D391000854472 /* AppDelegate.m */; };
 		A6018F8D1B0D442C00854472 /* DaemonState.m in Sources */ = {isa = PBXBuildFile; fileRef = A6018F8C1B0D442C00854472 /* DaemonState.m */; };
@@ -18,11 +14,8 @@
 		A6018F991B0D479F00854472 /* DaemonState_Hot.m in Sources */ = {isa = PBXBuildFile; fileRef = A6018F981B0D479F00854472 /* DaemonState_Hot.m */; };
 		A6018F9C1B0D47A700854472 /* DaemonState_Standby.m in Sources */ = {isa = PBXBuildFile; fileRef = A6018F9B1B0D47A700854472 /* DaemonState_Standby.m */; };
 		A6018FA51B0D480100854472 /* Daemon.m in Sources */ = {isa = PBXBuildFile; fileRef = A6018FA41B0D480100854472 /* Daemon.m */; };
-		A66281EF1B1455E60090FC94 /* NSString+urlencode.m in Sources */ = {isa = PBXBuildFile; fileRef = A66281EE1B1455E60090FC94 /* NSString+urlencode.m */; };
 		A6AC46D01D4600F8002BAA97 /* ulib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A6AC46CF1D4600F8002BAA97 /* ulib.framework */; };
-		A6E54FC81B0DAB6E0090FC94 /* DaemonState_TakeoverRequested.m in Sources */ = {isa = PBXBuildFile; fileRef = A6E54FC71B0DAB6E0090FC94 /* DaemonState_TakeoverRequested.m */; };
 		A6E54FCE1B0DBE640090FC94 /* Listener.m in Sources */ = {isa = PBXBuildFile; fileRef = A6E54FCD1B0DBE640090FC94 /* Listener.m */; };
-		A6E54FD11B0DCA210090FC94 /* DaemonRandomValue.m in Sources */ = {isa = PBXBuildFile; fileRef = A6E54FD01B0DCA210090FC94 /* DaemonRandomValue.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -38,14 +31,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		A6007C301ED567C7009F381F /* DaemonState_Standby_transiting_to_Hot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DaemonState_Standby_transiting_to_Hot.h; sourceTree = "<group>"; };
-		A6007C311ED567C7009F381F /* DaemonState_Standby_transiting_to_Hot.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DaemonState_Standby_transiting_to_Hot.m; sourceTree = "<group>"; };
-		A6007C331ED567E2009F381F /* DaemonState_Hot_transiting_to_Standby.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DaemonState_Hot_transiting_to_Standby.h; sourceTree = "<group>"; };
-		A6007C341ED567E2009F381F /* DaemonState_Hot_transiting_to_Standby.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DaemonState_Hot_transiting_to_Standby.m; sourceTree = "<group>"; };
-		A6007C361ED56807009F381F /* DaemonState_Unknown_transiting_to_Standby.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DaemonState_Unknown_transiting_to_Standby.h; sourceTree = "<group>"; };
-		A6007C371ED56807009F381F /* DaemonState_Unknown_transiting_to_Standby.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DaemonState_Unknown_transiting_to_Standby.m; sourceTree = "<group>"; };
-		A6007C391ED56817009F381F /* DaemonState_Unknown_transiting_to_Hot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DaemonState_Unknown_transiting_to_Hot.h; sourceTree = "<group>"; };
-		A6007C3A1ED56817009F381F /* DaemonState_Unknown_transiting_to_Hot.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DaemonState_Unknown_transiting_to_Hot.m; sourceTree = "<group>"; };
 		A6018F781B0D388200854472 /* schrittmacher */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = schrittmacher; sourceTree = BUILT_PRODUCTS_DIR; };
 		A6018F7B1B0D388200854472 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		A6018F841B0D391000854472 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -62,16 +47,10 @@
 		A6018F9B1B0D47A700854472 /* DaemonState_Standby.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DaemonState_Standby.m; sourceTree = "<group>"; };
 		A6018FA31B0D480100854472 /* Daemon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Daemon.h; sourceTree = "<group>"; };
 		A6018FA41B0D480100854472 /* Daemon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Daemon.m; sourceTree = "<group>"; };
-		A66281ED1B1455E60090FC94 /* NSString+urlencode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+urlencode.h"; sourceTree = "<group>"; };
-		A66281EE1B1455E60090FC94 /* NSString+urlencode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+urlencode.m"; sourceTree = "<group>"; };
 		A6AC46CF1D4600F8002BAA97 /* ulib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ulib.framework; path = ../../../../../Library/Frameworks/ulib.framework; sourceTree = "<group>"; };
-		A6E54FC61B0DAB6E0090FC94 /* DaemonState_TakeoverRequested.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DaemonState_TakeoverRequested.h; sourceTree = "<group>"; };
-		A6E54FC71B0DAB6E0090FC94 /* DaemonState_TakeoverRequested.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DaemonState_TakeoverRequested.m; sourceTree = "<group>"; };
 		A6E54FC91B0DAB7D0090FC94 /* DaemonState_all.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DaemonState_all.h; sourceTree = "<group>"; };
 		A6E54FCC1B0DBE640090FC94 /* Listener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Listener.h; sourceTree = "<group>"; };
 		A6E54FCD1B0DBE640090FC94 /* Listener.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Listener.m; sourceTree = "<group>"; };
-		A6E54FCF1B0DCA210090FC94 /* DaemonRandomValue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DaemonRandomValue.h; sourceTree = "<group>"; };
-		A6E54FD01B0DCA210090FC94 /* DaemonRandomValue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DaemonRandomValue.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,29 +94,15 @@
 				A6E54FCD1B0DBE640090FC94 /* Listener.m */,
 				A6018FA31B0D480100854472 /* Daemon.h */,
 				A6018FA41B0D480100854472 /* Daemon.m */,
-				A6E54FCF1B0DCA210090FC94 /* DaemonRandomValue.h */,
-				A6E54FD01B0DCA210090FC94 /* DaemonRandomValue.m */,
 				A6018F8B1B0D442C00854472 /* DaemonState.h */,
 				A6018F8C1B0D442C00854472 /* DaemonState.m */,
 				A6E54FC91B0DAB7D0090FC94 /* DaemonState_all.h */,
 				A6018F941B0D479400854472 /* DaemonState_Unknown.h */,
 				A6018F951B0D479400854472 /* DaemonState_Unknown.m */,
-				A6007C361ED56807009F381F /* DaemonState_Unknown_transiting_to_Standby.h */,
-				A6007C371ED56807009F381F /* DaemonState_Unknown_transiting_to_Standby.m */,
-				A6007C391ED56817009F381F /* DaemonState_Unknown_transiting_to_Hot.h */,
-				A6007C3A1ED56817009F381F /* DaemonState_Unknown_transiting_to_Hot.m */,
 				A6018F971B0D479F00854472 /* DaemonState_Hot.h */,
 				A6018F981B0D479F00854472 /* DaemonState_Hot.m */,
-				A6007C331ED567E2009F381F /* DaemonState_Hot_transiting_to_Standby.h */,
-				A6007C341ED567E2009F381F /* DaemonState_Hot_transiting_to_Standby.m */,
 				A6018F9A1B0D47A700854472 /* DaemonState_Standby.h */,
 				A6018F9B1B0D47A700854472 /* DaemonState_Standby.m */,
-				A6007C301ED567C7009F381F /* DaemonState_Standby_transiting_to_Hot.h */,
-				A6007C311ED567C7009F381F /* DaemonState_Standby_transiting_to_Hot.m */,
-				A6E54FC61B0DAB6E0090FC94 /* DaemonState_TakeoverRequested.h */,
-				A6E54FC71B0DAB6E0090FC94 /* DaemonState_TakeoverRequested.m */,
-				A66281ED1B1455E60090FC94 /* NSString+urlencode.h */,
-				A66281EE1B1455E60090FC94 /* NSString+urlencode.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -186,7 +151,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0820;
-				ORGANIZATIONNAME = "SMSRelay AG";
+				ORGANIZATIONNAME = "Andreas Fink";
 				TargetAttributes = {
 					A6018F771B0D388200854472 = {
 						CreatedOnToolsVersion = 6.3.2;
@@ -233,21 +198,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A6018F8D1B0D442C00854472 /* DaemonState.m in Sources */,
-				A6007C321ED567C7009F381F /* DaemonState_Standby_transiting_to_Hot.m in Sources */,
-				A6018F861B0D391000854472 /* AppDelegate.m in Sources */,
 				A6018F7C1B0D388200854472 /* main.m in Sources */,
-				A66281EF1B1455E60090FC94 /* NSString+urlencode.m in Sources */,
-				A6E54FC81B0DAB6E0090FC94 /* DaemonState_TakeoverRequested.m in Sources */,
-				A6018F961B0D479400854472 /* DaemonState_Unknown.m in Sources */,
-				A6018F9C1B0D47A700854472 /* DaemonState_Standby.m in Sources */,
-				A6007C381ED56807009F381F /* DaemonState_Unknown_transiting_to_Standby.m in Sources */,
-				A6E54FD11B0DCA210090FC94 /* DaemonRandomValue.m in Sources */,
-				A6018FA51B0D480100854472 /* Daemon.m in Sources */,
-				A6007C351ED567E2009F381F /* DaemonState_Hot_transiting_to_Standby.m in Sources */,
+				A6018F861B0D391000854472 /* AppDelegate.m in Sources */,
 				A6E54FCE1B0DBE640090FC94 /* Listener.m in Sources */,
+				A6018FA51B0D480100854472 /* Daemon.m in Sources */,
+				A6018F8D1B0D442C00854472 /* DaemonState.m in Sources */,
+				A6018F961B0D479400854472 /* DaemonState_Unknown.m in Sources */,
 				A6018F991B0D479F00854472 /* DaemonState_Hot.m in Sources */,
-				A6007C3B1ED56817009F381F /* DaemonState_Unknown_transiting_to_Hot.m in Sources */,
+				A6018F9C1B0D47A700854472 /* DaemonState_Standby.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -292,7 +250,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
@@ -331,7 +289,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = macosx;
 				STRIP_INSTALLED_PRODUCT = NO;

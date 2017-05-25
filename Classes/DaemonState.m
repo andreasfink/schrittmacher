@@ -3,7 +3,7 @@
 //  schrittmacher
 //
 //  Created by Andreas Fink on 21/05/15.
-//  Copyright (c) 2015 SMSRelay AG. All rights reserved.
+//  Copyright (c) 2015 Andreas Fink. All rights reserved.
 //
 
 #import "DaemonState.h"
@@ -33,93 +33,113 @@
     return @"undefined";
 }
 
-- (DaemonState *)eventUnknown:(int)prio randomValue:(long int)r
+#pragma mark - Remote Status
+
+- (DaemonState *)eventStatusRemoteHot:(NSDictionary *)dict
 {
+    [daemon.logFeed warningText:@"Unexpected eventStatusRemoteHot"];
+    return [[DaemonState_Unknown alloc]initWithDaemon:daemon];
+}
+
+- (DaemonState *)eventStatusRemoteStandby:(NSDictionary *)dict
+{
+    [daemon.logFeed warningText:@"Unexpected eventStatusRemoteStandby"];
+    return [[DaemonState_Unknown alloc]initWithDaemon:daemon];
+}
+
+- (DaemonState *)eventStatusRemoteFailure:(NSDictionary *)dict
+{
+    [daemon.logFeed warningText:@"Unexpected eventStatusRemoteFailure"];
+
+    return [[DaemonState_Unknown alloc]initWithDaemon:daemon];
+}
+
+- (DaemonState *)eventStatusRemoteUnknown:(NSDictionary *)dict
+{
+    [daemon.logFeed warningText:@"Unexpected eventStatusRemoteUnknown"];
     return  [[DaemonState_Unknown alloc]initWithDaemon:daemon];
 }
 
-- (DaemonState *)eventRemoteFailed
+#pragma mark - Local Status
+
+- (DaemonState *)eventStatusLocalHot:(NSDictionary *)dict
 {
+    [daemon.logFeed warningText:@"Unexpected eventStatusLocalHot"];
     return [[DaemonState_Unknown alloc]initWithDaemon:daemon];
 }
 
-- (DaemonState *)eventTakeoverRequest:(int)prio randomValue:(long int)r
+- (DaemonState *)eventStatusLocalStandby:(NSDictionary *)dict
 {
+    [daemon.logFeed warningText:@"Unexpected eventStatusLocalStandby"];
     return [[DaemonState_Unknown alloc]initWithDaemon:daemon];
 }
 
-- (DaemonState *)eventTakeoverConf:(int)prio 
+- (DaemonState *)eventStatusLocalFailure:(NSDictionary *)dict
 {
+    [daemon.logFeed warningText:@"Unexpected eventStatusLocalFailure"];
     return [[DaemonState_Unknown alloc]initWithDaemon:daemon];
 }
 
-- (DaemonState *)eventTakeoverReject:(int)prio
+- (DaemonState *)eventStatusLocalUnknown:(NSDictionary *)dict
 {
+    [daemon.logFeed warningText:@"Unexpected eventStatusLocalUnknown"];
+    return  [[DaemonState_Unknown alloc]initWithDaemon:daemon];
+}
+
+#pragma mark - Remote Commands
+
+- (DaemonState *)eventTakeoverRequest:(NSDictionary *)dict
+{
+    [daemon.logFeed warningText:@"Unexpected eventTakeoverRequest"];
     return [[DaemonState_Unknown alloc]initWithDaemon:daemon];
 }
 
-- (DaemonState *)eventStatusStandby:(int)prio
+- (DaemonState *)eventTakeoverConf:(NSDictionary *)dict
 {
+    [daemon.logFeed warningText:@"Unexpected eventTakeoverConf"];
     return [[DaemonState_Unknown alloc]initWithDaemon:daemon];
 }
 
-- (DaemonState *)eventStatusHot:(int)prio
+- (DaemonState *)eventTakeoverReject:(NSDictionary *)dict
 {
+    [daemon.logFeed warningText:@"Unexpected eventTakeoverReject"];
     return [[DaemonState_Unknown alloc]initWithDaemon:daemon];
 }
+
+#pragma mark - Timer Events
 
 - (DaemonState *)eventTimer
 {
+    [daemon.logFeed warningText:@"Unexpected eventTimer"];
     return [[DaemonState_Unknown alloc]initWithDaemon:daemon];
 }
 
 - (DaemonState *)eventTimeout
 {
+    [daemon.logFeed warningText:@"Unexpected eventTimeout"];
     return [[DaemonState_Unknown alloc]initWithDaemon:daemon];
 }
 
-- (DaemonState *)localFailureIndication
+
+#pragma mark - Helper Methods
+
+- (int)takeoverChallenge:(NSDictionary *)dict;
 {
-    NSLog(@"Unhandled state localFailureIndication in state %@",[self name]);
+    int prio    = [dict[@"priority"] intValue];
+    int rremote = [dict[@"random"] intValue];
+    
 
-    [daemon actionSendFailed];
-    return [[DaemonState_Standby alloc]initWithDaemon:daemon];
-}
-
-- (DaemonState *)localUnknownIndication /* heartbeat from app */
-{
-    NSLog(@"Unhandled state localUnknownIndication in state %@",[self name]);
-    return [[DaemonState_Unknown alloc]initWithDaemon:daemon];
-}
-
-- (DaemonState *)localHotIndication /* heartbeat from app */
-{
-    NSLog(@"Unhandled state localHotIndication in state %@",[self name]);
-
-    return [[DaemonState_Unknown alloc]initWithDaemon:daemon];
-}
-
-- (DaemonState *)localStandbyIndication /* heartbeat from app */
-{
-    NSLog(@"Unhandled state localStandbyIndication in state %@",[self name]);
-    return [[DaemonState_Unknown alloc]initWithDaemon:daemon];
-}
-
-- (int)takeoverChallenge:(int)prio
-             remoteRandom:(DaemonRandomValue)rremote
-              localRandom:(DaemonRandomValue)rlocal
-{
     if(prio < daemon.localPriority)
     {
         return 1; /* we win */
     }
     else if(prio == daemon.localPriority)
     {
-        if(rlocal == rremote)
+        if(daemon.randVal == rremote)
         {
             return 0;
         }
-        if(rlocal > rremote)
+        if(daemon.randVal > rremote)
         {
             return 1;
         }
@@ -129,6 +149,20 @@
     {
         return -1;
     }
+}
+
+- (DaemonState *)eventToStandbyTimer
+{
+    NSLog(@"** Unexpected eventToStandbyTimer **");
+    [daemon stopTransitingToStandbyTimer];
+    return self;
+}
+
+- (DaemonState *)eventToHotTimer
+{
+    NSLog(@"** Unexpected eventToHotTimer **");
+    [daemon stopTransitingToHotTimer];
+    return self;
 }
 
 @end

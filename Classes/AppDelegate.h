@@ -3,7 +3,7 @@
 //  schrittmacher
 //
 //  Created by Andreas Fink on 20/05/15.
-//  Copyright (c) 2015 SMSRelay AG. All rights reserved.
+//  Copyright (c) 2015 Andreas Fink. All rights reserved.
 //
 
 #import <ulib/ulib.h>

@@ -3,7 +3,7 @@
 //  schrittmacher
 //
 //  Created by Andreas Fink on 24/05/2017.
-//  Copyright © 2017 SMSRelay AG. All rights reserved.
+//  Copyright © 2017 Andreas Fink. All rights reserved.
 //
 
 #import "DaemonState.h"

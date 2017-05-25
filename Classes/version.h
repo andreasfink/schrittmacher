@@ -3,8 +3,8 @@
 //  schrittmacher
 //
 //  Created by Andreas Fink on 21/05/15.
-//  Copyright (c) 2015 SMSRelay AG. All rights reserved.
+//  Copyright (c) 2015 Andreas Fink. All rights reserved.
 //
 
 
-#define VERSION "1.0"
+#define VERSION "1.8.1"

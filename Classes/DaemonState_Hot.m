@@ -3,7 +3,7 @@
 //  schrittmacher
 //
 //  Created by Andreas Fink on 21/05/15.
-//  Copyright (c) 2015 SMSRelay AG. All rights reserved.
+//  Copyright (c) 2015 Andreas Fink. All rights reserved.
 //
 
 #import "DaemonState_all.h"
@@ -11,98 +11,136 @@
 @implementation DaemonState_Hot
 
 
-- (DaemonState *)initWithDaemon:(Daemon *)d
-{
-    self = [super initWithDaemon:d];
-    if(self)
-    {
-        [daemon goToHot];
-        [daemon actionSendHot];
-    }
-    return self;
-}
-
 - (NSString *)name
 {
     return @"Hot";
 }
 
-
-- (DaemonState *)eventUnknown:(int)prio randomValue:(long int)r
-{
-    [daemon actionSendHot];
-    return self;
-}
-
-- (DaemonState *)eventRemoteFailed
-{
-    [daemon actionSendHot];
-    return self;
-}
-
-
-- (DaemonState *)eventTakeoverRequest:(int)prio
-                          randomValue:(long int)r
-{
-    /* if we have lower priority, we always give in */
-    if(prio > daemon.localPriority)
-    {
-        [daemon actionSendTakeoverConfirm];
-        [daemon goToStandby];
-        return [[DaemonState_Standby alloc]initWithDaemon:daemon];
-    }
-    /* if we have hihger priority, we wont give in */
-    /* if we have same priority, we dont want to change anything */
-    [daemon actionSendTakeoverReject];
-    return self;
-}
-
-- (DaemonState *)eventTakeoverConf:(int)prio
-{
-    return self;
-}
-
-- (DaemonState *)eventTakeoverReject:(int)prio
-{
-    [daemon goToStandby];
-    return [[DaemonState_Standby alloc]initWithDaemon:daemon];
-}
-
-- (DaemonState *)eventStatusStandby:(int)prio
-{
-    return self;
-}
-
-- (DaemonState *)eventStatusHot:(int)prio
+#pragma mark - Remote Status
+- (DaemonState *)eventStatusRemoteHot:(NSDictionary *)dict
 {
     /* other side says its in hot as well, we assume we are hot so we gotta challenge it */
-    [daemon actionSendTakeoverRequest:randVal];
-    return [[DaemonState_TakeoverRequested alloc]initWithDaemon:daemon];
+    [daemon actionSendTakeoverRequest];
+    return self;
 }
 
-- (DaemonState *)localFailureIndication
+- (DaemonState *)eventStatusRemoteStandby:(NSDictionary *)dict
 {
-    [daemon actionSendFailed];
-    [daemon goToStandby];
-    return [[DaemonState_Standby alloc]initWithDaemon:daemon];
+    /* other side says its in Standby. Everything is fine */
+    return self;
 }
 
-- (DaemonState *)localStandbyIndication /* heartbeat from app */
+- (DaemonState *)eventStatusRemoteFailure:(NSDictionary *)dict
 {
-    [daemon actionSendFailed];
-    [daemon goToStandby];
-    return [[DaemonState_Standby alloc]initWithDaemon:daemon];
+    /* the other side is telling it failed. we consider ourselves hot already so all is fine */
+    return self;
 }
-
-- (DaemonState *)localUnknownIndication /* heartbeat from app */
+- (DaemonState *)eventStatusRemoteUnknown:(NSDictionary *)dict
 {
-    [daemon goToHot];
+    /* the other side doesnt know if its hot or not. As we are, we just tell it */
     [daemon actionSendHot];
     return self;
 }
 
-- (DaemonState *)localHotIndication /* heartbeat from app */
+
+#pragma mark - Local Status
+- (DaemonState *)eventStatusLocalHot:(NSDictionary *)pdu
 {
+    /* we both agree we're hot. all is fine */
+    return self;
+}
+
+
+- (DaemonState *)eventStatusLocalStandby:(NSDictionary *)dict
+{
+    /* if the local process tells us it is in Standby but we think it was hot,
+     then we just do a failover as above if we can. */
+    if(daemon.remoteIsFailed == NO)
+    {
+        /* we gotta shutdown the virtual interface before telling the other side to take over */
+        /* Note: as we are told by the local process it went to standby,                      */
+        /* there is no need to signal it to go standby                                        */
+        /* as we dont wait confirmation from the local process                                */
+        [daemon callDeactivateInterface];
+        [daemon actionSendFailed];
+        return [[DaemonState_Standby alloc]initWithDaemon:daemon];
+    }
+    else
+    {
+        /* ok remote is failed but local thinks its standby. lets fired it up */
+        [daemon callActivateInterface];
+        [daemon callStartAction];
+        return self;
+    }
+}
+
+- (DaemonState *)eventStatusLocalFailure:(NSDictionary *)dict
+{
+    /* we gotta shutdown the virtual interface before telling the other side to take over */
+    /* Note: as we are told by the local process it went to failed,                       */
+    /* there is no need to signal it to go standby                                        */
+    /* as we dont wait confirmation from the local process                                */
+    [daemon callDeactivateInterface];
+    [daemon actionSendFailed];
+    return [[DaemonState_Standby alloc]initWithDaemon:daemon];
+}
+
+- (DaemonState *)eventStatusLocalUnknown:(NSDictionary *)dict
+{
+    /* Daemon says we are hot but  app doesnt know */
+    [daemon callActivateInterface];
+    [daemon callStartAction];
+    return self;
+}
+
+
+#pragma mark - Remote Commands
+- (DaemonState *)eventTakeoverRequest:(NSDictionary *)dict
+{
+    /* the other side indicates it wants to challenge our hot status because it is assuming itself hot too */
+    int i = [self takeoverChallenge:dict];
+    if(i>0) /* we win */
+    {
+        [daemon actionSendTakeoverReject];
+        return self;
+    }
+    else /* they win */
+    {
+        [daemon callStopAction];
+        [daemon callDeactivateInterface];
+        [daemon actionSendTakeoverConfirm];
+        return [[DaemonState_Standby alloc]initWithDaemon:daemon];
+    }
+}
+
+- (DaemonState *)eventTakeoverConf:(NSDictionary *)dict
+{
+    /* other side confirmed the takeover. So we are definitively hot now */
+    [daemon callActivateInterface]; /* just in case */
+    [daemon callStartAction];       /* just in case */
+    return self;
+}
+
+- (DaemonState *)eventTakeoverReject:(NSDictionary *)dict
+{
+    /* the other side rejected our takeover. We should not be in Hot state already however */
+    /* to mitigate, we transit to standby now */
+    [daemon callStopAction];
+    [daemon callDeactivateInterface];
+    [daemon actionSendStandby];
+    return [[DaemonState_Standby alloc]initWithDaemon:daemon];
+}
+
+#pragma mark - Timer Events
+- (DaemonState *)eventToStandbyTimer
+{
+    [daemon stopTransitingToStandbyTimer];
+    return self;
+}
+
+- (DaemonState *)eventToHotTimer
+{
+    [daemon stopTransitingToHotTimer];
     return self;
 }
 

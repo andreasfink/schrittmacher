@@ -3,7 +3,7 @@
 //  schrittmacher
 //
 //  Created by Andreas Fink on 21/05/15.
-//  Copyright (c) 2015 SMSRelay AG. All rights reserved.
+//  Copyright (c) 2015 Andreas Fink. All rights reserved.
 //
 
 #import <ulib/ulib.h>
@@ -12,10 +12,5 @@
 #import "Daemon.h"
 #import "DaemonState.h"
 #import "DaemonState_Unknown.h"
-#import "DaemonState_Unknown_transiting_to_Standby.h"
-#import "DaemonState_Unknown_transiting_to_Hot.h"
 #import "DaemonState_Hot.h"
-#import "DaemonState_Hot_transiting_to_Standby.h"
 #import "DaemonState_Standby.h"
-#import "DaemonState_Standby_transiting_to_Hot.h"
-#import "DaemonState_TakeoverRequested.h"

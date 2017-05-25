@@ -3,7 +3,7 @@
 //  schrittmacher
 //
 //  Created by Andreas Fink on 20/05/15.
-//  Copyright (c) 2015 SMSRelay AG. All rights reserved.
+//  Copyright (c) 2015 Andreas Fink. All rights reserved.
 //
 
 #import "AppDelegate.h"
@@ -21,7 +21,6 @@
 
 #import "Listener.h"
 #import "Daemon.h"
-#import "NSString+urlencode.h"
 
 extern int  global_argc;
 extern char **global_argv;
@@ -258,17 +257,11 @@ AppDelegate *_global_appdel= NULL;
         NSString *pidFile          = [daemonConfig[@"pid-file"] stringValue];
         NSString *activate         = [daemonConfig[@"interface-activate"] stringValue];
         NSString *deactivate       = [daemonConfig[@"interface-deactivate"] stringValue];
-
-        double  startupDelay       = [daemonConfig[@"startup-delay"] doubleValue];
         double  intervallDelay     = [daemonConfig[@"heartbeat-intervall"] doubleValue];
 
-        if(startupDelay < 1)
+        if(intervallDelay < 2)
         {
-            startupDelay = 20;
-        }
-        if(intervallDelay < 0.1)
-        {
-            intervallDelay = 5;
+            intervallDelay = 2;
         }
         Daemon *d = [[Daemon alloc]init];
         d.localAddress = localAddress;
@@ -281,14 +274,12 @@ AppDelegate *_global_appdel= NULL;
         d.localPriority = priority;
         d.activateInterfaceCommand = activate;
         d.deactivateInterfaceCommand = deactivate;
-        d.startupDelay = startupDelay;
         d.intervallDelay = intervallDelay;
         d.pidFile = pidFile;
         [listener attachDaemon:d];
     }
     [listener start];
 }
-
 
 - (void)checkIfUp
 {

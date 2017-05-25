@@ -3,12 +3,10 @@
 //  schrittmacher
 //
 //  Created by Andreas Fink on 21/05/15.
-//  Copyright (c) 2015 SMSRelay AG. All rights reserved.
+//  Copyright (c) 2015 Andreas Fink. All rights reserved.
 //
 
 #import <ulib/ulib.h>
-
-#import "DaemonRandomValue.h"
 
 #define MESSAGE_UNKNOWN             @"UNK"
 #define MESSAGE_HOT                 @"HOTT"
@@ -23,14 +21,22 @@
 #define MESSAGE_LOCAL_UNKNOWN       @"LUNK"
 #define MESSAGE_LOCAL_FAIL          @"LFAI"
 
-
 #define GOTO_HOT_SUCCESS            1
 #define GOTO_HOT_ALREADY_HOT        2
 #define GOTO_HOT_FAILED             0
 
+typedef  long int DaemonRandomValue;
+DaemonRandomValue GetDaemonRandomValue(void);
 
 @class DaemonState;
 @class Listener;
+
+typedef enum DaemonInterfaceState
+{
+    DaemonInterfaceState_Up = 1,
+    DaemonInterfaceState_Down = 0,
+    DaemonInterfaceState_Unknown = -1,
+} DaemonInterfaceState;
 
 @interface Daemon : UMObject
 {
@@ -52,8 +58,6 @@
     NSString        *pidFile;
     NSString        *activateInterfaceCommand;
     NSString        *deactivateInterfaceCommand;
-    BOOL            inStartupPhase;
-    NSTimeInterval  startupDelay; /* how long does it take to fire up the daemon until we get its heartbeat */
     NSTimeInterval  intervallDelay; /* how often do we get local heartbeat */
     NSDate          *lastChecked;
     NSDate          *activatedAt;
@@ -61,6 +65,13 @@
     NSDate          *startedAt;
     NSDate          *stoppedAt;
     DaemonRandomValue _randVal;
+    DaemonInterfaceState            _interfaceState;
+    
+    BOOL _remoteIsFailed;
+    BOOL _localIsFailed;
+    
+    BOOL _localStopActionRequested;
+    BOOL _localStartActionRequested;
 }
 
 @property (readwrite,strong) DaemonState *currentState;
@@ -82,39 +93,40 @@
 
 @property (readwrite,strong) NSString *activateInterfaceCommand;
 @property (readwrite,strong) NSString *deactivateInterfaceCommand;
-@property (readwrite,assign) NSTimeInterval  startupDelay;
 @property (readwrite,assign) NSTimeInterval  intervallDelay;
 @property (readwrite,assign,atomic) DaemonRandomValue  randVal;
+@property (readwrite,assign,atomic) DaemonInterfaceState interfaceState;
 
-- (void)eventReceived:(NSString *)event
-         withPriority:(int)prio
-          randomValue:(DaemonRandomValue)r
-          fromAddress:(NSString *)address;
+@property (readwrite,assign,atomic) BOOL remoteIsFailed;
+@property (readwrite,assign,atomic) BOOL localIsFailed;
+
+@property (readwrite,assign,atomic) BOOL localStopActionRequested;
+@property (readwrite,assign,atomic) BOOL localStartActionRequested;
 
 
+
+- (void)eventReceived:(NSString *)event dict:(NSDictionary *)dict;
 - (void)eventTimer;
 
 - (void)actionStart;
 
-- (void)actionSendUnknown:(DaemonRandomValue)r;
+- (void)actionSendUnknown;
 - (void)actionSendFailed;
 - (void)actionSendHot;
 - (void)actionSendStandby;
-- (void)actionSendTakeoverRequest:(DaemonRandomValue)r;
+- (void)actionSendTakeoverRequest;
 - (void)actionSendTakeoverReject;
 - (void)actionSendTakeoverConfirm;
 
 - (void)sendStatus:(NSString *)status;
 
-- (int)goToHot; /* returns success */
-- (int)goToStandby;
-- (int)fireUp;
-- (int)shutItDown;
 - (void)checkForTimeouts;
 - (NSDictionary *)status;
 - (void)eventForceFailover;
 - (void)startTransitingToHotTimer;
 - (void)startTransitingToStandbyTimer;
+- (void)stopTransitingToHotTimer;
+- (void)stopTransitingToStandbyTimer;
 
 - (int)callDeactivateInterface;
 - (int)callActivateInterface;
@@ -122,5 +134,6 @@
 - (int)callStartAction;
 - (int)executeScript:(NSString *)command;
 - (void)checkIfUp;
+
 
 @end

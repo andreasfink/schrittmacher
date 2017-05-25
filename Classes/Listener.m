@@ -3,7 +3,7 @@
 //  schrittmacher
 //
 //  Created by Andreas Fink on 21/05/15.
-//  Copyright (c) 2015 SMSRelay AG. All rights reserved.
+//  Copyright (c) 2015 Andreas Fink. All rights reserved.
 //
 
 #import "Listener.h"
@@ -36,17 +36,25 @@
             id obj = [parser objectWithData:statusData];
             if([obj isKindOfClass:[NSDictionary class]])
             {
-                NSDictionary *dict  = obj;
-                NSString *name      = [dict[@"resource"] stringValue];
-                NSString *status    = [dict[@"status"] stringValue];
-                int priority        = [dict[@"priority"] intValue];
-                DaemonRandomValue r = (DaemonRandomValue)[dict[@"random"] longValue];
-                NSLog(@"RX <-%@: %@",address,dict);
-                Daemon *d = [self daemonByName:name];
-                [d eventReceived:status
-                    withPriority:priority
-                     randomValue:r
-                     fromAddress:address];
+                NSDictionary *di = (NSDictionary *)obj;
+                NSString *resource      = [di[@"resource"] stringValue];
+                NSString *status    = [di[@"status"] stringValue];
+
+                NSLog(@"RX <-%@: %@",address,di);
+
+                NSMutableDictionary *dict  = [di mutableCopy];
+                dict[@"address"]    = address;
+                dict[@"pdu"]        = statusData;
+
+                Daemon *daemon = [self daemonByName:resource];
+                if(daemon)
+                {
+                    [daemon eventReceived:status dict:dict];
+                }
+                else
+                {
+                    NSLog(@"Ignoring unknown resource '%@'",resource);
+                }
             }
         }
         @catch(NSException *e)

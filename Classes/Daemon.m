@@ -3,12 +3,17 @@
 //  schrittmacher
 //
 //  Created by Andreas Fink on 21/05/15.
-//  Copyright (c) 2015 SMSRelay AG. All rights reserved.
+//  Copyright (c) 2015 Andreas Fink. All rights reserved.
 //
 
 #import "Daemon.h"
 #import "DaemonState_all.h"
 #import "Listener.h"
+
+DaemonRandomValue GetDaemonRandomValue(void)
+{
+    return (DaemonRandomValue)arc4random();
+}
 
 @implementation Daemon
 @synthesize currentState;
@@ -28,7 +33,6 @@
 @synthesize pidFile;
 @synthesize activateInterfaceCommand;
 @synthesize deactivateInterfaceCommand;
-@synthesize startupDelay;
 @synthesize intervallDelay;
 
 - (Daemon *)init
@@ -69,9 +73,10 @@
 }
 
 
-- (void)actionSendUnknown:(DaemonRandomValue)r
+- (void)actionSendUnknown
 {
-    [self sendStatus:MESSAGE_UNKNOWN withRandomValue:r];
+    _randVal = GetDaemonRandomValue();
+    [self sendStatus:MESSAGE_UNKNOWN withRandomValue:_randVal];
 }
 
 - (void)actionSendFailed
@@ -89,9 +94,10 @@
     [self sendStatus:MESSAGE_STANDBY];
 }
 
-- (void)actionSendTakeoverRequest:(DaemonRandomValue)r
+- (void)actionSendTakeoverRequest
 {
-    [self sendStatus:MESSAGE_TAKEOVER_REQUEST withRandomValue:r];
+    _randVal = GetDaemonRandomValue();
+    [self sendStatus:MESSAGE_TAKEOVER_REQUEST withRandomValue:_randVal];
 }
 
 - (void)actionSendTakeoverReject
@@ -104,109 +110,107 @@
     [self sendStatus:MESSAGE_TAKEOVER_CONF];
 }
 
-#define DEBUGLOG(state,event) NSLog(@"State:%@ event:%@",state.name,event)
+#define DEBUGLOG(state,event) \
+{ \
+    NSString *s = [NSString stringWithFormat:@"State:%@ event:%@",state.name,event]; \
+    [logFeed debugText:s]; \
+}
 
 - (void)eventReceived:(NSString *)event
-         withPriority:(int)prio
-          randomValue:(DaemonRandomValue)r
-          fromAddress:(NSString *)address
+                 dict:(NSDictionary *)dict;
 {
     NSString *oldstate = [currentState name];
 
-    if(([address isEqualToString:@"127.0.0.1"])
-       || ([address isEqualToString:@"::1"])
-       || ([address isEqualToString:@"localhost"]))
+    /*local message */
+    if ([event isEqualToString:MESSAGE_LOCAL_HOT])
     {
-        /*local message */
-        if ([event isEqualToString:MESSAGE_LOCAL_HOT])
-        {
-            lastLocalRx = [NSDate date];
-            DEBUGLOG(currentState,@"localHotIndication");
-            currentState = [currentState localHotIndication];
-            inStartupPhase = NO;
-        }
-        else if ([event isEqualToString:MESSAGE_LOCAL_STANDBY])
-        {
-            lastLocalRx = [NSDate date];
-            DEBUGLOG(currentState,@"localStandbyIndication");
-            currentState = [currentState localStandbyIndication];
-            inStartupPhase = NO;
-        }
-        else if ([event isEqualToString:MESSAGE_LOCAL_UNKNOWN])
-        {
-            lastLocalRx = [NSDate date];
-            DEBUGLOG(currentState,@"localUnknownIndication");
-            currentState = [currentState localUnknownIndication];
-            inStartupPhase = NO;
-        }
-        else if ([event isEqualToString:MESSAGE_LOCAL_FAIL])
-        {
-            lastLocalRx = [NSDate date];
-            DEBUGLOG(currentState,@"localFailureIndication");
-            currentState = [currentState localFailureIndication];
-            inStartupPhase = NO;
-        }
-        else
-        {
-            NSString *s = [NSString stringWithFormat:@"Unexpected event '%@'",event];
-            DEBUGLOG(currentState,s);
-        }
+        self.localIsFailed=NO;
+        lastLocalRx = [NSDate date];
+        DEBUGLOG(currentState,@"localHotIndication");
+        currentState = [currentState eventStatusLocalHot:dict];
     }
-    else
+    else if ([event isEqualToString:MESSAGE_LOCAL_STANDBY])
     {
-       /* the other side says it doesnt know its status */
-        if ([event isEqualToString:MESSAGE_UNKNOWN])
-        {
-            lastRx = [NSDate date];
-            DEBUGLOG(currentState,@"eventUnknown");
-            currentState = [currentState eventUnknown:prio randomValue:(long int)r];
-        }
-
-        /* the other side says it doesnt know its status */
-        else if ([event isEqualToString:MESSAGE_FAILED])
-        {
-            lastRx = [NSDate date];
-            DEBUGLOG(currentState,@"eventRemoteFailed");
-            currentState = [currentState eventRemoteFailed];
-        }
-        else if ([event isEqualToString:MESSAGE_TAKEOVER_REQUEST])
-        {
-            lastRx = [NSDate date];
-            DEBUGLOG(currentState,@"eventTakeoverRequest");
-            currentState = [currentState eventTakeoverRequest:prio randomValue:r];
-        }
-        else if ([event isEqualToString:MESSAGE_TAKEOVER_REJECT])
-        {
-            lastRx = [NSDate date];
-            DEBUGLOG(currentState,@"eventTakeoverReject");
-            currentState = [currentState eventTakeoverReject:prio];
-        }
-
-        else if ([event isEqualToString:MESSAGE_TAKEOVER_CONF])
-        {
-            lastRx = [NSDate date];
-            DEBUGLOG(currentState,@"eventTakeoverConf");
-            currentState = [currentState eventTakeoverConf:prio];
-        }
-        else if ([event isEqualToString:MESSAGE_STANDBY])
-        {
-            lastRx = [NSDate date];
-            DEBUGLOG(currentState,@"eventStatusStandby");
-            currentState = [currentState eventStatusStandby:prio];
-        }
-        /* the other side says it doesnt know its status */
-        else if ([event isEqualToString:MESSAGE_HOT])
-        {
-            lastRx = [NSDate date];
-            DEBUGLOG(currentState,@"eventStatusHot");
-            currentState = [currentState eventStatusHot:prio];
-        }
+        self.localIsFailed=NO;
+        lastLocalRx = [NSDate date];
+        DEBUGLOG(currentState,@"localStandbyIndication");
+        currentState = [currentState eventStatusLocalStandby:dict];
     }
+    else if ([event isEqualToString:MESSAGE_LOCAL_UNKNOWN])
+    {
+        self.localIsFailed=NO;
+        lastLocalRx = [NSDate date];
+        DEBUGLOG(currentState,@"localUnknownIndication");
+        currentState = [currentState eventStatusLocalUnknown:dict];
+    }
+    else if ([event isEqualToString:MESSAGE_LOCAL_FAIL])
+    {
+        self.localIsFailed=YES;
+        lastLocalRx = [NSDate date];
+        DEBUGLOG(currentState,@"localFailureIndication");
+        currentState = [currentState eventStatusLocalFailure:dict];
+    }
+    
+    /* the other side says it doesnt know its status */
+    else if ([event isEqualToString:MESSAGE_UNKNOWN])
+    {
+        self.remoteIsFailed=NO;
+        lastRx = [NSDate date];
+        DEBUGLOG(currentState,@"eventUnknown");
+        currentState = [currentState eventStatusRemoteUnknown:dict];
+    }
+
+    /* the other side says it doesnt know its status */
+    else if ([event isEqualToString:MESSAGE_FAILED])
+    {
+        self.remoteIsFailed=YES;
+        lastRx = [NSDate date];
+        DEBUGLOG(currentState,@"eventRemoteFailed");
+        currentState = [currentState eventStatusRemoteFailure:dict];
+    }
+
+    else if ([event isEqualToString:MESSAGE_TAKEOVER_REQUEST])
+    {
+        self.remoteIsFailed=NO;
+        lastRx = [NSDate date];
+        DEBUGLOG(currentState,@"eventTakeoverRequest");
+        currentState = [currentState eventTakeoverRequest:dict];
+    }
+    else if ([event isEqualToString:MESSAGE_TAKEOVER_REJECT])
+    {
+        lastRx = [NSDate date];
+        DEBUGLOG(currentState,@"eventTakeoverReject");
+        currentState = [currentState eventTakeoverReject:dict];
+    }
+
+    else if ([event isEqualToString:MESSAGE_TAKEOVER_CONF])
+    {
+        lastRx = [NSDate date];
+        DEBUGLOG(currentState,@"eventTakeoverConf");
+        currentState = [currentState eventTakeoverConf:dict];
+    }
+    else if ([event isEqualToString:MESSAGE_STANDBY])
+    {
+        self.remoteIsFailed=NO;
+        lastRx = [NSDate date];
+        DEBUGLOG(currentState,@"eventStatusStandby");
+        currentState = [currentState eventStatusRemoteStandby:dict];
+    }
+    /* the other side says it doesnt know its status */
+    else if ([event isEqualToString:MESSAGE_HOT])
+    {
+        self.remoteIsFailed=NO;
+        lastRx = [NSDate date];
+        DEBUGLOG(currentState,@"eventStatusHot");
+        currentState = [currentState eventStatusRemoteHot:dict];
+    }
+    
     NSAssert(currentState,@"State is now null");
     NSString *newstate = [currentState name];
     if(![oldstate isEqualToString:newstate])
     {
-        NSLog(@"State Change %@->%@",oldstate,newstate);
+        NSString *s = [NSString stringWithFormat:@"State Change %@->%@",oldstate,newstate];
+        [logFeed debugText:s];
     }
 }
 
@@ -217,7 +221,7 @@
 
 - (void)eventForceFailover
 {
-    currentState = [currentState localFailureIndication];
+    currentState = [currentState eventStatusLocalFailure:@{}];
 }
 
 - (void)checkForTimeouts
@@ -230,7 +234,7 @@
     }
 }
 
-- (int)goToHot /* returns success */
+- (int)goToHot /* returns 0 on success  */
 {
     if(!iAmHot)
     {
@@ -252,9 +256,15 @@
     }
 }
 
-- (int)goToStandby
+- (int)goToStandby /* returns 0 on success */
 {
-    return [self shutItDown];
+    int r1 = [self callStopAction];
+    int r2 = [self callDeactivateInterface];
+    if(r1!=0)
+    {
+        return r1;
+    }
+    return r2;
 }
 
 #define     SETENV(a,b)   if(b!=NULL) { setenv(a,b.UTF8String,1);  } else { unsetenv(a); }
@@ -299,6 +309,11 @@
 
 - (int)callActivateInterface
 {
+    if(self.interfaceState == DaemonInterfaceState_Up)
+    {
+        return 0;
+    }
+
     if(activateInterfaceCommand.length == 0)
     {
         return 0;
@@ -310,6 +325,11 @@
     if(r==0)
     {
         activatedAt = [NSDate date];
+        self.interfaceState = DaemonInterfaceState_Up;
+    }
+    else
+    {
+        self.interfaceState = DaemonInterfaceState_Unknown;
     }
     return r;
 
@@ -318,7 +338,7 @@
 
 - (int) callDeactivateInterface
 {
-    if(deactivateInterfaceCommand.length == 0)
+    if(self.interfaceState == DaemonInterfaceState_Down)
     {
         return 0;
     }
@@ -330,13 +350,20 @@
     if(r==0)
     {
         deactivatedAt = [NSDate date];
+        self.interfaceState = DaemonInterfaceState_Down;
+
+    }
+    else
+    {
+        self.interfaceState = DaemonInterfaceState_Unknown;
     }
     return r;
-
+    
 }
 
 - (int)callStartAction
 {
+    self.localStartActionRequested = YES;
     if(startAction.length == 0)
     {
         return 0;
@@ -354,6 +381,8 @@
 
 -(int)callStopAction
 {
+    self.localStopActionRequested = YES;
+    
     if(stopAction.length == 0)
     {
         return 0;
@@ -372,24 +401,11 @@
 }
 
 
-- (int)shutItDown
-{
-    int r1 = [self callStopAction];
-    int r2 = [self callDeactivateInterface];
-    inStartupPhase = YES;
-    if(r1!=0)
-    {
-        return r1;
-    }
-    return r2;
-}
-
 
 - (int)fireUp
 {
     int r1 = [self callActivateInterface];
     int r2 = [self callStartAction];
-    inStartupPhase = YES;
     if(r1!=0)
     {
         return r1;
@@ -414,7 +430,6 @@
     dict[@"deactivateInterfaceCommand"] = deactivateInterfaceCommand;
     dict[@"localPriority"] = [NSString stringWithFormat:@"%d",(int)localPriority];
     dict[@"lastChecked"] = [lastChecked stringValue];
-    dict[@"inStartupPhase"] = inStartupPhase ? @"YES" : @"NO";
     dict[@"startedAt"] = startedAt ? [startedAt stringValue] : @"never";
     dict[@"stoppedAt"] = stoppedAt ? [stoppedAt stringValue] : @"never";
     dict[@"activatedAt"] = activatedAt ? [activatedAt stringValue] : @"never";
@@ -432,21 +447,10 @@
     }
     lastChecked = [NSDate date];
     NSTimeInterval delay = [lastChecked timeIntervalSinceDate:lastLocalRx];
-    if(inStartupPhase)
+    if(delay > intervallDelay)
     {
-        if(delay > startupDelay)
-        {
-            DEBUGLOG(currentState,@"localFailureIndication");
-            currentState = [currentState localFailureIndication];
-        }
-    }
-    else
-    {
-        if(delay > intervallDelay)
-        {
-            DEBUGLOG(currentState,@"localFailureIndication");
-            currentState = [currentState localFailureIndication];
-        }
+        DEBUGLOG(currentState,@"eventStatusLocalFailure");
+        currentState = [currentState eventStatusLocalFailure:@{}];
     }
 }
 
@@ -456,6 +460,16 @@
 }
 
 - (void)startTransitingToStandbyTimer
+{
+    /* FIXME */
+}
+
+- (void)stopTransitingToHotTimer
+{
+    /* FIXME */
+}
+
+- (void)stopTransitingToStandbyTimer
 {
     /* FIXME */
 }

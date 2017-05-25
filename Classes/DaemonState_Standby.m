@@ -3,7 +3,7 @@
 //  schrittmacher
 //
 //  Created by Andreas Fink on 21/05/15.
-//  Copyright (c) 2015 SMSRelay AG. All rights reserved.
+//  Copyright (c) 2015 Andreas Fink. All rights reserved.
 //
 
 #import "DaemonState_all.h"
@@ -11,108 +11,161 @@
 #define TIMEOUT_STANDBY 6
 @implementation DaemonState_Standby
 
-
-- (DaemonState *)initWithDaemon:(Daemon *)d
-{
-    self = [super initWithDaemon:d];
-    if(self)
-    {
-        randVal = GetDaemonRandomValue();
-    }
-    return self;
-}
-
 - (NSString *)name
 {
     return @"Standby";
 }
 
-- (DaemonState *)eventUnknown:(int)prio randomValue:(long int)r
-{
-    [daemon actionSendStandby];
-    return self;
-}
+#pragma mark - Remote Status
 
-- (DaemonState *)eventRemoteFailed
-{
-    [daemon actionSendTakeoverRequest:randVal];
-    return [[DaemonState_TakeoverRequested alloc]initWithDaemon:daemon];
-}
-
-- (DaemonState *)eventTakeoverRequest:(int)prio randomValue:(long int)r
-{
-    [daemon actionSendTakeoverConfirm];
-    return self;
-}
-
-- (DaemonState *)eventTakeoverConf:(int)prio
-{
-    if([daemon goToHot] == GOTO_HOT_FAILED)
-    {
-        [daemon actionSendFailed];
-        [daemon actionSendStandby];
-        [daemon goToStandby];
-        return [[DaemonState_Standby alloc]initWithDaemon:daemon];
-    }
-    [daemon actionSendHot];
-    return [[DaemonState_Hot alloc]initWithDaemon:daemon];
-}
-
-- (DaemonState *)eventTakeoverReject:(int)prio
-{
-    [daemon actionSendStandby];
-    return self;
-}
-
-- (DaemonState *)eventStatusStandby:(int)prio
-{
-    /* both sides standby, this can't work. So we jump to hot */
-    [daemon actionSendTakeoverRequest:randVal];
-    return [[DaemonState_TakeoverRequested alloc]initWithDaemon:daemon];
-}
-
-- (DaemonState *)eventStatusHot:(int)prio
+- (DaemonState *)eventStatusRemoteHot:(NSDictionary *)dict
 {
     /* we both agree on our roles. all fine */
     return self;
 }
 
-- (DaemonState *)eventTimer
+- (DaemonState *)eventStatusRemoteStandby:(NSDictionary *)dict
+{
+    /* both sides standby, this can't work. So we jump to hot IF WE CAN */
+    if(daemon.localIsFailed)
+    {
+        [daemon actionSendFailed];
+    }
+    else
+    {
+        [daemon actionSendTakeoverRequest];
+    }
+    return self;
+}
+
+- (DaemonState *)eventStatusRemoteFailure:(NSDictionary *)dict
+{
+    if(!daemon.localIsFailed)
+    {
+        /* other side is failed. lets become master. */
+        [daemon callActivateInterface];
+        [daemon callStartAction];
+        [daemon startTransitingToHotTimer];
+        /* we dont send hot status here as we wait the application to confirm it with the status callbacks */
+        return [[DaemonState_Hot alloc]initWithDaemon:daemon];
+    }
+    else
+    {
+        /* both sides failed */
+        return self;
+    }
+}
+
+- (DaemonState *)eventStatusRemoteUnknown:(NSDictionary *)dict
 {
     [daemon actionSendStandby];
+    return self;
+}
+
+#pragma mark - Local Status
+- (DaemonState *)eventStatusLocalHot:(NSDictionary *)pdu
+{
+    [daemon callDeactivateInterface];
+    [daemon callStopAction];
+    return self;
+}
+
+- (DaemonState *)eventStatusLocalStandby:(NSDictionary *)dict
+{
+    return self;
+}
+
+- (DaemonState *)eventStatusLocalFailure:(NSDictionary *)dict
+{
+    daemon.localIsFailed = YES;
+    [daemon actionSendFailed];
+    return self;
+}
+
+- (DaemonState *)eventStatusLocalUnknown:(NSDictionary *)dict
+{
+    [daemon callDeactivateInterface];
+    [daemon callStopAction];
+    return self;
+}
+
+
+#pragma mark - Remote Commands
+- (DaemonState *)eventTakeoverRequest:(NSDictionary *)dict
+{
+    [daemon actionSendTakeoverConfirm];
+    return self;
+}
+
+- (DaemonState *)eventTakeoverConf:(NSDictionary *)dict
+{
+    /* somethings odd here */
+    if(daemon.localIsFailed)
+    {
+        [daemon actionSendFailed];
+    }
+    else
+    {
+        [daemon callActivateInterface];
+        [daemon callStartAction];
+    }
+    return self;
+}
+
+- (DaemonState *)eventTakeoverReject:(NSDictionary *)dict
+{
+    if(daemon.localIsFailed)
+    {
+        [daemon actionSendFailed];
+    }
+    else
+    {
+        [daemon actionSendStandby];
+    }
+    return self;
+}
+
+
+#pragma mark - Timer Events
+- (DaemonState *)eventToStandbyTimer
+{
+    [daemon stopTransitingToStandbyTimer];
+    return self;
+}
+
+- (DaemonState *)eventToHotTimer
+{
+    [daemon stopTransitingToHotTimer];
+    return self;
+}
+
+- (DaemonState *)eventTimer
+{
+    if(daemon.localIsFailed)
+    {
+        [daemon actionSendFailed];
+    }
+    else
+    {
+        [daemon actionSendStandby];
+    }
     return self;
 }
 
 - (DaemonState *)eventTimeout
 {
-    [daemon actionSendTakeoverRequest:randVal];
-    return [[DaemonState_TakeoverRequested alloc]initWithDaemon:daemon];
-}
-
-- (DaemonState *)localFailureIndication
-{
-    [daemon actionSendFailed];
-    [daemon goToStandby];
-    return self;
-}
-
-- (DaemonState *)localUnknownIndication
-{
-    [daemon actionSendStandby];
-    [daemon goToStandby];
-    return self;
-}
-
-- (DaemonState *)localStandbyIndication /* heartbeat from app */
-{
-    return self;
-}
-
-- (DaemonState *)localHotIndication /* heartbeat from app */
-{
-    [daemon actionSendStandby];
-    [daemon goToStandby];
-    return self;
+    if(daemon.localIsFailed)
+    {
+        [daemon actionSendFailed];
+        return self;
+    }
+    else
+    {
+        [daemon callActivateInterface];
+        [daemon callStartAction];
+        [daemon startTransitingToHotTimer];
+        return [[DaemonState_Hot alloc]initWithDaemon:daemon];
+    }
 }
 
 @end
