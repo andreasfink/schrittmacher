@@ -152,7 +152,7 @@
 - (void) checkForPackets
 {
     UMSocketError err;
-    int receivePollTimeoutMs = 10000;
+    int receivePollTimeoutMs = 500; /* every 500ms we break out so NSRunLoop timers can run */
     do
     {
         @autoreleasepool

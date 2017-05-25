@@ -180,6 +180,7 @@ AppDelegate *_global_appdel= NULL;
 
 - (void)heartbeatAction
 {
+    NSLog(@"heartbeat");
     [listener heartbeat];
 }
 
