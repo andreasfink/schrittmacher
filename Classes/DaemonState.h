@@ -8,8 +8,6 @@
 
 #import <ulib/ulib.h>
 
-#import "DaemonRandomValue.h"
-
 @class Daemon;
 
 @interface DaemonState: UMObject
