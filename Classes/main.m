@@ -155,12 +155,12 @@ int main(int argc, char *argv[])
             }
             else if(strcmp(option,"--version")==0)
             {
-                NSLog(@"%s Version %s",argv[0],VERSION);
+                fprintf(stderr,"%s Version %s\n",argv[0],VERSION);
                 exit(-1);
             }
             else if(strncmp(option,"--",2)==0)
             {
-                NSLog(@"Unknown option %s",option);
+                fprintf(stderr,"Unknown option %s",option);
                 exit(-1);
             }
             else
@@ -186,7 +186,7 @@ int main(int argc, char *argv[])
             runLoop = [NSRunLoop currentRunLoop];
             if(runLoop==NULL)
             {
-                NSLog(@"No current run loop");
+                fprintf(stderr,"No current run loop");
                 exit(-1);
             }
             [NSOperationQueue mainQueue];
@@ -247,7 +247,7 @@ int main(int argc, char *argv[])
                 }
             }
         }
-        NSLog(@"terminating");
+        fprintf(stderr,"terminating");
     }
 }
 
@@ -255,14 +255,14 @@ static void	signal_SIGPIPE(void)
 {
     signal_sigpipe--;
     sig--;
-    NSLog(@"SIGPIPE received, ignoring...");
+    fprintf(stderr,"SIGPIPE received, ignoring...");
 }
 
 static void signal_SIGHUP(void)
 {
     signal_sighup--;
     sig--;
-    NSLog(@"SIGHUP received.");
+    fprintf(stderr,"SIGHUP received.");
 }
 
 static void	signal_SIGINT(void)
@@ -271,12 +271,12 @@ static void	signal_SIGINT(void)
     signal_sigint=0;
     if (must_quit == 0)
     {
-        NSLog(@"SIGINT received, aborting program...");
+        fprintf(stderr,"SIGINT received, aborting program...");
         must_quit = 1;
     }
     else
     {
-        NSLog(@"SIGINT received again, force quitting program...");
+        fprintf(stderr,"SIGINT received again, force quitting program...");
         must_quit = 2;
         exit(0);
     }
@@ -288,12 +288,12 @@ static void	signal_SIGTERM(void)
     signal_sigterm=0;
     if (must_quit == 0)
     {
-        NSLog(@"SIGTERM received, aborting program...");
+        fprintf(stderr,"SIGTERM received, aborting program...");
         must_quit = 1;
     }
     else
     {
-        NSLog(@"SIGTERM received again, force quitting program...");
+        fprintf(stderr,"SIGTERM received again, force quitting program...");
         must_quit = 2;
         exit(0);
     }
@@ -369,7 +369,7 @@ static int parachute_launch(int argc2, char *argv2[])
     {
         if (respawn_count > 0 && difftime(time(NULL), last_start) < 10)
         {
-            NSLog(@"Child process died too fast, disabling for 30 sec.");
+            fprintf(stderr,"Child process died too fast, disabling for 30 sec.");
             sleep(30.0);
         }
         if (!(child_pid = fork()))
@@ -392,7 +392,7 @@ static int parachute_launch(int argc2, char *argv2[])
         }
         else if (child_pid < 0)
         {
-            NSLog(@"Could not start child process! Will retry in 5 sec.");
+            fprintf(stderr,"Could not start child process! Will retry in 5 sec.");
             sleep(5.0);
             continue;
         }
@@ -400,7 +400,7 @@ static int parachute_launch(int argc2, char *argv2[])
         { /* father process */
             write_pid_file(g_make_pid,g_pidfile);
             time(&last_start);
-            NSLog(@"Child process with PID (%ld) started.", (long) child_pid);
+            fprintf(stderr,"Child process with PID (%ld) started.", (long) child_pid);
             do
             {
                 pid_t p = waitpid(child_pid, &status, 0);
@@ -410,27 +410,27 @@ static int parachute_launch(int argc2, char *argv2[])
                     /* check here why child terminated */
                     /* if (WIFEXITED(status) && WEXITSTATUS(status) == 0)
                      {
-                     NSLog(@"Child process exited gracefully, exit...");
+                     fprintf(stderr,"Child process exited gracefully, exit...");
                      exit(0);
                      }
                      else */
                     if (WIFEXITED(status))
                     {
-                        NSLog(@"Caught child PID (%ld) which died with return code %d",
+                        fprintf(stderr,"Caught child PID (%ld) which died with return code %d",
                               (long) child_pid, WEXITSTATUS(status));
                         child_pid = -1;
                         sleep(2.0);
                     }
                     else if (WIFSIGNALED(status))
                     {
-                        NSLog(@"Caught child PID (%ld) which died due to signal %d",
+                        fprintf(stderr,"Caught child PID (%ld) which died due to signal %d",
                               (long) child_pid, WTERMSIG(status));
                         child_pid = -1;
                     }
                 }
                 else if (eno != EINTR)
                 {
-                    NSLog(@"Error while waiting of child process.");
+                    fprintf(stderr,"Error while waiting of child process.");
                 }
             }
             while(child_pid > 0);
@@ -438,14 +438,14 @@ static int parachute_launch(int argc2, char *argv2[])
             if (parachute_shutdown)
             {
                 /* may only happens if child process crashed while shutdown */
-                NSLog(@"Child process crashed while shutdown. Exiting due to signal...");
+                fprintf(stderr,"Child process crashed while shutdown. Exiting due to signal...");
                 exit(WIFEXITED(status) ? WEXITSTATUS(status) : EX_OK);
             }
             
             /* check whether it's panic while start */
             if (respawn_count == 0 && difftime(time(NULL), last_start) < 2)
             {
-                NSLog(@"Child process crashed while starting. Exiting...");
+                fprintf(stderr,"Child process crashed while starting. Exiting...");
                 exit(WIFEXITED(status) ? WEXITSTATUS(status) : EX_USAGE);
             }
             respawn_count++;
@@ -494,14 +494,14 @@ static void parachute_init_signals(int child)
     }
     else
     {
-        NSLog(@"Child process signal handlers not initialized before.");
+        fprintf(stderr,"Child process signal handlers not initialized before.");
         exit(0);
     }
 }
 
 static void parachute_sig_handler(int signum)
 {
-    NSLog(@"Signal %d received, forward to child pid (%ld)", signum, (long) child_pid);
+    fprintf(stderr,"Signal %d received, forward to child pid (%ld)", signum, (long) child_pid);
     
     /* we do not handle any signal, just forward these to child process */
     if (child_pid != -1 && getpid() != child_pid)

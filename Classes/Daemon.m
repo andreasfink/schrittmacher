@@ -68,7 +68,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
                             @"random"   : @(r)};
     
     NSString *msg = [dict jsonString];
-    NSLog(@"TX %@->%@: %@",localAddress,remoteAddress,dict);
+    [logFeed debugText:[NSString stringWithFormat:@"TX %@->%@: %@",localAddress,remoteAddress,dict]];
     [listener sendString:msg toAddress:remoteAddress toPort:remotePort];
 }
 
@@ -302,7 +302,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
         return 0;
     }
     const char *cmd = command.UTF8String;
-    NSLog(@" Executing: %s",cmd);
+    [logFeed debugText:[NSString stringWithFormat:@" Executing: %s",cmd]];
     return system(cmd);
 }
 
@@ -390,7 +390,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
     [self setEnvVars];
     setenv("ACTION", "stop", 1);
     const char *cmd = stopAction.UTF8String;
-    NSLog(@" Executing: %s",cmd);
+    [logFeed debugText:[NSString stringWithFormat:@" Executing: %s",cmd]];
     int r = system(cmd);
     [self unsetEnvVars];
     if(r==0)
@@ -452,26 +452,6 @@ DaemonRandomValue GetDaemonRandomValue(void)
         DEBUGLOG(currentState,@"eventStatusLocalFailure");
         currentState = [currentState eventStatusLocalFailure:@{}];
     }
-}
-
-- (void)startTransitingToHotTimer
-{
-    /* FIXME */
-}
-
-- (void)startTransitingToStandbyTimer
-{
-    /* FIXME */
-}
-
-- (void)stopTransitingToHotTimer
-{
-    /* FIXME */
-}
-
-- (void)stopTransitingToStandbyTimer
-{
-    /* FIXME */
 }
 
 @end

@@ -123,10 +123,6 @@ typedef enum DaemonInterfaceState
 - (void)checkForTimeouts;
 - (NSDictionary *)status;
 - (void)eventForceFailover;
-- (void)startTransitingToHotTimer;
-- (void)startTransitingToStandbyTimer;
-- (void)stopTransitingToHotTimer;
-- (void)stopTransitingToStandbyTimer;
 
 - (int)callDeactivateInterface;
 - (int)callActivateInterface;

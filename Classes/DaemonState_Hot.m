@@ -132,17 +132,6 @@
 }
 
 #pragma mark - Timer Events
-- (DaemonState *)eventToStandbyTimer
-{
-    [daemon stopTransitingToStandbyTimer];
-    return self;
-}
-
-- (DaemonState *)eventToHotTimer
-{
-    [daemon stopTransitingToHotTimer];
-    return self;
-}
 
 - (DaemonState *)eventTimer
 {

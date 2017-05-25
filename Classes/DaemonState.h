@@ -36,8 +36,6 @@
 - (DaemonState *)eventTakeoverReject:(NSDictionary *)dict;
 
 #pragma mark - Timer Events
-- (DaemonState *)eventToStandbyTimer;
-- (DaemonState *)eventToHotTimer;
 - (DaemonState *)eventTimer;
 - (DaemonState *)eventTimeout;
 

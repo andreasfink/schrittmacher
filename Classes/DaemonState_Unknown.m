@@ -34,7 +34,6 @@
     /* other side says its master. Then we shall be standby */
     [daemon callStopAction];
     [daemon callDeactivateInterface];
-    [daemon startTransitingToStandbyTimer];
     return [[DaemonState_Standby alloc]initWithDaemon:daemon];
 }
 
@@ -43,7 +42,6 @@
     /* other side says its standby, so we must be hot */
     [daemon callActivateInterface];
     [daemon callStartAction];
-    [daemon startTransitingToHotTimer];
     return [[DaemonState_Hot alloc]initWithDaemon:daemon];
 }
 
@@ -52,7 +50,6 @@
     /* other side is failed. lets be master. */
     [daemon callActivateInterface];
     [daemon callStartAction];
-    [daemon startTransitingToHotTimer];
     return [[DaemonState_Hot alloc]initWithDaemon:daemon];
 }
 
@@ -87,7 +84,6 @@
     [daemon actionSendFailed];
     [daemon callStopAction]; // local failure might also be caused by timeout */
     [daemon callDeactivateInterface];
-    [daemon startTransitingToStandbyTimer];
     return [[DaemonState_Standby alloc]initWithDaemon:daemon];
 }
 
@@ -124,7 +120,6 @@
     /* other side agrees we should be master. lets be master then. */
     [daemon callActivateInterface];
     [daemon callStartAction];
-    [daemon startTransitingToHotTimer];
     return [[DaemonState_Hot alloc]initWithDaemon:daemon];
 }
 
@@ -133,28 +128,12 @@
     /* other side wants to be master. let it be so */
     [daemon callStopAction];
     [daemon callDeactivateInterface];
-    [daemon startTransitingToStandbyTimer];
     [daemon actionSendStandby];
     return [[DaemonState_Standby alloc]initWithDaemon:daemon];
 }
 
 #pragma mark - Timer Events
 
-- (DaemonState *)eventToHotTimer
-{
-    [daemon stopTransitingToHotTimer];
-    [daemon callActivateInterface];
-    [daemon actionSendHot];
-    return [[DaemonState_Hot alloc]initWithDaemon:daemon];
-}
-
-- (DaemonState *)eventToStandbyTimer
-{
-    [daemon stopTransitingToStandbyTimer];
-    [daemon callStopAction];
-    [daemon callDeactivateInterface];
-    return [[DaemonState_Standby alloc]initWithDaemon:daemon];
-}
 
 - (DaemonState *)eventTimer
 {
@@ -167,7 +146,6 @@
     /* other side doesnt answer. Lets panic and go straight to hot */
     [daemon callActivateInterface];
     [daemon callStartAction];
-    [daemon startTransitingToHotTimer];
     return [[DaemonState_Hot alloc]initWithDaemon:daemon];
 }
 

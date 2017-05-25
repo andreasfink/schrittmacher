@@ -45,7 +45,6 @@
         /* other side is failed. lets become master. */
         [daemon callActivateInterface];
         [daemon callStartAction];
-        [daemon startTransitingToHotTimer];
         /* we dont send hot status here as we wait the application to confirm it with the status callbacks */
         return [[DaemonState_Hot alloc]initWithDaemon:daemon];
     }
@@ -127,17 +126,6 @@
 
 
 #pragma mark - Timer Events
-- (DaemonState *)eventToStandbyTimer
-{
-    [daemon stopTransitingToStandbyTimer];
-    return self;
-}
-
-- (DaemonState *)eventToHotTimer
-{
-    [daemon stopTransitingToHotTimer];
-    return self;
-}
 
 - (DaemonState *)eventTimer
 {
@@ -163,7 +151,6 @@
     {
         [daemon callActivateInterface];
         [daemon callStartAction];
-        [daemon startTransitingToHotTimer];
         return [[DaemonState_Hot alloc]initWithDaemon:daemon];
     }
 }

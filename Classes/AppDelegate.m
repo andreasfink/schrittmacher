@@ -111,7 +111,7 @@ AppDelegate *_global_appdel= NULL;
 
 - (void)readConfig:(NSString *)filename
 {
-    NSLog(@"Reading config from %@",filename);
+    [logFeed debugText:[NSString stringWithFormat:@"Reading config from %@",filename]];
     config = [[UMConfig alloc]initWithFileName:filename];
     [config allowSingleGroup:@"core"];
     [config allowMultiGroup:@"resource"];
@@ -264,6 +264,7 @@ AppDelegate *_global_appdel= NULL;
             intervallDelay = 2;
         }
         Daemon *d = [[Daemon alloc]init];
+        d.logFeed = [[UMLogFeed alloc]initWithHandler:mainLogHandler section:resourceName];
         d.localAddress = localAddress;
         d.remoteAddress =remoteAddress;
         d.sharedAddress = sharedAddress;

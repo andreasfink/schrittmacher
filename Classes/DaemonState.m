@@ -151,18 +151,4 @@
     }
 }
 
-- (DaemonState *)eventToStandbyTimer
-{
-    NSLog(@"** Unexpected eventToStandbyTimer **");
-    [daemon stopTransitingToStandbyTimer];
-    return self;
-}
-
-- (DaemonState *)eventToHotTimer
-{
-    NSLog(@"** Unexpected eventToHotTimer **");
-    [daemon stopTransitingToHotTimer];
-    return self;
-}
-
 @end
