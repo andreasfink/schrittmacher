@@ -20,7 +20,7 @@ heartbeat		= how often the heartbeat is sent (Default 2.0 seconds)
 timeout			= how long until other side is considered dead (default: 3*heartbeat)
 
 group = resource
-name						= name of the resource
+name						= the resource-id
 start-action				= script to call on start
 stop-action				= script to call on stop
 priority					= default priority on this daemon.
@@ -65,9 +65,6 @@ Users Manual
 --version					print the version and exit
 
 
-Schrittmacher's config file is normally  ./schrittmacher.conf  or /etc/schrittmacher/schrittmacher.conf
-
-It contains the following sections
 </Text>
         </Document>
         <Document ID="4">
@@ -129,6 +126,41 @@ TREQ Local Daemon tells the remote it wishes to take over
 TCNF	Daemon confirms the takeover to the remote
 TREJ	Daemon rejects the takeover
 FAIL	Daemon tells it is in failed state and implies a takeover confirmation
+</Text>
+        </Document>
+        <Document ID="10">
+            <Title>5. config example</Title>
+            <Synopsis>#
+# schrittmacher config example
+#
+group = core
+local-address = 10.22.52.190
+remote-address = 10.22.52.191
+shared-address = 10.22.52.189
+http-port    = 7700
+port      = 7700
+group = resource
+name = smsc-i400
+start-action = "kill -10 `cat /var/run/MessageMover/i400.pid`"
+stop-action = "kill -12 `cat /var/run/MessageMover/i400.pid`"
+interface-activate = ip addr add 10.22.52.189/25 dev eth0 label eth0:9
+interface-deactivate = ip addr del 10.22.52.189/25 dev eth0 label eth0:9</Synopsis>
+            <Text>#
+# schrittmacher config example
+#
+group = core
+local-address = 10.22.52.190
+remote-address = 10.22.52.191
+shared-address = 10.22.52.189
+http-port       = 7700
+port            = 7700
+
+group = resource
+name = smsc-i400
+start-action = "kill -10 `cat /var/run/MessageMover/i400.pid`"
+stop-action = "kill -12 `cat /var/run/MessageMover/i400.pid`"
+interface-activate = ip addr add 10.22.52.189/25 dev eth0 label eth0:9
+interface-deactivate = ip addr del 10.22.52.189/25 dev eth0 label eth0:9
 </Text>
         </Document>
     </Documents>
