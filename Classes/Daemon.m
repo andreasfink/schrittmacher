@@ -415,27 +415,30 @@ DaemonRandomValue GetDaemonRandomValue(void)
 
 - (NSDictionary *)status
 {
-    NSMutableDictionary *dict = [[NSMutableDictionary alloc]init];
-    dict[@"resource-id"]= resourceId;
-    dict[@"current-state"]=[currentState name];
-    dict[@"lastRx"] = lastRx ? [lastRx stringValue] : @"-";
-    dict[@"lastLocalRx"] = lastLocalRx ? [lastLocalRx stringValue] : @"-";
-    dict[@"remoteAddress"] = remoteAddress;
-    dict[@"localAddress"] = localAddress;
-    dict[@"sharedAddress"] = sharedAddress;
-    dict[@"startAction"] = startAction;
-    dict[@"stopAction"] = stopAction;
-    dict[@"pidFile"] = pidFile;
-    dict[@"activateInterfaceCommand"] = activateInterfaceCommand;
-    dict[@"deactivateInterfaceCommand"] = deactivateInterfaceCommand;
-    dict[@"localPriority"] = [NSString stringWithFormat:@"%d",(int)localPriority];
-    dict[@"lastChecked"] = [lastChecked stringValue];
-    dict[@"startedAt"] = startedAt ? [startedAt stringValue] : @"never";
-    dict[@"stoppedAt"] = stoppedAt ? [stoppedAt stringValue] : @"never";
-    dict[@"activatedAt"] = activatedAt ? [activatedAt stringValue] : @"never";
-    dict[@"dectivatedAt"] = deactivatedAt ? [deactivatedAt stringValue] : @"never";
-    dict[@"remoteIsFailed"] = _remoteIsFailed ? @"YES" : @"NO";
-    dict[@"localIsFailed"] = _localIsFailed ? @"YES" : @"NO";
+    @synchronized(self)
+    {
+        NSMutableDictionary *dict = [[NSMutableDictionary alloc]init];
+        dict[@"resource-id"]= resourceId;
+        dict[@"current-state"]=[currentState name];
+        dict[@"lastRx"] = lastRx ? [lastRx stringValue] : @"-";
+        dict[@"lastLocalRx"] = lastLocalRx ? [lastLocalRx stringValue] : @"-";
+        dict[@"remoteAddress"] = remoteAddress;
+        dict[@"localAddress"] = localAddress;
+        dict[@"sharedAddress"] = sharedAddress;
+        dict[@"startAction"] = startAction;
+        dict[@"stopAction"] = stopAction;
+        //dict[@"pidFile"] = pidFile;
+        dict[@"activateInterfaceCommand"] = activateInterfaceCommand;
+        dict[@"deactivateInterfaceCommand"] = deactivateInterfaceCommand;
+        dict[@"localPriority"] = [NSString stringWithFormat:@"%d",(int)localPriority];
+        dict[@"lastChecked"] = [lastChecked stringValue];
+        dict[@"startedAt"] = startedAt ? [startedAt stringValue] : @"never";
+        dict[@"stoppedAt"] = stoppedAt ? [stoppedAt stringValue] : @"never";
+        dict[@"activatedAt"] = activatedAt ? [activatedAt stringValue] : @"never";
+        dict[@"dectivatedAt"] = deactivatedAt ? [deactivatedAt stringValue] : @"never";
+        dict[@"remoteIsFailed"] = _remoteIsFailed ? @"YES" : @"NO";
+        dict[@"localIsFailed"] = _localIsFailed ? @"YES" : @"NO";
+    }
     return dict;
 }
 
