@@ -233,7 +233,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
 
 - (void)eventForceTakeover
 {
-    currentState = [currentState eventStatusLocalFailure:@{}];
+    [self actionSendTakeoverRequestForced];
 }
 
 - (void)checkForTimeouts
