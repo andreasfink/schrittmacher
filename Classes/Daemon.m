@@ -9,6 +9,7 @@
 #import "Daemon.h"
 #import "DaemonState_all.h"
 #import "Listener.h"
+#import <stdint.h>
 
 DaemonRandomValue GetDaemonRandomValue(void)
 {
@@ -97,6 +98,12 @@ DaemonRandomValue GetDaemonRandomValue(void)
 - (void)actionSendTakeoverRequest
 {
     _randVal = GetDaemonRandomValue();
+    [self sendStatus:MESSAGE_TAKEOVER_REQUEST withRandomValue:_randVal];
+}
+
+- (void)actionSendTakeoverRequestForced
+{
+    _randVal = INT_MAX;
     [self sendStatus:MESSAGE_TAKEOVER_REQUEST withRandomValue:_randVal];
 }
 
@@ -220,6 +227,11 @@ DaemonRandomValue GetDaemonRandomValue(void)
 }
 
 - (void)eventForceFailover
+{
+    currentState = [currentState eventStatusLocalFailure:@{}];
+}
+
+- (void)eventForceTakeover
 {
     currentState = [currentState eventStatusLocalFailure:@{}];
 }
@@ -427,7 +439,6 @@ DaemonRandomValue GetDaemonRandomValue(void)
         dict[@"sharedAddress"] = sharedAddress;
         dict[@"startAction"] = startAction;
         dict[@"stopAction"] = stopAction;
-        //dict[@"pidFile"] = pidFile;
         dict[@"activateInterfaceCommand"] = activateInterfaceCommand;
         dict[@"deactivateInterfaceCommand"] = deactivateInterfaceCommand;
         dict[@"localPriority"] = [NSString stringWithFormat:@"%d",(int)localPriority];

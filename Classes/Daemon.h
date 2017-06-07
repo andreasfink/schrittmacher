@@ -115,6 +115,7 @@ typedef enum DaemonInterfaceState
 - (void)actionSendHot;
 - (void)actionSendStandby;
 - (void)actionSendTakeoverRequest;
+- (void)actionSendTakeoverRequestForced;
 - (void)actionSendTakeoverReject;
 - (void)actionSendTakeoverConfirm;
 
@@ -123,6 +124,8 @@ typedef enum DaemonInterfaceState
 - (void)checkForTimeouts;
 - (NSDictionary *)status;
 - (void)eventForceFailover;
+- (void)eventForceTakeover;
+
 
 - (int)callDeactivateInterface;
 - (int)callActivateInterface;

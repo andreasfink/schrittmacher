@@ -231,6 +231,11 @@
     [d eventForceFailover];
 }
 
+- (void)takeover:(NSString *)name
+{
+    Daemon *d = [self daemonByName:name];
+    [d eventForceTakeover];
+}
 - (Daemon *)daemonByName:(NSString *)name
 {
     Daemon *d;

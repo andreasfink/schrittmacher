@@ -98,6 +98,11 @@ AppDelegate *_global_appdel= NULL;
         {
             [listener failover:failovername];
         }
+        NSString *takeovername = req.params[@"takeover"];
+        if([takeovername length]>0)
+        {
+            [listener takeover:takeovername];
+        }
         NSString *s = [self htmlStatus];
         [req setResponseHtmlString:s];
         req.responseCode = HTTP_RESPONSE_CODE_OK;
@@ -219,15 +224,15 @@ AppDelegate *_global_appdel= NULL;
     for(NSString *key in keys)
     {
         NSDictionary *dict = states[key];
-        NSString *failover;
+        NSString *action;
     
         if([dict[@"current-state"] isEqualToString:@"Hot"])
         {
-            failover = [NSString stringWithFormat:@"<a href=/?failover=%@>failover</a>", [key urlencode] ];
+            action = [NSString stringWithFormat:@"<a href=/?failover=%@>failover</a>", [key urlencode] ];
         }
-        else
+        else if([dict[@"current-state"] isEqualToString:@"Standby"])
         {
-            failover=@"&nbsp;";
+            action = [NSString stringWithFormat:@"<a href=/?takeover=%@>takeover</a>", [key urlencode] ];
         }
         /*
          dict[@"resource-id"]= resourceId;
@@ -259,7 +264,7 @@ AppDelegate *_global_appdel= NULL;
         [s appendFormat:@"<td>%@</td>",dict[@"lastLocalRx"]];
         [s appendFormat:@"<td>%@</td>",dict[@"remoteIsFailed"]];
         [s appendFormat:@"<td>%@</td>",dict[@"localIsFailed"]];
-        [s appendFormat:@"<td>%@</td>",failover];
+        [s appendFormat:@"<td>%@</td>",action];
         [s appendFormat:@"</tr>"];
     }
     [s appendFormat:@"</table>"];
