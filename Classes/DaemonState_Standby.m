@@ -102,11 +102,14 @@
     if(daemon.localIsFailed)
     {
         [daemon actionSendFailed];
+        return self;
     }
     else
     {
         [daemon callActivateInterface];
         [daemon callStartAction];
+        [daemon actionSendHot];
+        return [[DaemonState_Hot alloc]initWithDaemon:daemon];
     }
     return self;
 }

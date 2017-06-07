@@ -10,4 +10,6 @@
 #import "Daemon.h"
 
 @interface DaemonState_Standby : DaemonState
+{
+}
 @end
