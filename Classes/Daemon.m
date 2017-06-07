@@ -415,9 +415,9 @@ DaemonRandomValue GetDaemonRandomValue(void)
 
 - (NSDictionary *)status
 {
+    NSMutableDictionary *dict = [[NSMutableDictionary alloc]init];
     @synchronized(self)
     {
-        NSMutableDictionary *dict = [[NSMutableDictionary alloc]init];
         dict[@"resource-id"]= resourceId;
         dict[@"current-state"]=[currentState name];
         dict[@"lastRx"] = lastRx ? [lastRx stringValue] : @"-";
