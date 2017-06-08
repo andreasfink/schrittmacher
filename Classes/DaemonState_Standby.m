@@ -64,8 +64,19 @@
 #pragma mark - Local Status
 - (DaemonState *)eventStatusLocalHot:(NSDictionary *)pdu
 {
-    [daemon callDeactivateInterface];
-    [daemon callStopAction];
+    /* we have sent a takeover request and got confirmation. app now tells us it went hot */
+    /* now we can confirm to remote and migrate state to HOT */
+    if(_goingHot)
+    {
+        _goingHot = NULL;
+        [daemon actionSendHot];
+        return [[DaemonState_Hot alloc]initWithDaemon:daemon];
+    }
+    else
+    {
+        [daemon callDeactivateInterface];
+        [daemon callStopAction];
+    }
     return self;
 }
 
@@ -109,7 +120,7 @@
         [daemon callActivateInterface];
         [daemon callStartAction];
         [daemon actionSendHot];
-        return [[DaemonState_Hot alloc]initWithDaemon:daemon];
+        _goingHot = [NSDate date];
     }
     return self;
 }
@@ -138,7 +149,24 @@
     }
     else
     {
-        [daemon actionSendStandby];
+        /* we have sent a takeover request and got confirmation. app now tells us its still standby */
+        /* if its longer than 3 timer intervalls (which is 2sec), we tell the other side */
+        if(_goingHot)
+        {
+            if([[NSDate date] timeIntervalSinceDate:_goingHot] > 6.0)
+            {
+               _goingHot = NULL;
+               [daemon actionSendStandby];
+            }
+            else
+            {
+                /* we ignore the standby state as we might just have informed it a milisecond ago to go hot and it didnt had a chance to tell us it did yet */
+            }
+        }
+        else
+        {
+            [daemon actionSendStandby];
+        }
     }
     return self;
 }

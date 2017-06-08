@@ -11,5 +11,7 @@
 
 @interface DaemonState_Standby : DaemonState
 {
+    NSDate *_goingHot;
 }
+
 @end
