@@ -25,7 +25,7 @@
 #define GOTO_HOT_ALREADY_HOT        2
 #define GOTO_HOT_FAILED             0
 
-typedef  long int DaemonRandomValue;
+typedef  uint32_t DaemonRandomValue;
 DaemonRandomValue GetDaemonRandomValue(void);
 
 @class DaemonState;

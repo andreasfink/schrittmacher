@@ -13,7 +13,7 @@
 
 DaemonRandomValue GetDaemonRandomValue(void)
 {
-    return (DaemonRandomValue)arc4random();
+    return (DaemonRandomValue)[UMUtil random:(UINT_MAX-1)];
 }
 
 @implementation Daemon
@@ -103,8 +103,8 @@ DaemonRandomValue GetDaemonRandomValue(void)
 
 - (void)actionSendTakeoverRequestForced
 {
-    _randVal = INT_MAX;
-    [self sendStatus:MESSAGE_TAKEOVER_REQUEST withRandomValue:_randVal];
+    _randVal = GetDaemonRandomValue();
+    [self sendStatus:MESSAGE_TAKEOVER_REQUEST withRandomValue:UINT_MAX];
 }
 
 - (void)actionSendTakeoverReject

@@ -126,7 +126,7 @@
 - (int)takeoverChallenge:(NSDictionary *)dict;
 {
     int prio    = [dict[@"priority"] intValue];
-    int rremote = [dict[@"random"] intValue];
+    DaemonRandomValue rremote = [dict[@"random"] intValue];
     
 
     if(prio < daemon.localPriority)
