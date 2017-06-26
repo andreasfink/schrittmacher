@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ScrivenerProject Version="1.5" Creator="SCRMAC-2.8.1-26322" Device="macropolis" Modified="2017-05-29 12:43:01 +0200" ModID="C732F337-59E9-4D93-93D3-0E5AD57F4871">
+<ScrivenerProject Version="1.5" Creator="SCRMAC-2.8.1-26322" Device="macropolis" Modified="2017-06-26 19:23:34 +0200" ModID="7C80ADBB-443C-426C-AE00-5A22BFBF6C2C">
     <Binder>
         <BinderItem ID="0" UUID="40DC0B6A-B5DF-41A9-9312-6E5B3EA1AE71" Type="DraftFolder" Created="2017-05-23 19:26:44 +0200" Modified="2017-05-23 19:26:44 +0200">
             <Title>Entwurf</Title>
@@ -136,7 +136,7 @@
     <ProjectTargets Notify="No">
         <DraftTarget Type="Words" CountIncludedOnly="Yes" CurrentCompileGroupOnly="No" Deadline="2017-05-23 19:26:43 +0200" IgnoreDeadline="Yes">0</DraftTarget>
         <SessionTarget Type="Words" CountDraftOnly="Yes" AllowNegatives="Yes" ResetType="Midnight" DeterminedFromDeadline="No" WritingDays="" CanWriteOnDeadlineDate="No">0</SessionTarget>
-        <PreviousSession Words="0" Characters="0" Date="2017-05-29 12:42:56 +0200"></PreviousSession>
+        <PreviousSession Words="0" Characters="0" Date="2017-06-26 17:57:48 +0200"></PreviousSession>
     </ProjectTargets>
     <PrintSettings PaperSize="595.275574,841.889771" LeftMargin="72.0" RightMargin="72.0" TopMargin="90.0" BottomMargin="90.0" PaperType="iso-a4" Orientation="Portrait" HorizontalPagination="Clip" VerticalPagination="Auto" ScaleFactor="1.0" HorizontallyCentered="Yes" VerticallyCentered="Yes" Collates="Yes" PagesAcross="1" PagesDown="1"></PrintSettings>
 </ScrivenerProject>
