@@ -39,7 +39,7 @@
                 NSString *resource      = [di[@"resource"] stringValue];
                 NSString *status    = [di[@"status"] stringValue];
                 
-                [logFeed debugText:[NSString stringWithFormat:@"RX <-%@: %@",address,di]];
+                [self.logFeed debugText:[NSString stringWithFormat:@"RX <-%@: %@",address,di]];
 
 
                 NSMutableDictionary *dict  = [di mutableCopy];
@@ -53,13 +53,13 @@
                 }
                 else
                 {
-                    [logFeed infoText:[NSString stringWithFormat:@"Ignoring unknown resource '%@'",resource]];
+                    [self.logFeed infoText:[NSString stringWithFormat:@"Ignoring unknown resource '%@'",resource]];
                 }
             }
         }
         @catch(NSException *e)
         {
-            [logFeed warningText:[NSString stringWithFormat:@"Exception: %@",e]];
+            [self.logFeed warningText:[NSString stringWithFormat:@"Exception: %@",e]];
         }
     }
 }
@@ -221,7 +221,7 @@
     if(e)
     {
         NSString *s = [UMSocket getSocketErrorString:e];
-        [logFeed majorError:e withText:[NSString stringWithFormat:@"TX Error %d: %@",e,s]];
+        [self.logFeed majorError:e withText:[NSString stringWithFormat:@"TX Error %d: %@",e,s]];
     }
 }
 

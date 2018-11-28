@@ -58,8 +58,8 @@ AppDelegate *_global_appdel= NULL;
         console             = [[UMLogConsole alloc] init];
         mainLogHandler      = [[UMLogHandler alloc] init];
         [mainLogHandler addLogDestination:console];
-        logFeed = [[UMLogFeed alloc]initWithHandler:mainLogHandler section:@"core"];
-        logFeed.name = @"core";
+        self.logFeed = [[UMLogFeed alloc]initWithHandler:mainLogHandler section:@"core"];
+        self.logFeed.name = @"core";
         time_t now;
         time(&now);
         unsigned int speed = (unsigned int) now;
@@ -116,7 +116,7 @@ AppDelegate *_global_appdel= NULL;
 
 - (void)readConfig:(NSString *)filename
 {
-    [logFeed debugText:[NSString stringWithFormat:@"Reading config from %@",filename]];
+    [self.logFeed debugText:[NSString stringWithFormat:@"Reading config from %@",filename]];
     config = [[UMConfig alloc]initWithFileName:filename];
     [config allowSingleGroup:@"core"];
     [config allowMultiGroup:@"resource"];

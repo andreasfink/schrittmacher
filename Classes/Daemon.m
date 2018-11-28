@@ -69,7 +69,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
                             @"random"   : @(r)};
     
     NSString *msg = [dict jsonString];
-    [logFeed debugText:[NSString stringWithFormat:@"TX %@->%@: %@",localAddress,remoteAddress,dict]];
+    [self.logFeed debugText:[NSString stringWithFormat:@"TX %@->%@: %@",localAddress,remoteAddress,dict]];
     [listener sendString:msg toAddress:remoteAddress toPort:remotePort];
 }
 
@@ -120,7 +120,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
 #define DEBUGLOG(state,event) \
 { \
     NSString *s = [NSString stringWithFormat:@"State:%@ event:%@",state.name,event]; \
-    [logFeed debugText:s]; \
+    [self.logFeed debugText:s]; \
 }
 
 - (void)eventReceived:(NSString *)event
@@ -217,7 +217,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
     if(![oldstate isEqualToString:newstate])
     {
         NSString *s = [NSString stringWithFormat:@"State Change %@->%@",oldstate,newstate];
-        [logFeed debugText:s];
+        [self.logFeed debugText:s];
     }
 }
 
@@ -314,7 +314,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
         return 0;
     }
     const char *cmd = command.UTF8String;
-    [logFeed debugText:[NSString stringWithFormat:@" Executing: %s",cmd]];
+    [self.logFeed debugText:[NSString stringWithFormat:@" Executing: %s",cmd]];
     return system(cmd);
 }
 
@@ -402,7 +402,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
     [self setEnvVars];
     setenv("ACTION", "stop", 1);
     const char *cmd = stopAction.UTF8String;
-    [logFeed debugText:[NSString stringWithFormat:@" Executing: %s",cmd]];
+    [self.logFeed debugText:[NSString stringWithFormat:@" Executing: %s",cmd]];
     int r = system(cmd);
     [self unsetEnvVars];
     if(r==0)
