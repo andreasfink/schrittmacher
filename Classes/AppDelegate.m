@@ -144,183 +144,203 @@ AppDelegate *_global_appdel= NULL;
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
-    NSDictionary *notif = [aNotification object];
-    NSString *configFileName = notif[@"fileName"];
-    if (!configFileName)
+    @autoreleasepool
     {
-        configFileName = @"/etc/schrittmacher/schrittmacher.conf";
-    }
-    
-    [self readConfig:configFileName];
+        NSDictionary *notif = [aNotification object];
+        NSString *configFileName = notif[@"fileName"];
+        if (!configFileName)
+        {
+            configFileName = @"/etc/schrittmacher/schrittmacher.conf";
+        }
 
-    NSDictionary *coreConfig = [config getSingleGroup:@"core"];
-    [self addLogFromConfigGroup:coreConfig
-                      toHandler:mainLogHandler
-                         logdir:logDirectory];
+        [self readConfig:configFileName];
 
-    [self setupWebserver];
-    [self startupListener];
-    updateTimer     = [NSTimer timerWithTimeInterval:2.0
-                                              target:self
-                                            selector:@selector(heartbeatAction)
-                                            userInfo:@""
-                                             repeats:YES];
-    pollTimer       = [NSTimer timerWithTimeInterval:0.05
-                                               target:self
-                                             selector:@selector(pollAction)
-                                             userInfo:@""
-                                              repeats:YES];
+        NSDictionary *coreConfig = [config getSingleGroup:@"core"];
+        [self addLogFromConfigGroup:coreConfig
+                          toHandler:mainLogHandler
+                             logdir:logDirectory];
 
-    checkIfUpTimer  = [NSTimer timerWithTimeInterval:(double)0.5
+        [self setupWebserver];
+        [self startupListener];
+        updateTimer     = [NSTimer timerWithTimeInterval:2.0
+                                                  target:self
+                                                selector:@selector(heartbeatAction)
+                                                userInfo:@""
+                                                 repeats:YES];
+        pollTimer       = [NSTimer timerWithTimeInterval:0.05
+                                                  target:self
+                                                selector:@selector(pollAction)
+                                                userInfo:@""
+                                                 repeats:YES];
+
+        checkIfUpTimer  = [NSTimer timerWithTimeInterval:(double)0.5
                                                   target:self
                                                 selector:@selector(checkIfUp)
                                                 userInfo:@""
                                                  repeats:YES];
 
-    NSRunLoop *crl  = [NSRunLoop currentRunLoop];
-    [crl addTimer:updateTimer forMode:NSDefaultRunLoopMode];
-    [crl addTimer:pollTimer forMode:NSDefaultRunLoopMode];
-    [crl addTimer:checkIfUpTimer forMode:NSDefaultRunLoopMode];
+        NSRunLoop *crl  = [NSRunLoop currentRunLoop];
+        [crl addTimer:updateTimer forMode:NSDefaultRunLoopMode];
+        [crl addTimer:pollTimer forMode:NSDefaultRunLoopMode];
+        [crl addTimer:checkIfUpTimer forMode:NSDefaultRunLoopMode];
+    }
 }
 
 - (void)heartbeatAction
 {
-    [listener heartbeat];
+    @autoreleasepool
+    {
+        [listener heartbeat];
+    }
 }
 
 -(void)pollAction
 {
-    [listener checkForPackets];
-    [listener checkForTimeouts];
+    @autoreleasepool
+    {
+        [listener checkForPackets];
+        [listener checkForTimeouts];
+    }
 }
 
 - (NSString *)htmlStatus
 {
-    NSMutableString *s = [[NSMutableString alloc]init];
-    [s appendFormat:@"<H1>Status</H1>\n"];
-    [s appendFormat:@"<table border=1>\n"];
-    [s appendFormat:@"<tr>\n"];
-    [s appendFormat:@"<th rowspan=2>Resource</th>\n"];
-    [s appendFormat:@"<th rowspan=2>Status</th>\n"];
-    [s appendFormat:@"<th colspan=2>Heartbeat</th>\n"];
-    [s appendFormat:@"<th colspan=2>Failure</th>\n"];
-    [s appendFormat:@"<th rowspan=2>Action</th>\n"];
-    [s appendFormat:@"</tr>"];
-
-    [s appendFormat:@"<tr>\n"];
-    [s appendFormat:@"<th>Remote</th>\n"];
-    [s appendFormat:@"<th>Local</th>\n"];
-    [s appendFormat:@"<th>Remote</th>\n"];
-    [s appendFormat:@"<th>Local</th>\n"];
-    [s appendFormat:@"</tr>"];
-
-    NSDictionary *states = [listener status];
-    NSArray *keys = [states allKeys];
-    
-    keys = [keys sortedArrayUsingComparator: ^(id a, id b) {
-        return [a compare:b];
-    }];
-    
-    for(NSString *key in keys)
+    @autoreleasepool
     {
-        NSDictionary *dict = states[key];
-        NSString *action;
-    
-        if([dict[@"current-state"] isEqualToString:@"Hot"])
-        {
-            action = [NSString stringWithFormat:@"<a href=/?failover=%@>failover</a>", [key urlencode] ];
-        }
-        else if([dict[@"current-state"] isEqualToString:@"Standby"])
-        {
-            action = [NSString stringWithFormat:@"<a href=/?takeover=%@>takeover</a>", [key urlencode] ];
-        }
-        /*
-         dict[@"resource-id"]= resourceId;
-         dict[@"current-state"]=[currentState name];
-         dict[@"lastRx"] = lastRx ? [lastRx stringValue] : @"-";
-         dict[@"lastLocalRx"] = lastLocalRx ? [lastLocalRx stringValue] : @"-";
-         dict[@"remoteAddress"] = remoteAddress;
-         dict[@"localAddress"] = localAddress;
-         dict[@"sharedAddress"] = sharedAddress;
-         dict[@"startAction"] = startAction;
-         dict[@"stopAction"] = stopAction;
-         dict[@"pidFile"] = pidFile;
-         dict[@"activateInterfaceCommand"] = activateInterfaceCommand;
-         dict[@"deactivateInterfaceCommand"] = deactivateInterfaceCommand;
-         dict[@"localPriority"] = [NSString stringWithFormat:@"%d",(int)localPriority];
-         dict[@"lastChecked"] = [lastChecked stringValue];
-         dict[@"startedAt"] = startedAt ? [startedAt stringValue] : @"never";
-         dict[@"stoppedAt"] = stoppedAt ? [stoppedAt stringValue] : @"never";
-         dict[@"activatedAt"] = activatedAt ? [activatedAt stringValue] : @"never";
-         dict[@"dectivatedAt"] = deactivatedAt ? [deactivatedAt stringValue] : @"never";
-         dict[@"remoteIsFailed"] = _remoteIsFailed ? @"YES" : @"NO";
-         dict[@"localIsFailed"] = _localIsFailed ? @"YES" : @"NO";
-*/
-        
-        [s appendFormat:@"<tr>"];
-        [s appendFormat:@"<td>%@</td>",dict[@"resource-id"]];
-        [s appendFormat:@"<td>%@</td>",dict[@"current-state"]];
-        [s appendFormat:@"<td>%@</td>",dict[@"lastRx"]];
-        [s appendFormat:@"<td>%@</td>",dict[@"lastLocalRx"]];
-        [s appendFormat:@"<td>%@</td>",dict[@"remoteIsFailed"]];
-        [s appendFormat:@"<td>%@</td>",dict[@"localIsFailed"]];
-        [s appendFormat:@"<td>%@</td>",action];
+
+        NSMutableString *s = [[NSMutableString alloc]init];
+        [s appendFormat:@"<H1>Status</H1>\n"];
+        [s appendFormat:@"<table border=1>\n"];
+        [s appendFormat:@"<tr>\n"];
+        [s appendFormat:@"<th rowspan=2>Resource</th>\n"];
+        [s appendFormat:@"<th rowspan=2>Status</th>\n"];
+        [s appendFormat:@"<th colspan=2>Heartbeat</th>\n"];
+        [s appendFormat:@"<th colspan=2>Failure</th>\n"];
+        [s appendFormat:@"<th rowspan=2>Action</th>\n"];
         [s appendFormat:@"</tr>"];
+
+        [s appendFormat:@"<tr>\n"];
+        [s appendFormat:@"<th>Remote</th>\n"];
+        [s appendFormat:@"<th>Local</th>\n"];
+        [s appendFormat:@"<th>Remote</th>\n"];
+        [s appendFormat:@"<th>Local</th>\n"];
+        [s appendFormat:@"</tr>"];
+
+        NSDictionary *states = [listener status];
+        NSArray *keys = [states allKeys];
+
+        keys = [keys sortedArrayUsingComparator: ^(id a, id b) {
+            return [a compare:b];
+        }];
+
+        for(NSString *key in keys)
+        {
+            NSDictionary *dict = states[key];
+            NSString *action;
+
+            if([dict[@"current-state"] isEqualToString:@"Hot"])
+            {
+                action = [NSString stringWithFormat:@"<a href=/?failover=%@>failover</a>", [key urlencode] ];
+            }
+            else if([dict[@"current-state"] isEqualToString:@"Standby"])
+            {
+                action = [NSString stringWithFormat:@"<a href=/?takeover=%@>takeover</a>", [key urlencode] ];
+            }
+            /*
+             dict[@"resource-id"]= resourceId;
+             dict[@"current-state"]=[currentState name];
+             dict[@"lastRx"] = lastRx ? [lastRx stringValue] : @"-";
+             dict[@"lastLocalRx"] = lastLocalRx ? [lastLocalRx stringValue] : @"-";
+             dict[@"remoteAddress"] = remoteAddress;
+             dict[@"localAddress"] = localAddress;
+             dict[@"sharedAddress"] = sharedAddress;
+             dict[@"startAction"] = startAction;
+             dict[@"stopAction"] = stopAction;
+             dict[@"pidFile"] = pidFile;
+             dict[@"activateInterfaceCommand"] = activateInterfaceCommand;
+             dict[@"deactivateInterfaceCommand"] = deactivateInterfaceCommand;
+             dict[@"localPriority"] = [NSString stringWithFormat:@"%d",(int)localPriority];
+             dict[@"lastChecked"] = [lastChecked stringValue];
+             dict[@"startedAt"] = startedAt ? [startedAt stringValue] : @"never";
+             dict[@"stoppedAt"] = stoppedAt ? [stoppedAt stringValue] : @"never";
+             dict[@"activatedAt"] = activatedAt ? [activatedAt stringValue] : @"never";
+             dict[@"dectivatedAt"] = deactivatedAt ? [deactivatedAt stringValue] : @"never";
+             dict[@"remoteIsFailed"] = _remoteIsFailed ? @"YES" : @"NO";
+             dict[@"localIsFailed"] = _localIsFailed ? @"YES" : @"NO";
+    */
+
+            [s appendFormat:@"<tr>"];
+            [s appendFormat:@"<td>%@</td>",dict[@"resource-id"]];
+            [s appendFormat:@"<td>%@</td>",dict[@"current-state"]];
+            [s appendFormat:@"<td>%@</td>",dict[@"lastRx"]];
+            [s appendFormat:@"<td>%@</td>",dict[@"lastLocalRx"]];
+            [s appendFormat:@"<td>%@</td>",dict[@"remoteIsFailed"]];
+            [s appendFormat:@"<td>%@</td>",dict[@"localIsFailed"]];
+            [s appendFormat:@"<td>%@</td>",action];
+            [s appendFormat:@"</tr>"];
+        }
+        [s appendFormat:@"</table>"];
+        return s;
     }
-    [s appendFormat:@"</table>"];
-    return s;
 }
 
 
 - (void)startupListener
 {
-    listener = [[Listener alloc]init];
-
-    int addrType = 4;
-    NSString *unifiedLocalAddress =  [UMSocket unifyIP:localAddress];
-    [UMSocket deunifyIp:unifiedLocalAddress type:&addrType];
-    
-    listener.localHost =[[UMHost alloc]initWithLocalhostAddresses:@[unifiedLocalAddress]];
-    listener.port = port;
-    listener.addressType= addrType;
-    NSArray *configs = [config getMultiGroups:@"resource"];
-    for(NSDictionary *daemonConfig in configs)
+    @autoreleasepool
     {
-        NSString *startAction      = [daemonConfig[@"start-action"] stringValue];
-        NSString *stopAction       = [daemonConfig[@"stop-action"] stringValue];
-        NSString *resourceName     = [daemonConfig[@"name"] stringValue];
-        int priority               = [daemonConfig[@"priority"] intValue];
-        NSString *pidFile          = [daemonConfig[@"pid-file"] stringValue];
-        NSString *activate         = [daemonConfig[@"interface-activate"] stringValue];
-        NSString *deactivate       = [daemonConfig[@"interface-deactivate"] stringValue];
-        double  intervallDelay     = [daemonConfig[@"heartbeat-intervall"] doubleValue];
 
-        if(intervallDelay < 2)
+        listener = [[Listener alloc]init];
+
+        int addrType = 4;
+        NSString *unifiedLocalAddress =  [UMSocket unifyIP:localAddress];
+        [UMSocket deunifyIp:unifiedLocalAddress type:&addrType];
+
+        listener.localHost =[[UMHost alloc]initWithLocalhostAddresses:@[unifiedLocalAddress]];
+        listener.port = port;
+        listener.addressType= addrType;
+        NSArray *configs = [config getMultiGroups:@"resource"];
+        for(NSDictionary *daemonConfig in configs)
         {
-            intervallDelay = 2;
+            NSString *startAction      = [daemonConfig[@"start-action"] stringValue];
+            NSString *stopAction       = [daemonConfig[@"stop-action"] stringValue];
+            NSString *resourceName     = [daemonConfig[@"name"] stringValue];
+            int priority               = [daemonConfig[@"priority"] intValue];
+            NSString *pidFile          = [daemonConfig[@"pid-file"] stringValue];
+            NSString *activate         = [daemonConfig[@"interface-activate"] stringValue];
+            NSString *deactivate       = [daemonConfig[@"interface-deactivate"] stringValue];
+            double  intervallDelay     = [daemonConfig[@"heartbeat-intervall"] doubleValue];
+
+            if(intervallDelay < 2)
+            {
+                intervallDelay = 2;
+            }
+            Daemon *d = [[Daemon alloc]init];
+            d.logFeed = [[UMLogFeed alloc]initWithHandler:mainLogHandler section:resourceName];
+            d.localAddress = localAddress;
+            d.remoteAddress =remoteAddress;
+            d.sharedAddress = sharedAddress;
+            d.remotePort = port;
+            d.resourceId = resourceName;
+            d.startAction = startAction;
+            d.stopAction = stopAction;
+            d.localPriority = priority;
+            d.activateInterfaceCommand = activate;
+            d.deactivateInterfaceCommand = deactivate;
+            d.intervallDelay = intervallDelay;
+            d.pidFile = pidFile;
+            [listener attachDaemon:d];
         }
-        Daemon *d = [[Daemon alloc]init];
-        d.logFeed = [[UMLogFeed alloc]initWithHandler:mainLogHandler section:resourceName];
-        d.localAddress = localAddress;
-        d.remoteAddress =remoteAddress;
-        d.sharedAddress = sharedAddress;
-        d.remotePort = port;
-        d.resourceId = resourceName;
-        d.startAction = startAction;
-        d.stopAction = stopAction;
-        d.localPriority = priority;
-        d.activateInterfaceCommand = activate;
-        d.deactivateInterfaceCommand = deactivate;
-        d.intervallDelay = intervallDelay;
-        d.pidFile = pidFile;
-        [listener attachDaemon:d];
+        [listener start];
     }
-    [listener start];
 }
 
 - (void)checkIfUp
 {
-    [listener checkIfUp];
+    @autoreleasepool
+    {
+        [listener checkIfUp];
+    }
 }
 
 @end

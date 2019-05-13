@@ -99,55 +99,58 @@
 
 - (void)start
 {
-    if(addressType==6)
+    @autoreleasepool
     {
-        uc = [[UMSocket alloc]initWithType:UMSOCKET_TYPE_UDP6ONLY];
-    }
-    else
-    {
-        uc = [[UMSocket alloc]initWithType:UMSOCKET_TYPE_UDP4ONLY];
-    }
-
-    uc.localHost = localHost;
-    uc.localPort = port;
-   // ucsender.localHost = localHost;
-   // ucsender.localPort = port+1;
-
-    UMSocketError err = [uc bind];
-    if (![uc isBound] )
-    {
-        @throw([NSException exceptionWithName:@"udp"
-                                       reason:@"can not bind"
-                                     userInfo:@{ @"port":@(port),
-                                                 @"socket-err": @(err),
-                                                 @"host" : localHost}]);
-    }
-  /*
-    err = [uc listen];
-    if (![uc isListening] )
-    {
-        @throw([NSException exceptionWithName:@"udp"
-                                       reason:@"can not listen"
-                                     userInfo:@{ @"port":@(port),
-                                                 @"socket-err": @(err),
-                                                 @"host" : localHost}]);
-    }
-*/
-
-    NSArray *allKeys;
-    @synchronized(daemons)
-    {
-        allKeys =[daemons allKeys];
-    }
-    for(NSString *key in allKeys)
-    {
-        Daemon *d = [self daemonByName:key];
-        if(d)
+        if(addressType==6)
         {
-            [d actionStart];
+            uc = [[UMSocket alloc]initWithType:UMSOCKET_TYPE_UDP6ONLY];
+        }
+        else
+        {
+            uc = [[UMSocket alloc]initWithType:UMSOCKET_TYPE_UDP4ONLY];
+        }
+
+        uc.localHost = localHost;
+        uc.localPort = port;
+        // ucsender.localHost = localHost;
+        // ucsender.localPort = port+1;
+
+        UMSocketError err = [uc bind];
+        if (![uc isBound] )
+        {
+            @throw([NSException exceptionWithName:@"udp"
+                                           reason:@"can not bind"
+                                         userInfo:@{ @"port":@(port),
+                                                     @"socket-err": @(err),
+                                                     @"host" : localHost}]);
+        }
+        /*
+         err = [uc listen];
+         if (![uc isListening] )
+         {
+         @throw([NSException exceptionWithName:@"udp"
+         reason:@"can not listen"
+         userInfo:@{ @"port":@(port),
+         @"socket-err": @(err),
+         @"host" : localHost}]);
+         }
+         */
+
+        NSArray *allKeys;
+        @synchronized(daemons)
+        {
+            allKeys =[daemons allKeys];
+        }
+        for(NSString *key in allKeys)
+        {
+            Daemon *d = [self daemonByName:key];
+            if(d)
+            {
+                [d actionStart];
+            }
         }
     }
- }
+}
 
 - (void) checkForPackets
 {
@@ -179,34 +182,40 @@
 
 - (void)checkForTimeouts
 {
-    NSArray *allKeys;
-    @synchronized(daemons)
+    @autoreleasepool
     {
-        allKeys =[daemons allKeys];
-    }
-    for(NSString *key in allKeys)
-    {
-        Daemon *d = [self daemonByName:key];
-        if(d)
+        NSArray *allKeys;
+        @synchronized(daemons)
         {
-            [d checkForTimeouts];
+            allKeys =[daemons allKeys];
+        }
+        for(NSString *key in allKeys)
+        {
+            Daemon *d = [self daemonByName:key];
+            if(d)
+            {
+                [d checkForTimeouts];
+            }
         }
     }
 }
 
 - (void)heartbeat
 {
-    NSArray *allKeys;
-    @synchronized(daemons)
+    @autoreleasepool
     {
-        allKeys =[daemons allKeys];
-    }
-    for(NSString *key in allKeys)
-    {
-        Daemon *d = [self daemonByName:key];
-        if(d)
+        NSArray *allKeys;
+        @synchronized(daemons)
         {
-            [d eventTimer];
+            allKeys =[daemons allKeys];
+        }
+        for(NSString *key in allKeys)
+        {
+            Daemon *d = [self daemonByName:key];
+            if(d)
+            {
+                [d eventTimer];
+            }
         }
     }
 }
@@ -227,39 +236,52 @@
 
 - (void)failover:(NSString *)name
 {
-    Daemon *d = [self daemonByName:name];
-    [d eventForceFailover];
+    @autoreleasepool
+    {
+        Daemon *d = [self daemonByName:name];
+        [d eventForceFailover];
+    }
 }
 
 - (void)takeover:(NSString *)name
 {
-    Daemon *d = [self daemonByName:name];
-    [d eventForceTakeover];
+    @autoreleasepool
+    {
+        Daemon *d = [self daemonByName:name];
+        [d eventForceTakeover];
+    }
 }
 - (Daemon *)daemonByName:(NSString *)name
 {
-    Daemon *d;
-    @synchronized(daemons)
+    @autoreleasepool
     {
-        d = daemons[name];
+        Daemon *d;
+        @synchronized(daemons)
+        {
+            d = daemons[name];
+        }
+        return d;
     }
-    return d;
 }
 
 - (void)checkIfUp
 {
-    NSArray *allKeys;
-    @synchronized(daemons)
+    @autoreleasepool
     {
-        allKeys =[daemons allKeys];
-    }
-    for(NSString *key in allKeys)
-    {
-        Daemon *d = [self daemonByName:key];
-        if(d)
+        NSArray *allKeys;
+        @synchronized(daemons)
         {
-            [d checkIfUp];
+            allKeys =[daemons allKeys];
+        }
+        for(NSString *key in allKeys)
+        {
+            Daemon *d = [self daemonByName:key];
+            if(d)
+            {
+                [d checkIfUp];
+            }
         }
     }
 }
+
 @end
