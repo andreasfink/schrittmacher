@@ -14,7 +14,7 @@
 		A6018F991B0D479F00854472 /* DaemonState_Hot.m in Sources */ = {isa = PBXBuildFile; fileRef = A6018F981B0D479F00854472 /* DaemonState_Hot.m */; };
 		A6018F9C1B0D47A700854472 /* DaemonState_Standby.m in Sources */ = {isa = PBXBuildFile; fileRef = A6018F9B1B0D47A700854472 /* DaemonState_Standby.m */; };
 		A6018FA51B0D480100854472 /* Daemon.m in Sources */ = {isa = PBXBuildFile; fileRef = A6018FA41B0D480100854472 /* Daemon.m */; };
-		A6AC46D01D4600F8002BAA97 /* ulib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A6AC46CF1D4600F8002BAA97 /* ulib.framework */; };
+		A6798A3A22BB744A0019806C /* ulib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A6798A3922BB744A0019806C /* ulib.framework */; };
 		A6E54FCE1B0DBE640090FC94 /* Listener.m in Sources */ = {isa = PBXBuildFile; fileRef = A6E54FCD1B0DBE640090FC94 /* Listener.m */; };
 /* End PBXBuildFile section */
 
@@ -47,7 +47,7 @@
 		A6018F9B1B0D47A700854472 /* DaemonState_Standby.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DaemonState_Standby.m; sourceTree = "<group>"; };
 		A6018FA31B0D480100854472 /* Daemon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Daemon.h; sourceTree = "<group>"; };
 		A6018FA41B0D480100854472 /* Daemon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Daemon.m; sourceTree = "<group>"; };
-		A6AC46CF1D4600F8002BAA97 /* ulib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ulib.framework; path = ../../../../../Library/Frameworks/ulib.framework; sourceTree = "<group>"; };
+		A6798A3922BB744A0019806C /* ulib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ulib.framework; path = "/Library/Application Support/FinkTelecomServices/frameworks/ulib.framework"; sourceTree = "<absolute>"; };
 		A6E54FC91B0DAB7D0090FC94 /* DaemonState_all.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DaemonState_all.h; sourceTree = "<group>"; };
 		A6E54FCC1B0DBE640090FC94 /* Listener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Listener.h; sourceTree = "<group>"; };
 		A6E54FCD1B0DBE640090FC94 /* Listener.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Listener.m; sourceTree = "<group>"; };
@@ -58,7 +58,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A6AC46D01D4600F8002BAA97 /* ulib.framework in Frameworks */,
+				A6798A3A22BB744A0019806C /* ulib.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -110,7 +110,7 @@
 		A6242C9C1CBEA9B600211137 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				A6AC46CF1D4600F8002BAA97 /* ulib.framework */,
+				A6798A3922BB744A0019806C /* ulib.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -150,7 +150,7 @@
 		A6018F701B0D388200854472 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1010;
+				LastUpgradeCheck = 1020;
 				ORGANIZATIONNAME = "Andreas Fink";
 				TargetAttributes = {
 					A6018F771B0D388200854472 = {
@@ -163,6 +163,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 			);
 			mainGroup = A6018F6F1B0D388200854472;
@@ -216,6 +217,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -270,6 +272,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -318,6 +321,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(LOCAL_LIBRARY_DIR)/Frameworks",
+					"$(LOCAL_LIBRARY_DIR)/Application\\ Support/FinkTelecomServices/frameworks",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -329,6 +333,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(LOCAL_LIBRARY_DIR)/Frameworks",
+					"$(LOCAL_LIBRARY_DIR)/Application\\ Support/FinkTelecomServices/frameworks",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
