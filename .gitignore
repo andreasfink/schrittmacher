@@ -11,6 +11,7 @@ config.log
 config.status
 stamp-h1
 autom4te.cache
+*.xcuserdatad/
 
 #########################
 # .gitignore file for Xcode4 and Xcode5 Source projects
