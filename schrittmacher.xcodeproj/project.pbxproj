@@ -160,11 +160,11 @@
 			};
 			buildConfigurationList = A6018F731B0D388200854472 /* Build configuration list for PBXProject "schrittmacher" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				English,
 				en,
+				Base,
 			);
 			mainGroup = A6018F6F1B0D388200854472;
 			productRefGroup = A6018F791B0D388200854472 /* Products */;
