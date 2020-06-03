@@ -39,7 +39,7 @@ char    **global_argv;
 
 int     global_argc2;
 char    **global_argv2=NULL;
-BOOL must_quit = NO;
+int must_quit = 0;
 int signal_sigint = 0;
 int signal_sigpipe = 0;
 int signal_sighup = 0;
@@ -219,9 +219,9 @@ int main(int argc, char *argv[])
             NSDictionary *notificationObject = @{ @"fileName" : configFile};
             NSNotification *notification = [NSNotification notificationWithName:@"config file name" object:notificationObject];
             [appdel applicationDidFinishLaunching:notification];
-            must_quit=NO;
+            must_quit=0;
         }
-        while (must_quit==NO)
+        while (must_quit==0)
         {
             @autoreleasepool
             {
