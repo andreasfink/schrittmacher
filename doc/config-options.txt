@@ -20,4 +20,4 @@ interface-deactivate = ip addr del 192.168.1.10/24 dev eth0 label eth0:9
 
 # to use this from messagemover
 # pass the following parameters to messagemover
-# --schrittmacher-port 7700 -- schrittmacher-id smsc-i100 --standby
+# --schrittmacher-port 7700 --schrittmacher-id smsc-i100 --standby
