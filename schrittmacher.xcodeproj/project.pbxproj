@@ -48,6 +48,7 @@
 		A6018FA31B0D480100854472 /* Daemon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Daemon.h; sourceTree = "<group>"; };
 		A6018FA41B0D480100854472 /* Daemon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Daemon.m; sourceTree = "<group>"; };
 		A6798A3922BB744A0019806C /* ulib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ulib.framework; path = "/Library/Application Support/FinkTelecomServices/frameworks/ulib.framework"; sourceTree = "<absolute>"; };
+		A6B862B12489DA47000A79B5 /* VERSION */ = {isa = PBXFileReference; lastKnownFileType = text; path = VERSION; sourceTree = SOURCE_ROOT; };
 		A6E54FC91B0DAB7D0090FC94 /* DaemonState_all.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DaemonState_all.h; sourceTree = "<group>"; };
 		A6E54FCC1B0DBE640090FC94 /* Listener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Listener.h; sourceTree = "<group>"; };
 		A6E54FCD1B0DBE640090FC94 /* Listener.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Listener.m; sourceTree = "<group>"; };
@@ -118,6 +119,7 @@
 		A66281EC1B1442E90090FC94 /* doc */ = {
 			isa = PBXGroup;
 			children = (
+				A6B862B12489DA47000A79B5 /* VERSION */,
 				A6018F871B0D3FD300854472 /* config-options.txt */,
 			);
 			path = doc;
