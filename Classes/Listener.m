@@ -10,16 +10,13 @@
 #import "Daemon.h"
 
 @implementation Listener
-@synthesize localHost;
-@synthesize port;
-@synthesize addressType;
 
 - (Listener *)init
 {
     self = [super init];
     if(self)
     {
-        daemons =[[NSMutableDictionary alloc]init];
+        _daemons =[[NSMutableDictionary alloc]init];
     }
     return self;
 }
@@ -67,9 +64,9 @@
 
 - (void) attachDaemon:(Daemon *)d
 {
-    @synchronized(daemons)
+    @synchronized(_daemons)
     {
-        daemons[d.resourceId] = d;
+        _daemons[d.resourceId] = d;
         d.listener = self;
     }
 }
@@ -81,9 +78,9 @@
         NSMutableDictionary *dict = [[NSMutableDictionary alloc]init];
 
         NSArray *allKeys;
-        @synchronized(daemons)
+        @synchronized(_daemons)
         {
-            allKeys =[daemons allKeys];
+            allKeys =[_daemons allKeys];
         }
         for(NSString *key in allKeys)
         {
@@ -101,45 +98,45 @@
 {
     @autoreleasepool
     {
-        if(addressType==6)
+        if(_addressType==6)
         {
-            uc = [[UMSocket alloc]initWithType:UMSOCKET_TYPE_UDP6ONLY];
+            _ucPrivate = [[UMSocket alloc]initWithType:UMSOCKET_TYPE_UDP6ONLY];
+            _ucPublic = [[UMSocket alloc]initWithType:UMSOCKET_TYPE_UDP6ONLY];
         }
         else
         {
-            uc = [[UMSocket alloc]initWithType:UMSOCKET_TYPE_UDP4ONLY];
+            _ucPrivate = [[UMSocket alloc]initWithType:UMSOCKET_TYPE_UDP4ONLY];
+            _ucPublic = [[UMSocket alloc]initWithType:UMSOCKET_TYPE_UDP4ONLY];
         }
 
-        uc.localHost = localHost;
-        uc.localPort = port;
-        // ucsender.localHost = localHost;
-        // ucsender.localPort = port+1;
+        _ucPublic.localHost = _localHostPublic;
+        _ucPublic.localPort = _port;
+        _ucPrivate.localHost = _localHostPrivate;
+        _ucPrivate.localPort = _port;
 
-        UMSocketError err = [uc bind];
-        if (![uc isBound] )
+        UMSocketError err = [_ucPublic bind];
+        if (![_ucPublic isBound] )
         {
             @throw([NSException exceptionWithName:@"udp"
-                                           reason:@"can not bind"
-                                         userInfo:@{ @"port":@(port),
+                                           reason:@"can not bind to publicIP"
+                                         userInfo:@{ @"port":@(_port),
                                                      @"socket-err": @(err),
-                                                     @"host" : localHost}]);
+                                                     @"host" : _localHostPublic}]);
         }
-        /*
-         err = [uc listen];
-         if (![uc isListening] )
-         {
-         @throw([NSException exceptionWithName:@"udp"
-         reason:@"can not listen"
-         userInfo:@{ @"port":@(port),
-         @"socket-err": @(err),
-         @"host" : localHost}]);
-         }
-         */
-
-        NSArray *allKeys;
-        @synchronized(daemons)
+        err = [_ucPrivate bind];
+        if (![_ucPrivate isBound] )
         {
-            allKeys =[daemons allKeys];
+            @throw([NSException exceptionWithName:@"udp"
+                                           reason:@"can not bind to privateIP (127.0.0.1)"
+                                         userInfo:@{ @"port":@(_port),
+                                                     @"socket-err": @(err),
+                                                     @"host" : _localHostPrivate}]);
+        }
+        
+        NSArray *allKeys;
+        @synchronized(_daemons)
+        {
+            allKeys =[_daemons allKeys];
         }
         for(NSString *key in allKeys)
         {
@@ -160,14 +157,31 @@
     {
         @autoreleasepool
         {
-            err = [uc dataIsAvailable:receivePollTimeoutMs];
+            err = [_ucPublic dataIsAvailable:receivePollTimeoutMs];
 
             if(err == UMSocketError_has_data)
             {
                 NSData  *data = NULL;
                 NSString *address = NULL;
                 int rxport;
-                UMSocketError err2 = [uc receiveData:&data fromAddress:&address fromPort:&rxport];
+                UMSocketError err2 = [_ucPublic receiveData:&data fromAddress:&address fromPort:&rxport];
+                if(err2 == UMSocketError_no_error)
+                {
+                    if(data)
+                    {
+                        [self receiveStatus:data fromAddress:address];
+                    }
+                }
+            }
+            
+            err = [_ucPrivate dataIsAvailable:receivePollTimeoutMs];
+
+            if(err == UMSocketError_has_data)
+            {
+                NSData  *data = NULL;
+                NSString *address = NULL;
+                int rxport;
+                UMSocketError err2 = [_ucPrivate receiveData:&data fromAddress:&address fromPort:&rxport];
                 if(err2 == UMSocketError_no_error)
                 {
                     if(data)
@@ -185,9 +199,9 @@
     @autoreleasepool
     {
         NSArray *allKeys;
-        @synchronized(daemons)
+        @synchronized(_daemons)
         {
-            allKeys =[daemons allKeys];
+            allKeys =[_daemons allKeys];
         }
         for(NSString *key in allKeys)
         {
@@ -205,9 +219,9 @@
     @autoreleasepool
     {
         NSArray *allKeys;
-        @synchronized(daemons)
+        @synchronized(_daemons)
         {
-            allKeys =[daemons allKeys];
+            allKeys =[_daemons allKeys];
         }
         for(NSString *key in allKeys)
         {
@@ -226,7 +240,7 @@
     const char *utf8 = msg.UTF8String;
     size_t len = strlen(utf8);
     NSData *d = [NSData dataWithBytes:utf8 length:len];
-    UMSocketError e = [uc sendData:d toAddress:addr toPort:p];
+    UMSocketError e = [_ucPublic sendData:d toAddress:addr toPort:p];
     if(e)
     {
         NSString *s = [UMSocket getSocketErrorString:e];
@@ -256,9 +270,9 @@
     @autoreleasepool
     {
         Daemon *d;
-        @synchronized(daemons)
+        @synchronized(_daemons)
         {
-            d = daemons[name];
+            d = _daemons[name];
         }
         return d;
     }
@@ -269,9 +283,9 @@
     @autoreleasepool
     {
         NSArray *allKeys;
-        @synchronized(daemons)
+        @synchronized(_daemons)
         {
-            allKeys =[daemons allKeys];
+            allKeys =[_daemons allKeys];
         }
         for(NSString *key in allKeys)
         {

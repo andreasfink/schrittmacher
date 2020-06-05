@@ -11,14 +11,17 @@
 
 @interface Listener : UMObject
 {
-    UMHost *localHost;
-    int port;
-    NSMutableDictionary *daemons;
-    UMSocket *uc;
-    int addressType;
+    UMHost *            _localHostPublic;
+    UMHost *            _localHostPrivate;
+    int                 _port;
+    NSMutableDictionary *_daemons;
+    UMSocket            *_ucPublic;
+    UMSocket            *_ucPrivate;
+    int                 _addressType;
 }
 
-@property(readwrite,strong) UMHost *localHost;
+@property(readwrite,strong) UMHost *localHostPublic;
+@property(readwrite,strong) UMHost *localHostPrivate;
 @property(readwrite,assign) int port;
 @property(readwrite,assign) int addressType;
 

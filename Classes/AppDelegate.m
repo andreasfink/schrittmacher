@@ -295,8 +295,8 @@ AppDelegate *_global_appdel= NULL;
         int addrType = 4;
         NSString *unifiedLocalAddress =  [UMSocket unifyIP:localAddress];
         [UMSocket deunifyIp:unifiedLocalAddress type:&addrType];
-
-        listener.localHost =[[UMHost alloc]initWithLocalhostAddresses:@[unifiedLocalAddress,@"127.0.0.1"]];
+        listener.localHostPublic =[[UMHost alloc]initWithLocalhostAddresses:@[unifiedLocalAddress]];
+        listener.localHostPrivate=[[UMHost alloc]initWithLocalhostAddresses:@[@"127.0.0.1"]];
         listener.port = port;
         listener.addressType= addrType;
         NSArray *configs = [config getMultiGroups:@"resource"];
