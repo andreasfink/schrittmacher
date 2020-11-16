@@ -152,7 +152,7 @@
 		A6018F701B0D388200854472 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1210;
+				LastUpgradeCheck = 1220;
 				ORGANIZATIONNAME = "Andreas Fink";
 				TargetAttributes = {
 					A6018F771B0D388200854472 = {
