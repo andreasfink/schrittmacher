@@ -87,15 +87,15 @@
     return [[DaemonState_Unknown alloc]initWithDaemon:daemon];
 }
 
-- (DaemonState *)eventStatusRequestFailover:(NSDictionary *)dict
+- (DaemonState *)eventForceFailover:(NSDictionary *)dict
 {
-    [daemon.logFeed warningText:@"Unexpected eventStatusRequestFailover"];
+    [daemon.logFeed warningText:@"Unexpected eventForceFailover"];
     return [[DaemonState_Unknown alloc]initWithDaemon:daemon];
 }
 
-- (DaemonState *)eventStatusRequestTakeover:(NSDictionary *)dict
+- (DaemonState *)eventForceTakeover:(NSDictionary *)dict
 {
-    [daemon.logFeed warningText:@"Unexpected eventStatusRequestTakeover"];
+    [daemon.logFeed warningText:@"Unexpected eventForceTakeover"];
     return [[DaemonState_Unknown alloc]initWithDaemon:daemon];
 }
 

@@ -142,7 +142,7 @@
 
 #pragma mark - GUI
 
-- (DaemonState *)eventStatusRequestFailover:(NSDictionary *)dict
+- (DaemonState *)eventForceFailover:(NSDictionary *)dict
 {
     [daemon actionSendFailover];
     [daemon callStopAction];
@@ -150,7 +150,7 @@
     return [[DaemonState_Standby alloc]initWithDaemon:daemon];
 }
 
-- (DaemonState *)eventStatusRequestTakeover:(NSDictionary *)dict
+- (DaemonState *)eventForceTakeover:(NSDictionary *)dict
 {
     [daemon actionSendTakeoverRequestForced];
     return self;

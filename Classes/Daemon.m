@@ -247,7 +247,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
 
 - (void)eventForceTakeover
 {
-    currentState = [currentState eventStatusRequestTakeover:@{}];
+    currentState = [currentState eventForceTakeover:@{}];
 }
 
 - (void)checkForTimeouts

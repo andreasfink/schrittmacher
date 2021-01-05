@@ -37,8 +37,8 @@
 - (DaemonState *)eventTakeoverReject:(NSDictionary *)dict;
 
 #pragma mark - GUI commands
-- (DaemonState *)eventStatusRequestFailover:(NSDictionary *)dict;
-- (DaemonState *)eventStatusRequestTakeover:(NSDictionary *)dict;
+- (DaemonState *)eventForceRequestFailover:(NSDictionary *)dict;
+- (DaemonState *)eventForceTakeover:(NSDictionary *)dict;
 
 
 #pragma mark - Timer Events

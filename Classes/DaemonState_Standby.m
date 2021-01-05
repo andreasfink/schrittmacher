@@ -159,12 +159,24 @@
 
 #pragma mark - GUI
 
-- (DaemonState *)eventStatusRequestFailover:(NSDictionary *)dict
+- (DaemonState *)eventForceFailover:(NSDictionary *)dict
 {
+    [daemon callStopAction];
+    [daemon callDeactivateInterface];
     [daemon actionSendFailover];
     return self;
 }
 
+- (DaemonState *)eventForceTakeover:(NSDictionary *)dict
+{
+    if(daemon.localIsFailed)
+    {
+        [daemon actionSendFailed];
+        return self;
+    }
+    [daemon actionSendTakeoverRequestForced];
+    return self;
+}
 
 #pragma mark - Timer Events
 
