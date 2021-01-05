@@ -15,6 +15,7 @@
 #define MESSAGE_TAKEOVER_CONF       @"TCNF"
 #define MESSAGE_TAKEOVER_REJECT     @"TREJ"
 #define MESSAGE_FAILED              @"FAIL"
+#define MESSAGE_FAILOVER            @"FOVR"
 
 #define MESSAGE_LOCAL_HOT           @"LHOT"
 #define MESSAGE_LOCAL_STANDBY       @"LSBY"
@@ -112,6 +113,7 @@ typedef enum DaemonInterfaceState
 
 - (void)actionSendUnknown;
 - (void)actionSendFailed;
+- (void)actionSendFailover;
 - (void)actionSendHot;
 - (void)actionSendStandby;
 - (void)actionSendTakeoverRequest;

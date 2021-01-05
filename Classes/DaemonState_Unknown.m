@@ -53,6 +53,14 @@
     return [[DaemonState_Hot alloc]initWithDaemon:daemon];
 }
 
+- (DaemonState *)eventStatusRemoteFailover:(NSDictionary *)dict
+{
+    /* other side wants to fail over. lets be master. */
+    [daemon callActivateInterface];
+    [daemon callStartAction];
+    return [[DaemonState_Hot alloc]initWithDaemon:daemon];
+}
+
 - (DaemonState *)eventStatusRemoteUnknown:(NSDictionary *)dict
 {
     /* the other side doesnt know its state neither. Lets start the negotiations */
@@ -131,6 +139,23 @@
     [daemon actionSendStandby];
     return [[DaemonState_Standby alloc]initWithDaemon:daemon];
 }
+
+#pragma mark - GUI
+
+- (DaemonState *)eventStatusRequestFailover:(NSDictionary *)dict
+{
+    [daemon actionSendFailover];
+    [daemon callStopAction];
+    [daemon callDeactivateInterface];
+    return [[DaemonState_Standby alloc]initWithDaemon:daemon];
+}
+
+- (DaemonState *)eventStatusRequestTakeover:(NSDictionary *)dict
+{
+    [daemon actionSendTakeoverRequestForced];
+    return self;
+}
+
 
 #pragma mark - Timer Events
 

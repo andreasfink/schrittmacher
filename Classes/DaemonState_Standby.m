@@ -55,6 +55,23 @@
     }
 }
 
+- (DaemonState *)eventStatusRemoteFailover:(NSDictionary *)dict
+{
+    if(!daemon.localIsFailed)
+    {
+        /* other side wants to fail over. lets become master. */
+        [daemon callActivateInterface];
+        [daemon callStartAction];
+        /* we dont send hot status here as we wait the application to confirm it with the status callbacks */
+        return [[DaemonState_Hot alloc]initWithDaemon:daemon];
+    }
+    else
+    {
+        /* both sides failed */
+        return self;
+    }
+}
+
 - (DaemonState *)eventStatusRemoteUnknown:(NSDictionary *)dict
 {
     [daemon actionSendStandby];
@@ -91,6 +108,7 @@
     [daemon actionSendFailed];
     return self;
 }
+
 
 - (DaemonState *)eventStatusLocalUnknown:(NSDictionary *)dict
 {
@@ -136,6 +154,14 @@
     {
         [daemon actionSendStandby];
     }
+    return self;
+}
+
+#pragma mark - GUI
+
+- (DaemonState *)eventStatusRequestFailover:(NSDictionary *)dict
+{
+    [daemon actionSendFailover];
     return self;
 }
 

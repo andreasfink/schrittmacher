@@ -85,6 +85,11 @@ DaemonRandomValue GetDaemonRandomValue(void)
     [self sendStatus:MESSAGE_FAILED];
 }
 
+- (void)actionSendFailover
+{
+    [self sendStatus:MESSAGE_FAILOVER];
+}
+
 - (void)actionSendHot
 {
     [self sendStatus:MESSAGE_HOT];
@@ -176,6 +181,15 @@ DaemonRandomValue GetDaemonRandomValue(void)
         currentState = [currentState eventStatusRemoteFailure:dict];
     }
 
+    else if ([event isEqualToString:MESSAGE_FAILOVER])
+    {
+        self.remoteIsFailed=NO;
+        lastRx = [NSDate date];
+        DEBUGLOG(currentState,@"eventRemoteFailover");
+        currentState = [currentState eventStatusRemoteFailover:dict];
+    }
+
+
     else if ([event isEqualToString:MESSAGE_TAKEOVER_REQUEST])
     {
         self.remoteIsFailed=NO;
@@ -233,7 +247,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
 
 - (void)eventForceTakeover
 {
-    [self actionSendTakeoverRequestForced];
+    currentState = [currentState eventStatusRequestTakeover:@{}];
 }
 
 - (void)checkForTimeouts

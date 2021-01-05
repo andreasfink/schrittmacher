@@ -35,6 +35,14 @@
     /* the other side is telling it failed. we consider ourselves hot already so all is fine */
     return self;
 }
+
+- (DaemonState *)eventStatusRemoteFailover:(NSDictionary *)dict
+{
+    /* the other side is telling it wants to fail over. we consider ourselves hot already so all is fine */
+    return self;
+}
+
+
 - (DaemonState *)eventStatusRemoteUnknown:(NSDictionary *)dict
 {
     /* the other side doesnt know if its hot or not. As we are, we just tell it */
@@ -50,7 +58,6 @@
     daemon.localIsFailed = NO;
     return self;
 }
-
 
 - (DaemonState *)eventStatusLocalStandby:(NSDictionary *)dict
 {
@@ -131,6 +138,28 @@
     [daemon actionSendStandby];
     return [[DaemonState_Standby alloc]initWithDaemon:daemon];
 }
+#pragma mark - GUI
+
+- (DaemonState *)eventStatusRequestFailover:(NSDictionary *)dict
+{
+    [daemon callStopAction];
+    [daemon callDeactivateInterface];
+    [daemon actionSendFailover];
+    return [[DaemonState_Standby alloc]initWithDaemon:daemon];
+}
+
+- (DaemonState *)eventStatusRequestTakeover:(NSDictionary *)dict
+{
+    if(daemon.localIsFailed)
+    {
+        [daemon actionSendFailed];
+        return [[DaemonState_Standby alloc]initWithDaemon:daemon];
+    }
+    [daemon actionSendHot];
+    return self;
+}
+
+
 
 #pragma mark - Timer Events
 

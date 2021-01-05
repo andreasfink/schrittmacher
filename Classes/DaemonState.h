@@ -22,6 +22,7 @@
 - (DaemonState *)eventStatusRemoteHot:(NSDictionary *)dict;
 - (DaemonState *)eventStatusRemoteStandby:(NSDictionary *)dict;
 - (DaemonState *)eventStatusRemoteFailure:(NSDictionary *)dict;
+- (DaemonState *)eventStatusRemoteFailover:(NSDictionary *)dict;
 - (DaemonState *)eventStatusRemoteUnknown:(NSDictionary *)dict;
 
 #pragma mark - Local Status
@@ -34,6 +35,11 @@
 - (DaemonState *)eventTakeoverRequest:(NSDictionary *)dict;
 - (DaemonState *)eventTakeoverConf:(NSDictionary *)dict;
 - (DaemonState *)eventTakeoverReject:(NSDictionary *)dict;
+
+#pragma mark - GUI commands
+- (DaemonState *)eventStatusRequestFailover:(NSDictionary *)dict;
+- (DaemonState *)eventStatusRequestTakeover:(NSDictionary *)dict;
+
 
 #pragma mark - Timer Events
 - (DaemonState *)eventTimer;

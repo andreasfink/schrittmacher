@@ -54,6 +54,13 @@
     return [[DaemonState_Unknown alloc]initWithDaemon:daemon];
 }
 
+- (DaemonState *)eventStatusRemoteFailover:(NSDictionary *)dict
+{
+    [daemon.logFeed warningText:@"Unexpected eventStatusRemoteFailover"];
+
+    return [[DaemonState_Unknown alloc]initWithDaemon:daemon];
+}
+
 - (DaemonState *)eventStatusRemoteUnknown:(NSDictionary *)dict
 {
     [daemon.logFeed warningText:@"Unexpected eventStatusRemoteUnknown"];
@@ -77,6 +84,18 @@
 - (DaemonState *)eventStatusLocalFailure:(NSDictionary *)dict
 {
     [daemon.logFeed warningText:@"Unexpected eventStatusLocalFailure"];
+    return [[DaemonState_Unknown alloc]initWithDaemon:daemon];
+}
+
+- (DaemonState *)eventStatusRequestFailover:(NSDictionary *)dict
+{
+    [daemon.logFeed warningText:@"Unexpected eventStatusRequestFailover"];
+    return [[DaemonState_Unknown alloc]initWithDaemon:daemon];
+}
+
+- (DaemonState *)eventStatusRequestTakeover:(NSDictionary *)dict
+{
+    [daemon.logFeed warningText:@"Unexpected eventStatusRequestTakeover"];
     return [[DaemonState_Unknown alloc]initWithDaemon:daemon];
 }
 
