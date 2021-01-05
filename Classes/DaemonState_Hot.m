@@ -47,6 +47,7 @@
 - (DaemonState *)eventStatusLocalHot:(NSDictionary *)pdu
 {
     /* we both agree we're hot. all is fine */
+    daemon.localIsFailed = NO;
     return self;
 }
 

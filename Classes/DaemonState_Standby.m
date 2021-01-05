@@ -119,7 +119,8 @@
     {
         [daemon callActivateInterface];
         [daemon callStartAction];
-        [daemon actionSendHot];
+        //[daemon actionSendHot];
+        // hot is being sent once local instance confirms "hot" status.
         _goingHot = [NSDate date];
     }
     return self;
