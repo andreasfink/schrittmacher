@@ -37,7 +37,7 @@
 - (DaemonState *)eventTakeoverReject:(NSDictionary *)dict;
 
 #pragma mark - GUI commands
-- (DaemonState *)eventForceRequestFailover:(NSDictionary *)dict;
+- (DaemonState *)eventForceFailover:(NSDictionary *)dict;
 - (DaemonState *)eventForceTakeover:(NSDictionary *)dict;
 
 
