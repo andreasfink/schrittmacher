@@ -23,6 +23,8 @@
 - (DaemonState *)eventStatusRemoteStandby:(NSDictionary *)dict;
 - (DaemonState *)eventStatusRemoteFailure:(NSDictionary *)dict;
 - (DaemonState *)eventStatusRemoteFailover:(NSDictionary *)dict;
+- (DaemonState *)eventStatusRemoteTransitingToHot:(NSDictionary *)dict;
+- (DaemonState *)eventStatusRemoteTransitingToStandby:(NSDictionary *)dict;
 - (DaemonState *)eventStatusRemoteUnknown:(NSDictionary *)dict;
 
 #pragma mark - Local Status
@@ -30,6 +32,8 @@
 - (DaemonState *)eventStatusLocalStandby:(NSDictionary *)dict;
 - (DaemonState *)eventStatusLocalFailure:(NSDictionary *)dict;
 - (DaemonState *)eventStatusLocalUnknown:(NSDictionary *)dict;
+- (DaemonState *)eventStatusLocalTransitingToHot:(NSDictionary *)dict;
+- (DaemonState *)eventStatusLocalTransitingToStandby:(NSDictionary *)dict;
 
 #pragma mark - Remote Commands
 - (DaemonState *)eventTakeoverRequest:(NSDictionary *)dict;

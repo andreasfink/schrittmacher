@@ -8,23 +8,27 @@
 
 #import <ulib/ulib.h>
 
-#define MESSAGE_UNKNOWN             @"UNK"
-#define MESSAGE_HOT                 @"HOTT"
-#define MESSAGE_STANDBY             @"STBY"
-#define MESSAGE_TAKEOVER_REQUEST    @"TREQ"
-#define MESSAGE_TAKEOVER_CONF       @"TCNF"
-#define MESSAGE_TAKEOVER_REJECT     @"TREJ"
-#define MESSAGE_FAILED              @"FAIL"
-#define MESSAGE_FAILOVER            @"FOVR"
+#define MESSAGE_UNKNOWN                     @"UNK"
+#define MESSAGE_HOT                         @"HOTT"
+#define MESSAGE_STANDBY                     @"STBY"
+#define MESSAGE_TAKEOVER_REQUEST            @"TREQ"
+#define MESSAGE_TAKEOVER_CONF               @"TCNF"
+#define MESSAGE_TAKEOVER_REJECT             @"TREJ"
+#define MESSAGE_FAILED                      @"FAIL"
+#define MESSAGE_FAILOVER                    @"FOVR"
+#define MESSAGE_TRANSITING_TO_HOT           @"2HOT"
+#define MESSAGE_TRANSITING_TO_STANDBY       @"2SBY"
 
-#define MESSAGE_LOCAL_HOT           @"LHOT"
-#define MESSAGE_LOCAL_STANDBY       @"LSBY"
-#define MESSAGE_LOCAL_UNKNOWN       @"LUNK"
-#define MESSAGE_LOCAL_FAIL          @"LFAI"
+#define MESSAGE_LOCAL_HOT                   @"LHOT"
+#define MESSAGE_LOCAL_STANDBY               @"LSBY"
+#define MESSAGE_LOCAL_UNKNOWN               @"LUNK"
+#define MESSAGE_LOCAL_FAIL                  @"LFAI"
+#define MESSAGE_LOCAL_TRANSITING_TO_HOT     @"L2HT"
+#define MESSAGE_LOCAL_TRANSITING_TO_STANDBY @"L2SB"
 
-#define GOTO_HOT_SUCCESS            1
-#define GOTO_HOT_ALREADY_HOT        2
-#define GOTO_HOT_FAILED             0
+#define GOTO_HOT_SUCCESS                    1
+#define GOTO_HOT_ALREADY_HOT                2
+#define GOTO_HOT_FAILED                     0
 
 typedef  uint32_t DaemonRandomValue;
 DaemonRandomValue GetDaemonRandomValue(void);

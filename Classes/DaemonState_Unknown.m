@@ -68,6 +68,22 @@
     return  self;
 }
 
+- (DaemonState *)eventStatusLocalTransitingToHot:(NSDictionary *)dict
+{
+    /* other side says its master. Then we shall be standby */
+    [daemon callStopAction];
+    [daemon callDeactivateInterface];
+    return [[DaemonState_Standby alloc]initWithDaemon:daemon];
+}
+
+- (DaemonState *)eventStatusLocalTransitingToStandby:(NSDictionary *)dict
+{
+    /* other side says its master. Then we shall be standby */
+    [daemon callActivateInterface];
+    [daemon callStartAction];
+    return [[DaemonState_transiting_to_hot alloc]initWithDaemon:daemon];
+}
+
 #pragma mark - Local Status
 
 - (DaemonState *)eventStatusLocalHot:(NSDictionary *)dict

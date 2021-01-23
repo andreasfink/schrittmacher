@@ -73,7 +73,6 @@ DaemonRandomValue GetDaemonRandomValue(void)
     [listener sendString:msg toAddress:remoteAddress toPort:remotePort];
 }
 
-
 - (void)actionSendUnknown
 {
     _randVal = GetDaemonRandomValue();

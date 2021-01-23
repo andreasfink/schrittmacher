@@ -15,6 +15,9 @@
 		A6018F9C1B0D47A700854472 /* DaemonState_Standby.m in Sources */ = {isa = PBXBuildFile; fileRef = A6018F9B1B0D47A700854472 /* DaemonState_Standby.m */; };
 		A6018FA51B0D480100854472 /* Daemon.m in Sources */ = {isa = PBXBuildFile; fileRef = A6018FA41B0D480100854472 /* Daemon.m */; };
 		A6798A3A22BB744A0019806C /* ulib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A6798A3922BB744A0019806C /* ulib.framework */; };
+		A6B59CBF25BC37AD0014D9E2 /* DaemonState_transiting_to_hot.m in Sources */ = {isa = PBXBuildFile; fileRef = A6B59CBE25BC37AD0014D9E2 /* DaemonState_transiting_to_hot.m */; };
+		A6B59CC325BC37B80014D9E2 /* DaemonState_transiting_to_standby.m in Sources */ = {isa = PBXBuildFile; fileRef = A6B59CC225BC37B80014D9E2 /* DaemonState_transiting_to_standby.m */; };
+		A6B59CC725BC3A0E0014D9E2 /* DaemonState_Failed.m in Sources */ = {isa = PBXBuildFile; fileRef = A6B59CC625BC3A0E0014D9E2 /* DaemonState_Failed.m */; };
 		A6E54FCE1B0DBE640090FC94 /* Listener.m in Sources */ = {isa = PBXBuildFile; fileRef = A6E54FCD1B0DBE640090FC94 /* Listener.m */; };
 /* End PBXBuildFile section */
 
@@ -48,6 +51,12 @@
 		A6018FA31B0D480100854472 /* Daemon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Daemon.h; sourceTree = "<group>"; };
 		A6018FA41B0D480100854472 /* Daemon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Daemon.m; sourceTree = "<group>"; };
 		A6798A3922BB744A0019806C /* ulib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ulib.framework; path = "/Library/Application Support/FinkTelecomServices/frameworks/ulib.framework"; sourceTree = "<absolute>"; };
+		A6B59CBD25BC37AD0014D9E2 /* DaemonState_transiting_to_hot.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DaemonState_transiting_to_hot.h; sourceTree = "<group>"; };
+		A6B59CBE25BC37AD0014D9E2 /* DaemonState_transiting_to_hot.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DaemonState_transiting_to_hot.m; sourceTree = "<group>"; };
+		A6B59CC125BC37B80014D9E2 /* DaemonState_transiting_to_standby.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DaemonState_transiting_to_standby.h; sourceTree = "<group>"; };
+		A6B59CC225BC37B80014D9E2 /* DaemonState_transiting_to_standby.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DaemonState_transiting_to_standby.m; sourceTree = "<group>"; };
+		A6B59CC525BC3A0E0014D9E2 /* DaemonState_Failed.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DaemonState_Failed.h; sourceTree = "<group>"; };
+		A6B59CC625BC3A0E0014D9E2 /* DaemonState_Failed.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DaemonState_Failed.m; sourceTree = "<group>"; };
 		A6B862B12489DA47000A79B5 /* VERSION */ = {isa = PBXFileReference; lastKnownFileType = text; path = VERSION; sourceTree = SOURCE_ROOT; };
 		A6E54FC91B0DAB7D0090FC94 /* DaemonState_all.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DaemonState_all.h; sourceTree = "<group>"; };
 		A6E54FCC1B0DBE640090FC94 /* Listener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Listener.h; sourceTree = "<group>"; };
@@ -104,6 +113,12 @@
 				A6018F981B0D479F00854472 /* DaemonState_Hot.m */,
 				A6018F9A1B0D47A700854472 /* DaemonState_Standby.h */,
 				A6018F9B1B0D47A700854472 /* DaemonState_Standby.m */,
+				A6B59CBD25BC37AD0014D9E2 /* DaemonState_transiting_to_hot.h */,
+				A6B59CBE25BC37AD0014D9E2 /* DaemonState_transiting_to_hot.m */,
+				A6B59CC125BC37B80014D9E2 /* DaemonState_transiting_to_standby.h */,
+				A6B59CC225BC37B80014D9E2 /* DaemonState_transiting_to_standby.m */,
+				A6B59CC525BC3A0E0014D9E2 /* DaemonState_Failed.h */,
+				A6B59CC625BC3A0E0014D9E2 /* DaemonState_Failed.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -208,7 +223,10 @@
 				A6E54FCE1B0DBE640090FC94 /* Listener.m in Sources */,
 				A6018FA51B0D480100854472 /* Daemon.m in Sources */,
 				A6018F8D1B0D442C00854472 /* DaemonState.m in Sources */,
+				A6B59CBF25BC37AD0014D9E2 /* DaemonState_transiting_to_hot.m in Sources */,
+				A6B59CC725BC3A0E0014D9E2 /* DaemonState_Failed.m in Sources */,
 				A6018F961B0D479400854472 /* DaemonState_Unknown.m in Sources */,
+				A6B59CC325BC37B80014D9E2 /* DaemonState_transiting_to_standby.m in Sources */,
 				A6018F991B0D479F00854472 /* DaemonState_Hot.m in Sources */,
 				A6018F9C1B0D47A700854472 /* DaemonState_Standby.m in Sources */,
 			);
