@@ -67,6 +67,36 @@
     return  [[DaemonState_Unknown alloc]initWithDaemon:daemon];
 }
 
+- (DaemonState *)eventStatusRemoteTakeoverRequest:(NSDictionary *)dict
+{
+    [daemon.logFeed warningText:@"Unexpected eventTakeoverRequest"];
+    return [[DaemonState_Unknown alloc]initWithDaemon:daemon];
+}
+
+- (DaemonState *)eventStatusRemoteTakeoverConf:(NSDictionary *)dict
+{
+    [daemon.logFeed warningText:@"Unexpected eventTakeoverConf"];
+    return [[DaemonState_Unknown alloc]initWithDaemon:daemon];
+}
+
+- (DaemonState *)eventStatusRemoteTakeoverReject:(NSDictionary *)dict
+{
+    [daemon.logFeed warningText:@"Unexpected eventTakeoverReject"];
+    return [[DaemonState_Unknown alloc]initWithDaemon:daemon];
+}
+
+- (DaemonState *)eventStatusRemoteTransitingToHot:(NSDictionary *)dict
+{
+    [daemon.logFeed warningText:@"Unexpected eventStatusRemoteTransitingToHot"];
+    return self;
+}
+
+- (DaemonState *)eventStatusRemoteTransitingToStandby:(NSDictionary *)dict
+{
+    [daemon.logFeed warningText:@"Unexpected eventStatusRemoteTransitingToStandby"];
+    return self;
+}
+
 #pragma mark - Local Status
 
 - (DaemonState *)eventStatusLocalHot:(NSDictionary *)dict
@@ -87,6 +117,27 @@
     return [[DaemonState_Unknown alloc]initWithDaemon:daemon];
 }
 
+- (DaemonState *)eventStatusLocalUnknown:(NSDictionary *)dict
+{
+    [daemon.logFeed warningText:@"Unexpected eventStatusLocalUnknown"];
+    return  [[DaemonState_Unknown alloc]initWithDaemon:daemon];
+}
+
+- (DaemonState *)eventStatusLocalTransitingToHot:(NSDictionary *)dict
+{
+    [daemon.logFeed warningText:@"Unexpected eventStatusLocalTransitingToHot"];
+    return [[DaemonState_Unknown alloc]initWithDaemon:daemon];
+}
+
+- (DaemonState *)eventStatusLocalTransitingToStandby:(NSDictionary *)dict
+{
+    [daemon.logFeed warningText:@"Unexpected eventStatusLocalTransitingToStandby"];
+    return [[DaemonState_Unknown alloc]initWithDaemon:daemon];
+}
+
+
+#pragma mark - GUI Commands Status
+
 - (DaemonState *)eventForceFailover:(NSDictionary *)dict
 {
     [daemon.logFeed warningText:@"Unexpected eventForceFailover"];
@@ -96,32 +147,6 @@
 - (DaemonState *)eventForceTakeover:(NSDictionary *)dict
 {
     [daemon.logFeed warningText:@"Unexpected eventForceTakeover"];
-    return [[DaemonState_Unknown alloc]initWithDaemon:daemon];
-}
-
-- (DaemonState *)eventStatusLocalUnknown:(NSDictionary *)dict
-{
-    [daemon.logFeed warningText:@"Unexpected eventStatusLocalUnknown"];
-    return  [[DaemonState_Unknown alloc]initWithDaemon:daemon];
-}
-
-#pragma mark - Remote Commands
-
-- (DaemonState *)eventTakeoverRequest:(NSDictionary *)dict
-{
-    [daemon.logFeed warningText:@"Unexpected eventTakeoverRequest"];
-    return [[DaemonState_Unknown alloc]initWithDaemon:daemon];
-}
-
-- (DaemonState *)eventTakeoverConf:(NSDictionary *)dict
-{
-    [daemon.logFeed warningText:@"Unexpected eventTakeoverConf"];
-    return [[DaemonState_Unknown alloc]initWithDaemon:daemon];
-}
-
-- (DaemonState *)eventTakeoverReject:(NSDictionary *)dict
-{
-    [daemon.logFeed warningText:@"Unexpected eventTakeoverReject"];
     return [[DaemonState_Unknown alloc]initWithDaemon:daemon];
 }
 
@@ -135,8 +160,8 @@
 
 - (DaemonState *)eventTimeout
 {
-    [daemon.logFeed warningText:@"Unexpected eventTimeout"];
-    return [[DaemonState_Unknown alloc]initWithDaemon:daemon];
+    /* other side's daemon is dead */
+    return [self eventStatusRemoteFailure:NULL];
 }
 
 

@@ -24,9 +24,6 @@ DaemonRandomValue GetDaemonRandomValue(void)
 @synthesize remoteAddress;
 @synthesize netmask;
 @synthesize remotePort;
-@synthesize timeout;
-@synthesize lastRx;
-@synthesize lastLocalRx;
 @synthesize startAction;
 @synthesize stopAction;
 @synthesize localAddress;
@@ -41,16 +38,24 @@ DaemonRandomValue GetDaemonRandomValue(void)
     self = [super init];
     if(self)
     {
-        lastLocalRx = [NSDate date];
+        _lastLocalRx = [NSDate date];
     }
     return self;
 }
 
 - (void)actionStart
 {
-    if(timeout<=0)
+    if(_timeout<=0)
     {
-        timeout=6.0;
+        _timeout=6.0;
+    }
+    if(_goingHotTimeout <=0)
+    {
+        _goingHotTimeout = 20.0;
+    }
+    if(_goingStandbyTimeout <=0)
+    {
+        _goingStandbyTimeout = 6;
     }
     DaemonState_Unknown *startState = [[DaemonState_Unknown alloc]initWithDaemon:self];
     currentState = [startState eventStart];
@@ -121,6 +126,18 @@ DaemonRandomValue GetDaemonRandomValue(void)
     [self sendStatus:MESSAGE_TAKEOVER_CONF];
 }
 
+
+- (void)actionSendTransitingToHot
+{
+    [self sendStatus:MESSAGE_TRANSITING_TO_HOT];
+}
+
+
+- (void)actionSendTransitingToStandby
+{
+    [self sendStatus:MESSAGE_TRANSITING_TO_STANDBY];
+}
+
 #define DEBUGLOG(state,event) \
 { \
     NSString *s = [NSString stringWithFormat:@"State:%@ event:%@",state.name,event]; \
@@ -132,41 +149,66 @@ DaemonRandomValue GetDaemonRandomValue(void)
 {
     NSString *oldstate = [currentState name];
 
-    /*local message */
+    
+    /*
+     * LOCAL MESSAGES
+     */
+
     if ([event isEqualToString:MESSAGE_LOCAL_HOT])
     {
         self.localIsFailed=NO;
-        lastLocalRx = [NSDate date];
+        _lastLocalRx = [NSDate date];
         DEBUGLOG(currentState,@"localHotIndication");
         currentState = [currentState eventStatusLocalHot:dict];
     }
     else if ([event isEqualToString:MESSAGE_LOCAL_STANDBY])
     {
         self.localIsFailed=NO;
-        lastLocalRx = [NSDate date];
+        _lastLocalRx = [NSDate date];
         DEBUGLOG(currentState,@"localStandbyIndication");
         currentState = [currentState eventStatusLocalStandby:dict];
     }
     else if ([event isEqualToString:MESSAGE_LOCAL_UNKNOWN])
     {
         self.localIsFailed=NO;
-        lastLocalRx = [NSDate date];
+        _lastLocalRx = [NSDate date];
         DEBUGLOG(currentState,@"localUnknownIndication");
         currentState = [currentState eventStatusLocalUnknown:dict];
     }
     else if ([event isEqualToString:MESSAGE_LOCAL_FAIL])
     {
         self.localIsFailed=YES;
-        lastLocalRx = [NSDate date];
+        _lastLocalRx = [NSDate date];
         DEBUGLOG(currentState,@"localFailureIndication");
         currentState = [currentState eventStatusLocalFailure:dict];
     }
+    
+    else if ([event isEqualToString:MESSAGE_LOCAL_TRANSITING_TO_HOT])
+    {
+        self.localIsFailed=NO;
+        _lastLocalRx = [NSDate date];
+        DEBUGLOG(currentState,@"localTransitingToHot");
+        currentState = [currentState eventStatusLocalTransitingToHot:dict];
+    }
+
+    else if ([event isEqualToString:MESSAGE_LOCAL_TRANSITING_TO_STANDBY])
+    {
+        self.localIsFailed=NO;
+        _lastLocalRx = [NSDate date];
+        DEBUGLOG(currentState,@"localTransitingToStandby");
+        currentState = [currentState eventStatusLocalTransitingToStandby:dict];
+    }
+
+
+    /*
+     * REMOTE *
+     */
     
     /* the other side says it doesnt know its status */
     else if ([event isEqualToString:MESSAGE_UNKNOWN])
     {
         self.remoteIsFailed=NO;
-        lastRx = [NSDate date];
+        _lastRx = [NSDate date];
         DEBUGLOG(currentState,@"eventUnknown");
         currentState = [currentState eventStatusRemoteUnknown:dict];
     }
@@ -175,7 +217,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
     else if ([event isEqualToString:MESSAGE_FAILED])
     {
         self.remoteIsFailed=YES;
-        lastRx = [NSDate date];
+        _lastRx = [NSDate date];
         DEBUGLOG(currentState,@"eventRemoteFailed");
         currentState = [currentState eventStatusRemoteFailure:dict];
     }
@@ -183,36 +225,35 @@ DaemonRandomValue GetDaemonRandomValue(void)
     else if ([event isEqualToString:MESSAGE_FAILOVER])
     {
         self.remoteIsFailed=NO;
-        lastRx = [NSDate date];
+        _lastRx = [NSDate date];
         DEBUGLOG(currentState,@"eventRemoteFailover");
         currentState = [currentState eventStatusRemoteFailover:dict];
     }
 
-
     else if ([event isEqualToString:MESSAGE_TAKEOVER_REQUEST])
     {
         self.remoteIsFailed=NO;
-        lastRx = [NSDate date];
-        DEBUGLOG(currentState,@"eventTakeoverRequest");
-        currentState = [currentState eventTakeoverRequest:dict];
+        _lastRx = [NSDate date];
+        DEBUGLOG(currentState,@"eventStatusRemoteTakeoverRequest");
+        currentState = [currentState eventStatusRemoteTakeoverRequest:dict];
     }
     else if ([event isEqualToString:MESSAGE_TAKEOVER_REJECT])
     {
-        lastRx = [NSDate date];
-        DEBUGLOG(currentState,@"eventTakeoverReject");
-        currentState = [currentState eventTakeoverReject:dict];
+        _lastRx = [NSDate date];
+        DEBUGLOG(currentState,@"eventStatusRemoteTakeoverReject");
+        currentState = [currentState eventStatusRemoteTakeoverReject:dict];
     }
 
     else if ([event isEqualToString:MESSAGE_TAKEOVER_CONF])
     {
-        lastRx = [NSDate date];
+        _lastRx = [NSDate date];
         DEBUGLOG(currentState,@"eventTakeoverConf");
-        currentState = [currentState eventTakeoverConf:dict];
+        currentState = [currentState eventStatusRemoteTakeoverConf:dict];
     }
     else if ([event isEqualToString:MESSAGE_STANDBY])
     {
         self.remoteIsFailed=NO;
-        lastRx = [NSDate date];
+        _lastRx = [NSDate date];
         DEBUGLOG(currentState,@"eventStatusStandby");
         currentState = [currentState eventStatusRemoteStandby:dict];
     }
@@ -220,11 +261,28 @@ DaemonRandomValue GetDaemonRandomValue(void)
     else if ([event isEqualToString:MESSAGE_HOT])
     {
         self.remoteIsFailed=NO;
-        lastRx = [NSDate date];
+        _lastRx = [NSDate date];
         DEBUGLOG(currentState,@"eventStatusHot");
         currentState = [currentState eventStatusRemoteHot:dict];
     }
     
+    else if ([event isEqualToString:MESSAGE_TRANSITING_TO_HOT])
+    {
+        self.remoteIsFailed=NO;
+        _lastRx = [NSDate date];
+        DEBUGLOG(currentState,@"eventStatusRemoteTransitingToHot");
+        currentState = [currentState eventStatusRemoteTransitingToHot:dict];
+    }
+
+    else if ([event isEqualToString:MESSAGE_TRANSITING_TO_STANDBY])
+    {
+        self.remoteIsFailed=NO;
+        _lastRx = [NSDate date];
+        DEBUGLOG(currentState,@"eventStatusRemoteTransitingToStandby");
+        currentState = [currentState eventStatusRemoteTransitingToStandby:dict];
+    }
+
+
     NSAssert(currentState,@"State is now null");
     NSString *newstate = [currentState name];
     if(![oldstate isEqualToString:newstate])
@@ -252,8 +310,8 @@ DaemonRandomValue GetDaemonRandomValue(void)
 - (void)checkForTimeouts
 {
     NSDate *now = [NSDate date];
-    NSTimeInterval delay = [now timeIntervalSinceDate:lastRx];
-    if(delay > timeout)
+    NSTimeInterval delay = [now timeIntervalSinceDate:_lastRx];
+    if(delay > _timeout)
     {
         currentState = [currentState eventTimeout];
     }
@@ -445,8 +503,8 @@ DaemonRandomValue GetDaemonRandomValue(void)
     {
         dict[@"resource-id"]= resourceId;
         dict[@"current-state"]=[currentState name];
-        dict[@"lastRx"] = lastRx ? [lastRx stringValue] : @"-";
-        dict[@"lastLocalRx"] = lastLocalRx ? [lastLocalRx stringValue] : @"-";
+        dict[@"lastRx"] = _lastRx ? [_lastRx stringValue] : @"-";
+        dict[@"_lastLocalRx"] = _lastLocalRx ? [_lastLocalRx stringValue] : @"-";
         dict[@"remoteAddress"] = remoteAddress;
         dict[@"localAddress"] = localAddress;
         dict[@"sharedAddress"] = sharedAddress;
@@ -470,12 +528,12 @@ DaemonRandomValue GetDaemonRandomValue(void)
 - (void)checkIfUp
 {
     /* we check if we have received the heartbeat from the local instance */
-    if(lastLocalRx == NULL)
+    if(_lastLocalRx == NULL)
     {
-        lastLocalRx = [NSDate date];
+        _lastLocalRx = [NSDate date];
     }
     lastChecked = [NSDate date];
-    NSTimeInterval delay = [lastChecked timeIntervalSinceDate:lastLocalRx];
+    NSTimeInterval delay = [lastChecked timeIntervalSinceDate:_lastLocalRx];
     if(delay > intervallDelay)
     {
         DEBUGLOG(currentState,@"eventStatusLocalFailure");

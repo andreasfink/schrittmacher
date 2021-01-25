@@ -23,9 +23,12 @@
 - (DaemonState *)eventStatusRemoteStandby:(NSDictionary *)dict;
 - (DaemonState *)eventStatusRemoteFailure:(NSDictionary *)dict;
 - (DaemonState *)eventStatusRemoteFailover:(NSDictionary *)dict;
+- (DaemonState *)eventStatusRemoteUnknown:(NSDictionary *)dict;
+- (DaemonState *)eventStatusRemoteTakeoverRequest:(NSDictionary *)dict;
+- (DaemonState *)eventStatusRemoteTakeoverConf:(NSDictionary *)dict;
+- (DaemonState *)eventStatusRemoteTakeoverReject:(NSDictionary *)dict;
 - (DaemonState *)eventStatusRemoteTransitingToHot:(NSDictionary *)dict;
 - (DaemonState *)eventStatusRemoteTransitingToStandby:(NSDictionary *)dict;
-- (DaemonState *)eventStatusRemoteUnknown:(NSDictionary *)dict;
 
 #pragma mark - Local Status
 - (DaemonState *)eventStatusLocalHot:(NSDictionary *)pdu;
@@ -35,19 +38,14 @@
 - (DaemonState *)eventStatusLocalTransitingToHot:(NSDictionary *)dict;
 - (DaemonState *)eventStatusLocalTransitingToStandby:(NSDictionary *)dict;
 
-#pragma mark - Remote Commands
-- (DaemonState *)eventTakeoverRequest:(NSDictionary *)dict;
-- (DaemonState *)eventTakeoverConf:(NSDictionary *)dict;
-- (DaemonState *)eventTakeoverReject:(NSDictionary *)dict;
-
 #pragma mark - GUI commands
 - (DaemonState *)eventForceFailover:(NSDictionary *)dict;
 - (DaemonState *)eventForceTakeover:(NSDictionary *)dict;
 
 
 #pragma mark - Timer Events
-- (DaemonState *)eventTimer;
-- (DaemonState *)eventTimeout;
+- (DaemonState *)eventTimer;   /* called to state machine on regular intervalls */
+- (DaemonState *)eventTimeout; /* called when no messages are received from remote daemon */
 
 #pragma mark - Helper
 - (int)takeoverChallenge:(NSDictionary *)dict;

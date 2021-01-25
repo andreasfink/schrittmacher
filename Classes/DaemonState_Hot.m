@@ -17,6 +17,7 @@
 }
 
 #pragma mark - Remote Status
+
 - (DaemonState *)eventStatusRemoteHot:(NSDictionary *)dict
 {
     /* other side says its in hot as well, we assume we are hot so we gotta challenge it */
@@ -50,6 +51,54 @@
     return self;
 }
 
+- (DaemonState *)eventStatusRemoteTakeoverRequest:(NSDictionary *)dict
+{
+    /* the other side indicates it wants to challenge our hot status because it is assuming itself hot too */
+    int i = [self takeoverChallenge:dict];
+    if(i>0) /* we win */
+    {
+        [daemon actionSendTakeoverReject];
+        return self;
+    }
+    else /* they win */
+    {
+        [daemon callStopAction];
+        [daemon callDeactivateInterface];
+        [daemon actionSendTakeoverConfirm];
+        return [[DaemonState_Standby alloc]initWithDaemon:daemon];
+    }
+}
+
+- (DaemonState *)eventStatusRemoteTakeoverConf:(NSDictionary *)dict
+{
+    /* other side confirmed the takeover. So we are definitively hot now */
+    [daemon callActivateInterface]; /* just in case */
+    [daemon callStartAction];       /* just in case */
+    return self;
+}
+
+- (DaemonState *)eventStatusRemoteTakeoverReject:(NSDictionary *)dict
+{
+    /* the other side rejected our takeover. We should not be in Hot state already however */
+    /* to mitigate, we transit to standby now */
+    [daemon callStopAction];
+    [daemon callDeactivateInterface];
+    [daemon actionSendStandby];
+    return [[DaemonState_Standby alloc]initWithDaemon:daemon];
+}
+
+- (DaemonState *)eventStatusRemoteTransitingToHot:(NSDictionary *)dict
+{
+    [daemon actionSendTakeoverReject];
+    [daemon actionSendHot];
+    return self;
+}
+
+- (DaemonState *)eventStatusRemoteTransitingToStandby:(NSDictionary *)dict
+{
+    [daemon actionSendHot];
+    return self;
+}
 
 #pragma mark - Local Status
 - (DaemonState *)eventStatusLocalHot:(NSDictionary *)pdu
@@ -76,9 +125,10 @@
     else
     {
         /* ok remote is failed but local thinks its standby. lets fired it up */
+        [daemon actionSendTransitingToHot];
         [daemon callActivateInterface];
         [daemon callStartAction];
-        return self;
+        return [[DaemonState_transiting_to_hot alloc]initWithDaemon:daemon];
     }
 }
 
@@ -95,49 +145,14 @@
 
 - (DaemonState *)eventStatusLocalUnknown:(NSDictionary *)dict
 {
-    /* Daemon says we are hot but  app doesnt know */
+    /* Daemon says we are hot but app doesnt know */
+    [daemon actionSendTransitingToHot];
     [daemon callActivateInterface];
     [daemon callStartAction];
-    return self;
+    return  [[DaemonState_transiting_to_hot alloc]initWithDaemon:daemon];;
 }
 
 
-#pragma mark - Remote Commands
-- (DaemonState *)eventTakeoverRequest:(NSDictionary *)dict
-{
-    /* the other side indicates it wants to challenge our hot status because it is assuming itself hot too */
-    int i = [self takeoverChallenge:dict];
-    if(i>0) /* we win */
-    {
-        [daemon actionSendTakeoverReject];
-        return self;
-    }
-    else /* they win */
-    {
-        [daemon callStopAction];
-        [daemon callDeactivateInterface];
-        [daemon actionSendTakeoverConfirm];
-        return [[DaemonState_Standby alloc]initWithDaemon:daemon];
-    }
-}
-
-- (DaemonState *)eventTakeoverConf:(NSDictionary *)dict
-{
-    /* other side confirmed the takeover. So we are definitively hot now */
-    [daemon callActivateInterface]; /* just in case */
-    [daemon callStartAction];       /* just in case */
-    return self;
-}
-
-- (DaemonState *)eventTakeoverReject:(NSDictionary *)dict
-{
-    /* the other side rejected our takeover. We should not be in Hot state already however */
-    /* to mitigate, we transit to standby now */
-    [daemon callStopAction];
-    [daemon callDeactivateInterface];
-    [daemon actionSendStandby];
-    return [[DaemonState_Standby alloc]initWithDaemon:daemon];
-}
 #pragma mark - GUI
 
 - (DaemonState *)eventForceFailover:(NSDictionary *)dict
@@ -163,15 +178,13 @@
 
 #pragma mark - Timer Events
 
+
+/* heartbeat timer called */
 - (DaemonState *)eventTimer
 {
     [daemon actionSendHot];
     return self;
 }
 
-- (DaemonState *)eventTimeout
-{
-    return self;
-}
 
 @end

@@ -55,9 +55,7 @@ typedef enum DaemonInterfaceState
     NSString        *netmask;
     int             remotePort;
     Listener        *listener;
-    NSTimeInterval  timeout;
-    NSDate          *lastRx;
-    NSDate          *lastLocalRx;
+    NSTimeInterval  _timeout;
     NSString        *startAction;
     NSString        *stopAction;
     NSString        *pidFile;
@@ -77,6 +75,12 @@ typedef enum DaemonInterfaceState
     
     BOOL _localStopActionRequested;
     BOOL _localStartActionRequested;
+    
+    NSDate          *_lastRx;
+    NSDate          *_lastLocalRx;
+    NSTimeInterval _goingHotTimeout;
+    NSTimeInterval _goingStandbyTimeout;
+    
 }
 
 @property (readwrite,strong) DaemonState *currentState;
@@ -107,6 +111,8 @@ typedef enum DaemonInterfaceState
 
 @property (readwrite,assign,atomic) BOOL localStopActionRequested;
 @property (readwrite,assign,atomic) BOOL localStartActionRequested;
+@property (readwrite,assign,atomic) NSTimeInterval goingHotTimeout;
+@property (readwrite,assign,atomic) NSTimeInterval goingStandbyTimeout;
 
 
 
@@ -124,6 +130,8 @@ typedef enum DaemonInterfaceState
 - (void)actionSendTakeoverRequestForced;
 - (void)actionSendTakeoverReject;
 - (void)actionSendTakeoverConfirm;
+- (void)actionSendTransitingToHot;
+- (void)actionSendTransitingToStandby;
 
 - (void)sendStatus:(NSString *)status;
 

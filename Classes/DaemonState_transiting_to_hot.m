@@ -32,6 +32,7 @@
 
 - (DaemonState *)eventStatusRemoteHot:(NSDictionary *)dict
 {
+    [daemon actionSendStandby];
     [daemon callDeactivateInterface];
     [daemon callStopAction];
     return [[DaemonState_Standby alloc]initWithDaemon:daemon];
@@ -58,9 +59,46 @@
 - (DaemonState *)eventStatusRemoteUnknown:(NSDictionary *)dict
 {
     /* we already transiting to hot, so the other side should believe its standby */
-    [daemon actionSendHot];
+    [daemon actionSendTransitingToHot];
     return self;
 }
+
+- (DaemonState *)eventStatusRemoteTakeoverRequest:(NSDictionary *)dict
+{
+    [daemon actionSendTakeoverConfirm];
+    [daemon callDeactivateInterface];
+    [daemon callStopAction];
+    return [[DaemonState_Standby alloc]initWithDaemon:daemon];
+}
+
+- (DaemonState *)eventStatusRemoteTakeoverConf:(NSDictionary *)dict
+{
+    [daemon callActivateInterface];
+    [daemon callStartAction];
+    return self;
+}
+
+- (DaemonState *)eventStatusRemoteTakeoverReject:(NSDictionary *)dict
+{
+    [daemon actionSendStandby];
+    [daemon callDeactivateInterface];
+    [daemon callStopAction];
+    return [[DaemonState_Standby alloc]initWithDaemon:daemon];
+}
+
+- (DaemonState *)eventStatusRemoteTransitingToHot:(NSDictionary *)dict
+{
+    /* we both want to go to hot. so we have to agree who wins */
+    [daemon actionSendTakeoverRequest];
+    return self;
+}
+
+- (DaemonState *)eventStatusRemoteTransitingToStandby:(NSDictionary *)dict
+{
+    /* correct state */
+    return self;
+}
+
 
 #pragma mark - Local Status
 - (DaemonState *)eventStatusLocalHot:(NSDictionary *)pdu
@@ -73,16 +111,13 @@
 {
     [daemon actionSendStandby];
     [daemon callDeactivateInterface];
-    [daemon callStopAction];
     return [[DaemonState_Standby alloc]initWithDaemon:daemon];
 }
 
 - (DaemonState *)eventStatusLocalFailure:(NSDictionary *)dict
 {
-    daemon.localIsFailed = YES;
     [daemon actionSendFailed];
     [daemon callDeactivateInterface];
-    [daemon callStopAction];
     return [[DaemonState_Failed alloc]initWithDaemon:daemon];
 }
 
@@ -93,46 +128,8 @@
     return self;
 }
 
-#pragma mark - Remote Commands
-- (DaemonState *)eventTakeoverRequest:(NSDictionary *)dict
-{
-    [daemon actionSendTakeoverConfirm];
-    [daemon callDeactivateInterface];
-    [daemon callStopAction];
-    return [[DaemonState_Standby alloc]initWithDaemon:daemon];
-}
 
-- (DaemonState *)eventTakeoverConf:(NSDictionary *)dict
-{
-    /* somethings odd here */
-    if(daemon.localIsFailed)
-    {
-        [daemon actionSendFailed];
-        return self;
-    }
-    else
-    {
-        [daemon callActivateInterface];
-        [daemon callStartAction];
-        //[daemon actionSendHot];
-        // hot is being sent once local instance confirms "hot" status.
-        _goingHot = [NSDate date];
-    }
-    return self;
-}
 
-- (DaemonState *)eventTakeoverReject:(NSDictionary *)dict
-{
-    if(daemon.localIsFailed)
-    {
-        [daemon actionSendFailed];
-    }
-    else
-    {
-        [daemon actionSendStandby];
-    }
-    return self;
-}
 
 #pragma mark - GUI
 
@@ -159,47 +156,15 @@
 
 - (DaemonState *)eventTimer
 {
-    if(daemon.localIsFailed)
+    /* we are going hot but if it takes too long, we consider it failed */
+    if([[NSDate date] timeIntervalSinceDate:_goingHotStartTime] > daemon.goingHotTimeout)
     {
         [daemon actionSendFailed];
+        return [[DaemonState_Failed alloc]initWithDaemon:daemon];
     }
-    else
-    {
-        /* we have sent a takeover request and got confirmation. app now tells us its still standby */
-        /* if its longer than 3 timer intervalls (which is 2sec), we tell the other side */
-        if(_goingHot)
-        {
-            if([[NSDate date] timeIntervalSinceDate:_goingHot] > 6.0)
-            {
-               _goingHot = NULL;
-               [daemon actionSendStandby];
-            }
-            else
-            {
-                /* we ignore the standby state as we might just have informed it a milisecond ago to go hot and it didnt had a chance to tell us it did yet */
-            }
-        }
-        else
-        {
-            [daemon actionSendStandby];
-        }
-    }
+    [daemon actionSendTransitingToHot];
     return self;
 }
 
-- (DaemonState *)eventTimeout
-{
-    if(daemon.localIsFailed)
-    {
-        [daemon actionSendFailed];
-        return self;
-    }
-    else
-    {
-        [daemon callActivateInterface];
-        [daemon callStartAction];
-        return [[DaemonState_Hot alloc]initWithDaemon:daemon];
-    }
-}
 
 @end
