@@ -252,7 +252,7 @@ AppDelegate *_global_appdel= NULL;
             [s appendFormat:@"<td>%@</td>",dict[@"resource-id"]];
             [s appendFormat:@"<td>%@</td>",dict[@"remote-state"]];
             [s appendFormat:@"<td>%@</td>",dict[@"local-state"]];
-            [s appendFormat:@"<td>%@</td>",dict[@"lastRx"]];
+            [s appendFormat:@"<td>%@</td>",dict[@"lastRemoteRx"]];
             [s appendFormat:@"<td>%@</td>",dict[@"lastLocalRx"]];
             [s appendFormat:@"<td>%@</td>",dict[@"remoteIsFailed"]];
             [s appendFormat:@"<td>%@</td>",dict[@"localIsFailed"]];

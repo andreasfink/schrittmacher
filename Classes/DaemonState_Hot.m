@@ -21,7 +21,8 @@
 - (DaemonState *)eventStatusRemoteHot:(NSDictionary *)dict
 {
     /* other side says its in hot as well, we assume we are hot so we gotta challenge it */
-    [daemon actionSendTakeoverRequest];
+    [daemon actionSendTakeoverReject];
+    [daemon actionSendHot];
     return self;
 }
 

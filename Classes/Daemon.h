@@ -96,7 +96,7 @@ typedef enum DaemonInterfaceState
 
 @property (readwrite,strong) Listener        *listener;
 @property (readwrite,assign) NSTimeInterval  timeout;
-@property (readwrite,strong) NSDate          *lastRx;
+@property (readwrite,strong) NSDate          *lastRemoteRx;
 @property (readwrite,strong) NSDate          *lastLocalRx;
 @property (readwrite,strong) NSString        *startAction;
 @property (readwrite,strong) NSString        *stopAction;

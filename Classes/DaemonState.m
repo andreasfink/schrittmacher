@@ -18,7 +18,8 @@
     if(self)
     {
         daemon = d;
-        d.lastRx = [NSDate date];
+        d.lastRemoteRx = [NSDate date];
+        d.lastLocalRx = [NSDate date];
     }
     return self;
 }
