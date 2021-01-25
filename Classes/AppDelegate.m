@@ -213,7 +213,8 @@ AppDelegate *_global_appdel= NULL;
         [s appendFormat:@"<table border=1>\n"];
         [s appendFormat:@"<tr>\n"];
         [s appendFormat:@"<th rowspan=2>Resource</th>\n"];
-        [s appendFormat:@"<th rowspan=2>Status</th>\n"];
+        [s appendFormat:@"<th rowspan=2>Remote Status</th>\n"];
+        [s appendFormat:@"<th rowspan=2>Local Status</th>\n"];
         [s appendFormat:@"<th colspan=2>Heartbeat</th>\n"];
         [s appendFormat:@"<th colspan=2>Failure</th>\n"];
         [s appendFormat:@"<th rowspan=2>Action</th>\n"];
@@ -238,40 +239,19 @@ AppDelegate *_global_appdel= NULL;
             NSDictionary *dict = states[key];
             NSString *action;
 
-            if([dict[@"current-state"] isEqualToString:@"Hot"])
+            if([dict[@"local-state"] isEqualToString:@"hot"])
             {
                 action = [NSString stringWithFormat:@"<a href=/?failover=%@>failover</a>", [key urlencode] ];
             }
-            else if([dict[@"current-state"] isEqualToString:@"Standby"])
+            else if([dict[@"local-state"] isEqualToString:@"standby"])
             {
                 action = [NSString stringWithFormat:@"<a href=/?takeover=%@>takeover</a>", [key urlencode] ];
             }
-            /*
-             dict[@"resource-id"]= resourceId;
-             dict[@"current-state"]=[currentState name];
-             dict[@"lastRx"] = lastRx ? [lastRx stringValue] : @"-";
-             dict[@"lastLocalRx"] = lastLocalRx ? [lastLocalRx stringValue] : @"-";
-             dict[@"remoteAddress"] = remoteAddress;
-             dict[@"localAddress"] = localAddress;
-             dict[@"sharedAddress"] = sharedAddress;
-             dict[@"startAction"] = startAction;
-             dict[@"stopAction"] = stopAction;
-             dict[@"pidFile"] = pidFile;
-             dict[@"activateInterfaceCommand"] = activateInterfaceCommand;
-             dict[@"deactivateInterfaceCommand"] = deactivateInterfaceCommand;
-             dict[@"localPriority"] = [NSString stringWithFormat:@"%d",(int)localPriority];
-             dict[@"lastChecked"] = [lastChecked stringValue];
-             dict[@"startedAt"] = startedAt ? [startedAt stringValue] : @"never";
-             dict[@"stoppedAt"] = stoppedAt ? [stoppedAt stringValue] : @"never";
-             dict[@"activatedAt"] = activatedAt ? [activatedAt stringValue] : @"never";
-             dict[@"dectivatedAt"] = deactivatedAt ? [deactivatedAt stringValue] : @"never";
-             dict[@"remoteIsFailed"] = _remoteIsFailed ? @"YES" : @"NO";
-             dict[@"localIsFailed"] = _localIsFailed ? @"YES" : @"NO";
-    */
 
             [s appendFormat:@"<tr>"];
             [s appendFormat:@"<td>%@</td>",dict[@"resource-id"]];
-            [s appendFormat:@"<td>%@</td>",dict[@"current-state"]];
+            [s appendFormat:@"<td>%@</td>",dict[@"remote-state"]];
+            [s appendFormat:@"<td>%@</td>",dict[@"local-state"]];
             [s appendFormat:@"<td>%@</td>",dict[@"lastRx"]];
             [s appendFormat:@"<td>%@</td>",dict[@"lastLocalRx"]];
             [s appendFormat:@"<td>%@</td>",dict[@"remoteIsFailed"]];
@@ -295,7 +275,7 @@ AppDelegate *_global_appdel= NULL;
         int addrType = 4;
         NSString *unifiedLocalAddress =  [UMSocket unifyIP:localAddress];
         [UMSocket deunifyIp:unifiedLocalAddress type:&addrType];
-        listener.localHostPublic =[[UMHost alloc]initWithLocalhostAddresses:@[unifiedLocalAddress]];
+        listener.localHostPublic =[[UMHost alloc]initWithLocalhostAddresses:@[unifiedLocalAddress ? unifiedLocalAddress : @"0.0.0.0"]];
         listener.localHostPrivate=[[UMHost alloc]initWithLocalhostAddresses:@[@"127.0.0.1"]];
         listener.port = port;
         listener.addressType= addrType;

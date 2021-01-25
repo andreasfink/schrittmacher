@@ -130,9 +130,9 @@
 
 #pragma mark - Timer Events
 
-- (DaemonState *)eventTimer
+- (DaemonState *)eventHeartbeat
 {
-   [daemon actionSendFailed];
+    [daemon actionSendFailed];
     return self;
 }
 

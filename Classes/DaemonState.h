@@ -44,8 +44,9 @@
 
 
 #pragma mark - Timer Events
-- (DaemonState *)eventTimer;   /* called to state machine on regular intervalls */
-- (DaemonState *)eventTimeout; /* called when no messages are received from remote daemon */
+- (DaemonState *)eventHeartbeat;   /* called to state machine on regular intervalls */
+- (DaemonState *)eventRemoteTimeout; /* called when no messages are received from remote daemon */
+- (DaemonState *)eventLocalTimeout; /* called when no messages are received from local app */
 
 #pragma mark - Helper
 - (int)takeoverChallenge:(NSDictionary *)dict;

@@ -224,7 +224,7 @@
 #pragma mark - Timer Events
 
 /* heartbeat timer called */
-- (DaemonState *)eventTimer
+- (DaemonState *)eventHeartbeat
 {
     [daemon actionSendUnknown];
     return self;

@@ -228,7 +228,7 @@
             Daemon *d = [self daemonByName:key];
             if(d)
             {
-                [d eventTimer];
+                [d eventHeartbeat];
             }
         }
     }

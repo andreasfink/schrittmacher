@@ -152,18 +152,25 @@
 
 #pragma mark - Timer Events
 
-- (DaemonState *)eventTimer
+- (DaemonState *)eventHeartbeat
 {
-    [daemon.logFeed warningText:@"Unexpected eventTimer"];
+    [daemon.logFeed warningText:@"Unexpected eventHeartbeat"];
     return [[DaemonState_Unknown alloc]initWithDaemon:daemon];
 }
 
-- (DaemonState *)eventTimeout
+- (DaemonState *)eventRemoteTimeout
 {
     /* other side's daemon is dead */
+    daemon.lastRemoteState = @"no-info-received";
     return [self eventStatusRemoteFailure:NULL];
 }
 
+- (DaemonState *)eventLocalTimeout
+{
+    /* this side's app is dead */
+    daemon.lastLocalState = @"no-info-received";
+    return [self eventStatusLocalFailure:NULL];
+}
 
 #pragma mark - Helper Methods
 

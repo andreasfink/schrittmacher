@@ -161,7 +161,7 @@
 
 #pragma mark - Timer Events
 
-- (DaemonState *)eventTimer
+- (DaemonState *)eventHeartbeat
 {
     /* we are going hot but if it takes too long, we consider it failed */
     if([[NSDate date] timeIntervalSinceDate:_goingStandbyStartTime] > daemon.goingStandbyTimeout)

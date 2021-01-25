@@ -180,7 +180,7 @@
 
 
 /* heartbeat timer called */
-- (DaemonState *)eventTimer
+- (DaemonState *)eventHeartbeat
 {
     [daemon actionSendHot];
     return self;
