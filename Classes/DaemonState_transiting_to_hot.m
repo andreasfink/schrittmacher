@@ -129,6 +129,18 @@
 }
 
 
+- (DaemonState *)eventStatusLocalTransitingToStandby:(NSDictionary *)dict
+{
+    [daemon callActivateInterface];
+    [daemon callStartAction];
+    return self;
+}
+
+- (DaemonState *)eventStatusLocalTransitingToHot:(NSDictionary *)dict
+{
+    return self;
+}
+
 
 
 #pragma mark - GUI
