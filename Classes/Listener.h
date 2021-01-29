@@ -13,7 +13,8 @@
 {
     UMHost *            _localHostPublic;
     UMHost *            _localHostPrivate;
-    int                 _port;
+    int                 _publicPort;
+    int                 _privatePort;
     NSMutableDictionary *_daemons;
     UMSocket            *_ucPublic;
     UMSocket            *_ucPrivate;
@@ -22,7 +23,8 @@
 
 @property(readwrite,strong) UMHost *localHostPublic;
 @property(readwrite,strong) UMHost *localHostPrivate;
-@property(readwrite,assign) int port;
+@property(readwrite,assign) int publicPort;
+@property(readwrite,assign) int privatePort;
 @property(readwrite,assign) int addressType;
 
 

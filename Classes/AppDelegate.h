@@ -19,7 +19,8 @@
     UMLogHandler        *mainLogHandler;
     UMHTTPServer        *httpServer;
     
-    int                 port;
+    int                 _publicPort;
+    int                 _privatePort;
     int                 webPort;
     NSString            *logDirectory;
     NSTimeInterval      heartbeat;

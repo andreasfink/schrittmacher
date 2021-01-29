@@ -72,16 +72,16 @@ typedef enum DaemonInterfaceState
     DaemonRandomValue               _randVal;
     DaemonInterfaceState            _interfaceState;
     
-    BOOL                            _remoteIsFailed;
-    BOOL                            _localIsFailed;
+    BOOL            _remoteIsFailed;
+    BOOL            _localIsFailed;
     
-    BOOL                            _localStopActionRequested;
-    BOOL                            _localStartActionRequested;
+    BOOL            _localStopActionRequested;
+    BOOL            _localStartActionRequested;
     
     NSDate          *_lastRemoteRx;
     NSDate          *_lastLocalRx;
-    NSTimeInterval _goingHotTimeout;
-    NSTimeInterval _goingStandbyTimeout;
+    NSTimeInterval  _goingHotTimeout;
+    NSTimeInterval  _goingStandbyTimeout;
     
 }
 

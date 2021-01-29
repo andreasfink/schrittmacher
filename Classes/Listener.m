@@ -110,16 +110,16 @@
         }
 
         _ucPublic.localHost = _localHostPublic;
-        _ucPublic.localPort = _port;
+        _ucPublic.localPort = _publicPort;
         _ucPrivate.localHost = _localHostPrivate;
-        _ucPrivate.localPort = _port;
+        _ucPrivate.localPort = _privatePort;
 
         UMSocketError err = [_ucPublic bind];
         if (![_ucPublic isBound] )
         {
             @throw([NSException exceptionWithName:@"udp"
                                            reason:@"can not bind to publicIP"
-                                         userInfo:@{ @"port":@(_port),
+                                         userInfo:@{ @"port":@(_publicPort),
                                                      @"socket-err": @(err),
                                                      @"host" : _localHostPublic}]);
         }
@@ -128,7 +128,7 @@
         {
             @throw([NSException exceptionWithName:@"udp"
                                            reason:@"can not bind to privateIP (127.0.0.1)"
-                                         userInfo:@{ @"port":@(_port),
+                                         userInfo:@{ @"port":@(_privatePort),
                                                      @"socket-err": @(err),
                                                      @"host" : _localHostPrivate}]);
         }
