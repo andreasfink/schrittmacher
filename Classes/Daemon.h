@@ -45,30 +45,30 @@ typedef enum DaemonInterfaceState
 
 @interface Daemon : UMObject
 {
-    DaemonState     *currentState;
+    DaemonState     *_currentState;
     NSString        *_lastRemoteState;
     NSString        *_lastLocalState;
-    NSString        *resourceId;
-    int             localPriority;
-    BOOL            iAmHot;
-    NSString        *remoteAddress;
-    NSString        *localAddress;
-    NSString        *sharedAddress;
-    NSString        *netmask;
-    int             remotePort;
-    Listener        *listener;
+    NSString        *_resourceId;
+    int             _localPriority;
+    BOOL            _iAmHot;
+    NSString        *_remoteAddress;
+    NSString        *_localAddress;
+    NSString        *_sharedAddress;
+    NSString        *_netmask;
+    int             _remotePort;
+    Listener        *_listener;
     NSTimeInterval  _timeout;
-    NSString        *startAction;
-    NSString        *stopAction;
-    NSString        *pidFile;
-    NSString        *activateInterfaceCommand;
-    NSString        *deactivateInterfaceCommand;
-    NSTimeInterval  intervallDelay; /* how often do we get local heartbeat */
-    NSDate          *lastChecked;
-    NSDate          *activatedAt;
-    NSDate          *deactivatedAt;
-    NSDate          *startedAt;
-    NSDate          *stoppedAt;
+    NSString        *_startAction;
+    NSString        *_stopAction;
+    NSString        *_pidFile;
+    NSString        *_activateInterfaceCommand;
+    NSString        *_deactivateInterfaceCommand;
+    NSTimeInterval  _intervallDelay; /* how often do we get local heartbeat */
+    NSDate          *_lastChecked;
+    NSDate          *_activatedAt;
+    NSDate          *_deactivatedAt;
+    NSDate          *_startedAt;
+    NSDate          *_stoppedAt;
     DaemonRandomValue               _randVal;
     DaemonInterfaceState            _interfaceState;
     
@@ -84,6 +84,9 @@ typedef enum DaemonInterfaceState
     NSTimeInterval  _goingStandbyTimeout;
     NSDate          *_lastHotSent;
     NSDate          *_lastStandbySent;
+    
+    UMTimer         *_heartbeatTimer;
+    UMTimer         *_checkIfUpTimer;
 }
 
 @property (readwrite,strong) DaemonState *currentState;
@@ -122,6 +125,8 @@ typedef enum DaemonInterfaceState
 @property (readwrite,strong) NSDate          *lastHotSent;
 @property (readwrite,strong) NSDate          *lastStandbySent;
 
+@property (readwrite,strong) UMTimer         *heartbeatTimer;
+@property (readwrite,strong) UMTimer         *checkIfUpTimer;
 
 - (void)eventReceived:(NSString *)event dict:(NSDictionary *)dict;
 - (void)eventHeartbeat;

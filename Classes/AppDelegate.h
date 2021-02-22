@@ -11,33 +11,30 @@
 
 @interface AppDelegate : UMObject<UMHTTPServerHttpGetPostDelegate>
 {
-    UMConfig            *config;
-    time_t              g_startup_time;
+    UMConfig            *_config;
+    time_t              _g_startup_time;
     
-    UMTaskQueue         *mainTaskQueue;
-    UMLogConsole        *console;
-    UMLogHandler        *mainLogHandler;
-    UMHTTPServer        *httpServer;
+    UMTaskQueue         *_mainTaskQueue;
+    UMLogConsole        *_console;
+    UMLogHandler        *_mainLogHandler;
+    UMHTTPServer        *_httpServer;
     
     int                 _publicPort;
     int                 _privatePort;
-    int                 webPort;
-    NSString            *logDirectory;
-    NSTimeInterval      heartbeat;
-    NSTimeInterval      timeout;
+    int                 _webPort;
+    NSString            *_logDirectory;
+    NSTimeInterval      _heartbeat;
+    NSTimeInterval      _timeout;
     
-    NSString            *localAddress;
-    NSString            *remoteAddress;
-    NSString            *sharedAddress;
-    NSTimer             *updateTimer;
-    NSTimer             *pollTimer;
-    NSTimer             *checkIfUpTimer;
-    Listener            *listener;
+    NSString            *_localAddress;
+    NSString            *_remoteAddress;
+    NSString            *_sharedAddress;
+    Listener            *_listener;
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification;
 
-@property(strong)   UMConfig *config;
-@property(readonly) time_t g_statup_time;
+@property(readwrite,strong,atomic)  UMConfig *config;
+@property(readonly,assign)          time_t g_statup_time;
 
 @end

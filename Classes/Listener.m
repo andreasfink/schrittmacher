@@ -149,6 +149,12 @@
     }
 }
 
+-(void)pollAction
+{
+    [self checkForPackets];
+    [self checkForTimeouts];
+}
+
 - (void) checkForPackets
 {
     UMSocketError err;
@@ -214,27 +220,6 @@
     }
 }
 
-- (void)heartbeat
-{
-    @autoreleasepool
-    {
-        NSArray *allKeys;
-        @synchronized(_daemons)
-        {
-            allKeys =[_daemons allKeys];
-        }
-        for(NSString *key in allKeys)
-        {
-            Daemon *d = [self daemonByName:key];
-            if(d)
-            {
-                [d eventHeartbeat];
-            }
-        }
-    }
-}
-
-
 - (void)sendString:(NSString *)msg toAddress:(NSString *)addr toPort:(int)p
 {
     const char *utf8 = msg.UTF8String;
@@ -275,26 +260,6 @@
             d = _daemons[name];
         }
         return d;
-    }
-}
-
-- (void)checkIfUp
-{
-    @autoreleasepool
-    {
-        NSArray *allKeys;
-        @synchronized(_daemons)
-        {
-            allKeys =[_daemons allKeys];
-        }
-        for(NSString *key in allKeys)
-        {
-            Daemon *d = [self daemonByName:key];
-            if(d)
-            {
-                [d checkIfUp];
-            }
-        }
     }
 }
 

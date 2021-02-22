@@ -19,6 +19,7 @@
     UMSocket            *_ucPublic;
     UMSocket            *_ucPrivate;
     int                 _addressType;
+    UMTimer             *_pollTimer;
 }
 
 @property(readwrite,strong) UMHost *localHostPublic;
@@ -26,18 +27,16 @@
 @property(readwrite,assign) int publicPort;
 @property(readwrite,assign) int privatePort;
 @property(readwrite,assign) int addressType;
-
+@property(readwrite,strong) UMTimer *pollTimer;
 
 - (void)start;
 - (void)sendString:(NSString *)msg toAddress:(NSString *)addr toPort:(int)p;
 - (void) attachDaemon:(Daemon *)d;
 - (void)checkForPackets;
 - (void)checkForTimeouts;
-- (void)heartbeat;
 - (NSDictionary *)status;
 - (void)failover:(NSString *)name;
 - (void)takeover:(NSString *)name;
-- (void)checkIfUp;
 - (void)receiveStatus:(NSData *)statusData fromAddress:(NSString *)address;
-
+- (void)pollAction;
 @end

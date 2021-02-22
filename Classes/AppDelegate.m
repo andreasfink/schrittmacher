@@ -27,8 +27,6 @@ extern char **global_argv;
 
 @implementation AppDelegate
 
-@synthesize config;
-
 AppDelegate *_global_appdel= NULL;
 
 + (AppDelegate *)sharedInstance
@@ -50,15 +48,15 @@ AppDelegate *_global_appdel= NULL;
     if (self)
     {
         _global_appdel = self;
-        time(&g_startup_time);
+        time(&_g_startup_time);
         int threadCount = ulib_cpu_count();
-        mainTaskQueue =[[UMTaskQueue alloc]initWithNumberOfThreads:threadCount name:@"mainTaskQueue" enableLogging:NO];
-        mainTaskQueue.enableLogging = YES;
-        [mainTaskQueue start];
-        console             = [[UMLogConsole alloc] init];
-        mainLogHandler      = [[UMLogHandler alloc] init];
-        [mainLogHandler addLogDestination:console];
-        self.logFeed = [[UMLogFeed alloc]initWithHandler:mainLogHandler section:@"core"];
+        _mainTaskQueue =[[UMTaskQueue alloc]initWithNumberOfThreads:threadCount name:@"mainTaskQueue" enableLogging:NO];
+        _mainTaskQueue.enableLogging = YES;
+        [_mainTaskQueue start];
+        _console             = [[UMLogConsole alloc] init];
+        _mainLogHandler      = [[UMLogHandler alloc] init];
+        [_mainLogHandler addLogDestination:_console];
+        self.logFeed = [[UMLogFeed alloc]initWithHandler:_mainLogHandler section:@"core"];
         self.logFeed.name = @"core";
         time_t now;
         time(&now);
@@ -74,12 +72,12 @@ AppDelegate *_global_appdel= NULL;
 - (void)setupWebserver
 {
     /* Admin HTTP */
-    if (webPort > 0)
+    if (_webPort > 0)
     {
-        httpServer = [[UMHTTPServer alloc] initWithPort:webPort];
-        httpServer.name = @"httpServer";
-        httpServer.httpGetPostDelegate = self;
-        [httpServer start];
+        _httpServer = [[UMHTTPServer alloc] initWithPort:_webPort];
+        _httpServer.name = @"httpServer";
+        _httpServer.httpGetPostDelegate = self;
+        [_httpServer start];
     }
 }
 
@@ -96,12 +94,12 @@ AppDelegate *_global_appdel= NULL;
         NSString *failovername = req.params[@"failover"];
         if([failovername length]>0)
         {
-            [listener failover:failovername];
+            [_listener failover:failovername];
         }
         NSString *takeovername = req.params[@"takeover"];
         if([takeovername length]>0)
         {
-            [listener takeover:takeovername];
+            [_listener takeover:takeovername];
         }
         NSString *s = [self htmlStatus];
         [req setResponseHtmlString:s];
@@ -117,29 +115,29 @@ AppDelegate *_global_appdel= NULL;
 - (void)readConfig:(NSString *)filename
 {
     [self.logFeed debugText:[NSString stringWithFormat:@"Reading config from %@",filename]];
-    config = [[UMConfig alloc]initWithFileName:filename];
-    [config allowSingleGroup:@"core"];
-    [config allowMultiGroup:@"resource"];
-    [config read];
+    _config = [[UMConfig alloc]initWithFileName:filename];
+    [_config allowSingleGroup:@"core"];
+    [_config allowMultiGroup:@"resource"];
+    [_config read];
     
-    NSDictionary *coreConfig = [config getSingleGroup:@"core"];
-    localAddress     = [UMSocket unifyIP:[coreConfig[@"local-address"]stringValue]];
-    remoteAddress    = [UMSocket unifyIP:[coreConfig[@"remote-address"]stringValue]];
-    sharedAddress    = [UMSocket unifyIP:[coreConfig[@"shared-address"]stringValue]];
+    NSDictionary *coreConfig = [_config getSingleGroup:@"core"];
+    _localAddress     = [UMSocket unifyIP:[coreConfig[@"local-address"]stringValue]];
+    _remoteAddress    = [UMSocket unifyIP:[coreConfig[@"remote-address"]stringValue]];
+    _sharedAddress    = [UMSocket unifyIP:[coreConfig[@"shared-address"]stringValue]];
     _publicPort      = [coreConfig[@"public-port"]intValue];
     _privatePort     = [coreConfig[@"private-port"]intValue];
-    webPort          = [coreConfig[@"http-port"]intValue];
-    logDirectory     = [coreConfig[@"log-dir"]  stringValue];
-    heartbeat        = [coreConfig[@"heartbeat"] doubleValue];
-    timeout          = [coreConfig[@"timeout"] doubleValue];
+    _webPort          = [coreConfig[@"http-port"]intValue];
+    _logDirectory     = [coreConfig[@"log-dir"]  stringValue];
+    _heartbeat        = [coreConfig[@"heartbeat"] doubleValue];
+    _timeout          = [coreConfig[@"timeout"] doubleValue];
 
-    if(heartbeat <= 0.01)
+    if(_heartbeat <= 0.01)
     {
-        heartbeat=2.0;
+        _heartbeat=2.0;
     }
-    if(timeout < (3*heartbeat))
+    if(_timeout < (3*_heartbeat))
     {
-        timeout=3*heartbeat;
+        _timeout=3*_heartbeat;
     }
 }
 
@@ -156,53 +154,16 @@ AppDelegate *_global_appdel= NULL;
 
         [self readConfig:configFileName];
 
-        NSDictionary *coreConfig = [config getSingleGroup:@"core"];
+        NSDictionary *coreConfig = [_config getSingleGroup:@"core"];
         [self addLogFromConfigGroup:coreConfig
-                          toHandler:mainLogHandler
-                             logdir:logDirectory];
+                          toHandler:_mainLogHandler
+                             logdir:_logDirectory];
 
         [self setupWebserver];
         [self startupListener];
-        updateTimer     = [NSTimer timerWithTimeInterval:2.0
-                                                  target:self
-                                                selector:@selector(heartbeatAction)
-                                                userInfo:@""
-                                                 repeats:YES];
-        pollTimer       = [NSTimer timerWithTimeInterval:0.05
-                                                  target:self
-                                                selector:@selector(pollAction)
-                                                userInfo:@""
-                                                 repeats:YES];
-
-        checkIfUpTimer  = [NSTimer timerWithTimeInterval:(double)0.5
-                                                  target:self
-                                                selector:@selector(checkIfUp)
-                                                userInfo:@""
-                                                 repeats:YES];
-
-        NSRunLoop *crl  = [NSRunLoop currentRunLoop];
-        [crl addTimer:updateTimer forMode:NSDefaultRunLoopMode];
-        [crl addTimer:pollTimer forMode:NSDefaultRunLoopMode];
-        [crl addTimer:checkIfUpTimer forMode:NSDefaultRunLoopMode];
     }
 }
 
-- (void)heartbeatAction
-{
-    @autoreleasepool
-    {
-        [listener heartbeat];
-    }
-}
-
--(void)pollAction
-{
-    @autoreleasepool
-    {
-        [listener checkForPackets];
-        [listener checkForTimeouts];
-    }
-}
 
 - (NSString *)htmlStatus
 {
@@ -228,7 +189,7 @@ AppDelegate *_global_appdel= NULL;
         [s appendFormat:@"<th>Local</th>\n"];
         [s appendFormat:@"</tr>"];
 
-        NSDictionary *states = [listener status];
+        NSDictionary *states = [_listener status];
         NSArray *keys = [states allKeys];
 
         keys = [keys sortedArrayUsingComparator: ^(id a, id b) {
@@ -271,17 +232,24 @@ AppDelegate *_global_appdel= NULL;
     @autoreleasepool
     {
 
-        listener = [[Listener alloc]init];
+        _listener = [[Listener alloc]init];
 
         int addrType = 4;
-        NSString *unifiedLocalAddress =  [UMSocket unifyIP:localAddress];
+        NSString *unifiedLocalAddress =  [UMSocket unifyIP:_localAddress];
         [UMSocket deunifyIp:unifiedLocalAddress type:&addrType];
-        listener.localHostPublic =[[UMHost alloc]initWithLocalhostAddresses:@[unifiedLocalAddress ? unifiedLocalAddress : @"0.0.0.0"]];
-        listener.localHostPrivate=[[UMHost alloc]initWithLocalhostAddresses:@[@"127.0.0.1"]];
-        listener.publicPort = _publicPort;
-        listener.privatePort = _privatePort;
-        listener.addressType= addrType;
-        NSArray *configs = [config getMultiGroups:@"resource"];
+        _listener.localHostPublic =[[UMHost alloc]initWithLocalhostAddresses:@[unifiedLocalAddress ? unifiedLocalAddress : @"0.0.0.0"]];
+        _listener.localHostPrivate=[[UMHost alloc]initWithLocalhostAddresses:@[@"127.0.0.1"]];
+        _listener.publicPort = _publicPort;
+        _listener.privatePort = _privatePort;
+        _listener.addressType= addrType;
+        
+        _listener.pollTimer =  [[UMTimer alloc]initWithTarget:_listener
+                                            selector:@selector(pollAction)
+                                              object:NULL
+                                             seconds:0.050
+                                                name:@"poll-timer"
+                                             repeats:YES];
+        NSArray *configs = [_config getMultiGroups:@"resource"];
         for(NSDictionary *daemonConfig in configs)
         {
             NSString *startAction      = [daemonConfig[@"start-action"] stringValue];
@@ -293,15 +261,15 @@ AppDelegate *_global_appdel= NULL;
             NSString *deactivate       = [daemonConfig[@"interface-deactivate"] stringValue];
             double  intervallDelay     = [daemonConfig[@"heartbeat-intervall"] doubleValue];
 
-            if(intervallDelay < 2)
+            if(intervallDelay < 2.0)
             {
-                intervallDelay = 2;
+                intervallDelay = 2.0;
             }
             Daemon *d = [[Daemon alloc]init];
-            d.logFeed = [[UMLogFeed alloc]initWithHandler:mainLogHandler section:resourceName];
-            d.localAddress = localAddress;
-            d.remoteAddress =remoteAddress;
-            d.sharedAddress = sharedAddress;
+            d.logFeed = [[UMLogFeed alloc]initWithHandler:_mainLogHandler section:resourceName];
+            d.localAddress = _localAddress;
+            d.remoteAddress = _remoteAddress;
+            d.sharedAddress = _sharedAddress;
             d.remotePort = _publicPort;
             d.resourceId = resourceName;
             d.startAction = startAction;
@@ -311,18 +279,27 @@ AppDelegate *_global_appdel= NULL;
             d.deactivateInterfaceCommand = deactivate;
             d.intervallDelay = intervallDelay;
             d.pidFile = pidFile;
-            [listener attachDaemon:d];
+            d.heartbeatTimer =  [[UMTimer alloc]initWithTarget:d
+                                                      selector:@selector(eventHeartbeat)
+                                                        object:NULL
+                                                       seconds:d.intervallDelay
+                                                          name:@"heartbeat-timer"
+                                                       repeats:YES];
+            
+            d.checkIfUpTimer =  [[UMTimer alloc]initWithTarget:d
+                                                      selector:@selector(checkIfUp)
+                                                        object:NULL
+                                                       seconds:d.intervallDelay
+                                                          name:@"heartbeat-timer"
+                                                       repeats:YES];
+
+            [_listener attachDaemon:d];
+            [d.heartbeatTimer start];
+            [d.checkIfUpTimer start];
         }
-        [listener start];
+        [_listener start];
     }
 }
 
-- (void)checkIfUp
-{
-    @autoreleasepool
-    {
-        [listener checkIfUp];
-    }
-}
 
 @end
