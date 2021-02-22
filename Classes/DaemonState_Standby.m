@@ -124,14 +124,29 @@
 - (DaemonState *)eventStatusLocalHot:(NSDictionary *)pdu
 {
     /* local app tells us its hot while we have agreed with remote to be standby. lets switch off local.*/
-    [daemon actionSendStandby];
     [daemon callStopAction];
     [daemon callDeactivateInterface];
+    [daemon actionSendStandby];
     return self;
 }
 
 - (DaemonState *)eventStatusLocalStandby:(NSDictionary *)dict
 {
+    
+    NSDate *now = [NSDate date];
+    if(daemon.lastStandbySent==NULL)
+    {
+        [daemon actionSendStandby];
+    }
+    else
+    {
+        /* avoid sending standby more than once per second if nothing changed */
+        NSTimeInterval elapsed = [now timeIntervalSinceDate:daemon.lastStandbySent];
+        if(elapsed > 1)
+        {
+            [daemon actionSendStandby];
+        }
+    }
     return self;
 }
 

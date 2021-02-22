@@ -82,7 +82,8 @@ typedef enum DaemonInterfaceState
     NSDate          *_lastLocalRx;
     NSTimeInterval  _goingHotTimeout;
     NSTimeInterval  _goingStandbyTimeout;
-    
+    NSDate          *_lastHotSent;
+    NSDate          *_lastStandbySent;
 }
 
 @property (readwrite,strong) DaemonState *currentState;
@@ -118,6 +119,8 @@ typedef enum DaemonInterfaceState
 @property (readwrite,strong) NSString        *lastRemoteState;
 @property (readwrite,strong) NSString        *lastLocalState;
 
+@property (readwrite,strong) NSDate          *lastHotSent;
+@property (readwrite,strong) NSDate          *lastStandbySent;
 
 
 - (void)eventReceived:(NSString *)event dict:(NSDictionary *)dict;

@@ -81,27 +81,37 @@ DaemonRandomValue GetDaemonRandomValue(void)
 - (void)actionSendUnknown
 {
     _randVal = GetDaemonRandomValue();
+    _lastHotSent = NULL;
+    _lastStandbySent = NULL;
     [self sendStatus:MESSAGE_UNKNOWN withRandomValue:_randVal];
 }
 
 - (void)actionSendFailed
 {
     [self sendStatus:MESSAGE_FAILED];
+    _lastHotSent = NULL;
+    _lastStandbySent = NULL;
 }
 
 - (void)actionSendFailover
 {
     [self sendStatus:MESSAGE_FAILOVER];
+    _lastHotSent = NULL;
+    _lastStandbySent = NULL;
 }
 
 - (void)actionSendHot
 {
     [self sendStatus:MESSAGE_HOT];
+    _lastHotSent = [NSDate date];
+    _lastStandbySent = NULL;
 }
 
 - (void)actionSendStandby
 {
     [self sendStatus:MESSAGE_STANDBY];
+    _lastHotSent = NULL;
+    _lastStandbySent = [NSDate date];
 }
 
 - (void)actionSendTakeoverRequest

@@ -106,6 +106,20 @@
 {
     /* we both agree we're hot. all is fine */
     daemon.localIsFailed = NO;
+    NSDate *now = [NSDate date];
+    if(daemon.lastHotSent==NULL)
+    {
+        [daemon actionSendHot];
+    }
+    else
+    {
+        /* avoid sending hot more than once per second if nothing changed */
+        NSTimeInterval elapsed = [now timeIntervalSinceDate:daemon.lastHotSent];
+        if(elapsed > 1)
+        {
+            [daemon actionSendHot];
+        }
+    }
     return self;
 }
 
