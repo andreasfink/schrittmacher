@@ -244,10 +244,15 @@ AppDelegate *_global_appdel= NULL;
         }
         else
         {
-            a = @[@"0.0.0.0"]; 
+            a = @[@"0.0.0.0"];
         }
-        _listener.localHostPublic  = [[UMHost alloc]initWithLocalhostAddresses:a];
-        _listener.localHostPrivate = [[UMHost alloc]initWithLocalhostAddresses:@[@"127.0.0.1",@"::1"]];
+        _listener.localHostPublic  = [[UMHost alloc]init];
+        [_listener.localHostPublic addAddress:[UMSocket unifyIP:_localAddress]];
+        [_listener.localHostPublic addAddress:[UMSocket unifyIP:@"127.0.0.1"]];
+
+        _listener.localHostPrivate = [[UMHost alloc]init];
+        [_listener.localHostPrivate addAddress:[UMSocket unifyIP:@"127.0.0.1"]];
+
         _listener.publicPort = _publicPort;
         _listener.privatePort = _privatePort;
         _listener.addressType= addrType;
