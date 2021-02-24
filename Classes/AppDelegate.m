@@ -235,10 +235,19 @@ AppDelegate *_global_appdel= NULL;
         _listener = [[Listener alloc]init];
 
         int addrType = 4;
-        NSString *unifiedLocalAddress =  [UMSocket unifyIP:_localAddress];
-        [UMSocket deunifyIp:unifiedLocalAddress type:&addrType];
-        _listener.localHostPublic =[[UMHost alloc]initWithLocalhostAddresses:@[unifiedLocalAddress ? unifiedLocalAddress : @"0.0.0.0"]];
-        _listener.localHostPrivate=[[UMHost alloc]initWithLocalhostAddresses:@[@"127.0.0.1"]];
+        NSArray *a;
+        if(_localAddress)
+        {
+            NSString *unifiedLocalAddress =  [UMSocket unifyIP:_localAddress];
+            [UMSocket deunifyIp:unifiedLocalAddress type:&addrType];
+            a = @[unifiedLocalAddress,@"127.0.0.1",@"::1"];
+        }
+        else
+        {
+            a = @[@"0.0.0.0"]; 
+        }
+        _listener.localHostPublic  = [[UMHost alloc]initWithLocalhostAddresses:a];
+        _listener.localHostPrivate = [[UMHost alloc]initWithLocalhostAddresses:@[@"127.0.0.1",@"::1"]];
         _listener.publicPort = _publicPort;
         _listener.privatePort = _privatePort;
         _listener.addressType= addrType;

@@ -158,7 +158,7 @@
 - (void) checkForPackets
 {
     UMSocketError err;
-    int receivePollTimeoutMs = 500; /* every 500ms we break out so NSRunLoop timers can run */
+    int receivePollTimeoutMs = 50; /* every 50ms we break out so NSRunLoop timers can run */
     do
     {
         @autoreleasepool
@@ -181,7 +181,6 @@
             }
             
             err = [_ucPrivate dataIsAvailable:receivePollTimeoutMs];
-
             if(err == UMSocketError_has_data)
             {
                 NSData  *data = NULL;
