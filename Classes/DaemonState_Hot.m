@@ -123,6 +123,22 @@
     return self;
 }
 
+- (DaemonState *)eventStatusLocalTransitingToHot:(NSDictionary *)dict
+{
+    /* woot, we are not hot yet? */
+    [daemon callActivateInterface];
+    [daemon callStartAction];
+    return [[DaemonState_transiting_to_hot alloc]initWithDaemon:daemon];
+}
+
+- (DaemonState *)eventStatusLocalTransitingToStandby:(NSDictionary *)dict
+{
+    /* if the local process tells us it goes into Standby but we think it should be hot, we tell it to go hot */
+    [daemon callActivateInterface];
+    [daemon callStartAction];
+    return [[DaemonState_transiting_to_hot alloc]initWithDaemon:daemon];
+}
+
 - (DaemonState *)eventStatusLocalStandby:(NSDictionary *)dict
 {
     /* if the local process tells us it is in Standby but we think it was hot,

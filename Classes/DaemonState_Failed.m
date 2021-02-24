@@ -109,6 +109,21 @@
     return [[DaemonState_Unknown alloc]initWithDaemon:daemon];
 }
 
+- (DaemonState *)eventStatusLocalTransitingToStandby:(NSDictionary *)dict
+{
+    [daemon callStopAction];
+    [daemon callDeactivateInterface];
+    [daemon actionSendTransitingToStandby];
+    return [[DaemonState_transiting_to_standby alloc]initWithDaemon:daemon];
+}
+
+- (DaemonState *)eventStatusLocalTransitingToHot:(NSDictionary *)dict
+{
+    [daemon callActivateInterface];
+    [daemon actionSendTransitingToHot];
+    return [[DaemonState_transiting_to_hot alloc]initWithDaemon:daemon];
+}
+
 
 
 
