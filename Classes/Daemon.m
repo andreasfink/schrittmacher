@@ -59,7 +59,10 @@ DaemonRandomValue GetDaemonRandomValue(void)
                             @"random"   : @(r)};
     
     NSString *msg = [dict jsonString];
-    [self.logFeed debugText:[NSString stringWithFormat:@"TX %@->%@: %@",_localAddress,_remoteAddress,dict]];
+    if(_logLevel <=UMLOG_DEBUG)
+    {
+        [_logFeed debugText:[NSString stringWithFormat:@"TX %@->%@: %@",_localAddress,_remoteAddress,dict]];
+    }
     [_listener sendString:msg toAddress:_remoteAddress toPort:_remotePort];
 }
 
@@ -135,8 +138,11 @@ DaemonRandomValue GetDaemonRandomValue(void)
 
 #define DEBUGLOG(state,event) \
 { \
-    NSString *s = [NSString stringWithFormat:@"State:%@ event:%@",state.name,event]; \
-    [self.logFeed debugText:s]; \
+    if(_logLevel <=UMLOG_DEBUG) \
+    { \
+        NSString *s = [NSString stringWithFormat:@"State:%@ event:%@",state.name,event]; \
+        [self.logFeed debugText:s]; \
+    } \
 }
 
 - (void)eventReceived:(NSString *)event
@@ -303,7 +309,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
     if(![oldstate isEqualToString:newstate])
     {
         NSString *s = [NSString stringWithFormat:@"State Change %@->%@",oldstate,newstate];
-        [self.logFeed debugText:s];
+        [_logFeed infoText:s];
     }
 }
 
@@ -426,7 +432,10 @@ DaemonRandomValue GetDaemonRandomValue(void)
         return 0;
     }
     const char *cmd = command.UTF8String;
-    [self.logFeed debugText:[NSString stringWithFormat:@" Executing: %s",cmd]];
+    if(_logLevel <= UMLOG_DEBUG)
+    {
+        [_logFeed debugText:[NSString stringWithFormat:@" Executing: %s",cmd]];
+    }
     return system(cmd);
 }
 
@@ -514,7 +523,10 @@ DaemonRandomValue GetDaemonRandomValue(void)
     [self setEnvVars];
     setenv("ACTION", "stop", 1);
     const char *cmd = _stopAction.UTF8String;
-    [self.logFeed debugText:[NSString stringWithFormat:@" Executing: %s",cmd]];
+    if(_logLevel <= UMLOG_DEBUG)
+    {
+        [_logFeed debugText:[NSString stringWithFormat:@" Executing: %s",cmd]];
+    }
     int r = system(cmd);
     [self unsetEnvVars];
     if(r==0)

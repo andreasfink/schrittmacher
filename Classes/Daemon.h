@@ -89,6 +89,8 @@ typedef enum DaemonInterfaceState
     
     UMTimer         *_heartbeatTimer;
     UMTimer         *_checkIfUpTimer;
+    UMLogLevel      _logLevel;
+
 }
 
 @property (readwrite,strong) DaemonState *currentState;
@@ -129,6 +131,7 @@ typedef enum DaemonInterfaceState
 
 @property (readwrite,strong) UMTimer         *heartbeatTimer;
 @property (readwrite,strong) UMTimer         *checkIfUpTimer;
+@property(readwrite,assign) UMLogLevel logLevel;
 
 - (void)eventReceived:(NSString *)event dict:(NSDictionary *)dict;
 - (void)eventHeartbeat;

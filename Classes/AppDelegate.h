@@ -30,11 +30,13 @@
     NSString            *_remoteAddress;
     NSString            *_sharedAddress;
     Listener            *_listener;
+    UMLogLevel          _logLevel;
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification;
 
 @property(readwrite,strong,atomic)  UMConfig *config;
 @property(readonly,assign)          time_t g_statup_time;
+@property(readwrite,assign) UMLogLevel logLevel;
 
 @end

@@ -11,6 +11,7 @@
 
 @interface Listener : UMObject
 {
+    UMLogHandler        *_logHandler;
     UMHost *            _localHostPublic;
     UMHost *            _localHostPrivate;
     int                 _publicPort;
@@ -20,6 +21,7 @@
     UMSocket            *_ucPrivate;
     int                 _addressType;
     UMTimer             *_pollTimer;
+    UMLogLevel          _logLevel;
 }
 
 @property(readwrite,strong) UMHost *localHostPublic;
@@ -28,6 +30,8 @@
 @property(readwrite,assign) int privatePort;
 @property(readwrite,assign) int addressType;
 @property(readwrite,strong) UMTimer *pollTimer;
+@property(readwrite,assign) UMLogLevel logLevel;
+@property(readwrite,strong) UMLogHandler *logHandler;
 
 - (void)start;
 - (void)sendString:(NSString *)msg toAddress:(NSString *)addr toPort:(int)p;

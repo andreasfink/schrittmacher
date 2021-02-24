@@ -57,7 +57,8 @@ AppDelegate *_global_appdel= NULL;
         _mainLogHandler      = [[UMLogHandler alloc] init];
         [_mainLogHandler addLogDestination:_console];
         self.logFeed = [[UMLogFeed alloc]initWithHandler:_mainLogHandler section:@"core"];
-        self.logFeed.name = @"core";
+        self.logFeed.name = @"schrittmacher";
+        _logLevel = UMLOG_MAJOR;
         time_t now;
         time(&now);
         unsigned int speed = (unsigned int) now;
@@ -233,6 +234,9 @@ AppDelegate *_global_appdel= NULL;
     {
 
         _listener = [[Listener alloc]init];
+        _listener.logFeed = self.logFeed;
+        _listener.logHandler = _mainLogHandler;
+        _listener.logLevel = self.logLevel;
 
         int addrType = 4;
         NSArray *a;
@@ -293,6 +297,7 @@ AppDelegate *_global_appdel= NULL;
             d.deactivateInterfaceCommand = deactivate;
             d.intervallDelay = intervallDelay;
             d.pidFile = pidFile;
+            d.logLevel = _logLevel;
             d.heartbeatTimer =  [[UMTimer alloc]initWithTarget:d
                                                       selector:@selector(eventHeartbeat)
                                                         object:NULL
