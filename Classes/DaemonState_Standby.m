@@ -166,10 +166,10 @@
     return self;
 }
 
-
-
 - (DaemonState *)eventStatusLocalTransitingToStandby:(NSDictionary *)dict
 {
+    [daemon callStopAction];
+    [daemon callDeactivateInterface];
     return self;
 }
 

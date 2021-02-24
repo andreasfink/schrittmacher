@@ -109,9 +109,9 @@
 
 - (DaemonState *)eventStatusLocalStandby:(NSDictionary *)dict
 {
-    [daemon actionSendStandby];
-    [daemon callDeactivateInterface];
-    return [[DaemonState_Standby alloc]initWithDaemon:daemon];
+    [daemon callActivateInterface];
+    [daemon callStartAction];
+    return self;
 }
 
 - (DaemonState *)eventStatusLocalFailure:(NSDictionary *)dict

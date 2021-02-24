@@ -128,7 +128,7 @@
     /* woot, we are not hot yet? */
     [daemon callActivateInterface];
     [daemon callStartAction];
-    return [[DaemonState_transiting_to_hot alloc]initWithDaemon:daemon];
+    return self;
 }
 
 - (DaemonState *)eventStatusLocalTransitingToStandby:(NSDictionary *)dict
@@ -136,31 +136,14 @@
     /* if the local process tells us it goes into Standby but we think it should be hot, we tell it to go hot */
     [daemon callActivateInterface];
     [daemon callStartAction];
-    return [[DaemonState_transiting_to_hot alloc]initWithDaemon:daemon];
+    return self;
 }
 
 - (DaemonState *)eventStatusLocalStandby:(NSDictionary *)dict
 {
-    /* if the local process tells us it is in Standby but we think it was hot,
-     then we just do a failover as above if we can. */
-    if(daemon.remoteIsFailed == NO)
-    {
-        /* we gotta shutdown the virtual interface before telling the other side to take over */
-        /* Note: as we are told by the local process it went to standby,                      */
-        /* there is no need to signal it to go standby                                        */
-        /* as we dont wait confirmation from the local process                                */
-        [daemon callDeactivateInterface];
-        [daemon actionSendFailed];
-        return [[DaemonState_Standby alloc]initWithDaemon:daemon];
-    }
-    else
-    {
-        /* ok remote is failed but local thinks its standby. lets fired it up */
-        [daemon actionSendTransitingToHot];
-        [daemon callActivateInterface];
-        [daemon callStartAction];
-        return [[DaemonState_transiting_to_hot alloc]initWithDaemon:daemon];
-    }
+    [daemon callActivateInterface];
+    [daemon callStartAction];
+    return self;
 }
 
 - (DaemonState *)eventStatusLocalFailure:(NSDictionary *)dict
@@ -177,10 +160,9 @@
 - (DaemonState *)eventStatusLocalUnknown:(NSDictionary *)dict
 {
     /* Daemon says we are hot but app doesnt know */
-    [daemon actionSendTransitingToHot];
     [daemon callActivateInterface];
     [daemon callStartAction];
-    return  [[DaemonState_transiting_to_hot alloc]initWithDaemon:daemon];;
+    return  self;
 }
 
 
