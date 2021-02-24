@@ -157,48 +157,55 @@
 
 - (void) checkForPackets
 {
-    UMSocketError err;
-    @autoreleasepool
+    BOOL packetsProcessed = NO;
+    do
     {
-        err = [_ucPublic dataIsAvailable:0];
-        if(err == UMSocketError_has_data)
+        UMSocketError err;
+        @autoreleasepool
         {
-            NSData  *data = NULL;
-            NSString *address = NULL;
-            int rxport;
-            UMSocketError err2 = [_ucPublic receiveData:&data fromAddress:&address fromPort:&rxport];
-            if((err2 == UMSocketError_no_error) || (err2==UMSocketError_has_data) || (err2 == UMSocketError_has_data_and_hup))
+            err = [_ucPublic dataIsAvailable:0];
+            if(err == UMSocketError_has_data)
             {
-                if(data)
+                NSData  *data = NULL;
+                NSString *address = NULL;
+                int rxport;
+                UMSocketError err2 = [_ucPublic receiveData:&data fromAddress:&address fromPort:&rxport];
+                if((err2 == UMSocketError_no_error) || (err2==UMSocketError_has_data) || (err2 == UMSocketError_has_data_and_hup))
                 {
-                    [self receiveStatus:data fromAddress:address];
+                    packetsProcessed = YES;
+                    if(data)
+                    {
+                        [self receiveStatus:data fromAddress:address];
+                    }
+                }
+                else
+                {
+                    NSLog(@"receiveData on public interface failed with error %d",err2);
                 }
             }
-            else
+            err = [_ucPrivate dataIsAvailable:0];
+            if(err == UMSocketError_has_data)
             {
-                NSLog(@"receiveData on public interface failed with error %d",err2);
-            }
-        }
-        err = [_ucPrivate dataIsAvailable:0];
-        if(err == UMSocketError_has_data)
-        {
-            NSData  *data = NULL;
-            NSString *address = NULL;
-            int rxport;
-            UMSocketError err2 = [_ucPrivate receiveData:&data fromAddress:&address fromPort:&rxport];
-            if((err2 == UMSocketError_no_error) || (err2==UMSocketError_has_data) || (err2 == UMSocketError_has_data_and_hup))
-            {
-                if(data)
+                NSData  *data = NULL;
+                NSString *address = NULL;
+                int rxport;
+                UMSocketError err2 = [_ucPrivate receiveData:&data fromAddress:&address fromPort:&rxport];
+                if((err2 == UMSocketError_no_error) || (err2==UMSocketError_has_data) || (err2 == UMSocketError_has_data_and_hup))
                 {
-                    [self receiveStatus:data fromAddress:address];
+                    packetsProcessed = YES;
+                    if(data)
+                    {
+                        [self receiveStatus:data fromAddress:address];
+                    }
                 }
-            }
-            else
-            {
-                NSLog(@"receiveData on private interface failed with error %d",err2);
+                else
+                {
+                    NSLog(@"receiveData on private interface failed with error %d",err2);
+                }
             }
         }
     }
+    while(packetsProcessed);
 }
 
 - (void)checkForTimeouts
