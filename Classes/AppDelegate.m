@@ -312,6 +312,7 @@ AppDelegate *_global_appdel= NULL;
             [d.checkIfUpTimer start];
         }
         [_listener start];
+        [_listener.pollTimer start];
     }
 }
 
