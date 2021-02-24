@@ -25,6 +25,8 @@
 #define MESSAGE_LOCAL_FAIL                  @"LFAI"
 #define MESSAGE_LOCAL_TRANSITING_TO_HOT     @"L2HT"
 #define MESSAGE_LOCAL_TRANSITING_TO_STANDBY @"L2SB"
+#define MESSAGE_LOCAL_REQUEST_FAILOVER      @"LRFO"
+#define MESSAGE_LOCAL_REQUEST_TAKEOVER      @"LRTO"
 
 #define GOTO_HOT_SUCCESS                    1
 #define GOTO_HOT_ALREADY_HOT                2

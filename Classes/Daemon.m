@@ -149,7 +149,15 @@ DaemonRandomValue GetDaemonRandomValue(void)
      * LOCAL MESSAGES
      */
 
-    if ([event isEqualToString:MESSAGE_LOCAL_HOT])
+    if ([event isEqualToString:MESSAGE_LOCAL_REQUEST_TAKEOVER])
+    {
+        [self eventForceTakeover];
+    }
+    else if ([event isEqualToString:MESSAGE_LOCAL_REQUEST_FAILOVER])
+    {
+        [self eventForceFailover];
+    }
+    else if ([event isEqualToString:MESSAGE_LOCAL_HOT])
     {
         _lastLocalState=@"hot";
         self.localIsFailed=NO;
