@@ -8,6 +8,7 @@
 
 #import "Listener.h"
 #import "Daemon.h"
+#include <poll.h>
 
 @implementation Listener
 
@@ -155,48 +156,50 @@
     [self checkForTimeouts];
 }
 
+
 - (void) checkForPackets
 {
+    fprintf(stdout,"polling-for-data\n");
+    fflush(stdout);
     UMSocketError err;
-    int receivePollTimeoutMs = 50; /* every 50ms we break out so NSRunLoop timers can run */
-    do
+    @autoreleasepool
     {
-        @autoreleasepool
+        err = [_ucPublic dataIsAvailable:0];
+        if(err == UMSocketError_has_data)
         {
-            err = [_ucPublic dataIsAvailable:receivePollTimeoutMs];
+            fprintf(stdout,"rx from public\n");
+            fflush(stdout);
 
-            if(err == UMSocketError_has_data)
+            NSData  *data = NULL;
+            NSString *address = NULL;
+            int rxport;
+            UMSocketError err2 = [_ucPublic receiveData:&data fromAddress:&address fromPort:&rxport];
+            if(err2 == UMSocketError_no_error)
             {
-                NSData  *data = NULL;
-                NSString *address = NULL;
-                int rxport;
-                UMSocketError err2 = [_ucPublic receiveData:&data fromAddress:&address fromPort:&rxport];
-                if(err2 == UMSocketError_no_error)
+                if(data)
                 {
-                    if(data)
-                    {
-                        [self receiveStatus:data fromAddress:address];
-                    }
-                }
-            }
-            
-            err = [_ucPrivate dataIsAvailable:receivePollTimeoutMs];
-            if(err == UMSocketError_has_data)
-            {
-                NSData  *data = NULL;
-                NSString *address = NULL;
-                int rxport;
-                UMSocketError err2 = [_ucPrivate receiveData:&data fromAddress:&address fromPort:&rxport];
-                if(err2 == UMSocketError_no_error)
-                {
-                    if(data)
-                    {
-                        [self receiveStatus:data fromAddress:address];
-                    }
+                    [self receiveStatus:data fromAddress:address];
                 }
             }
         }
-    } while(err == UMSocketError_has_data);
+        err = [_ucPrivate dataIsAvailable:0];
+        if(err == UMSocketError_has_data)
+        {
+            fprintf(stdout,"rx from private\n");
+            fflush(stdout);
+            NSData  *data = NULL;
+            NSString *address = NULL;
+            int rxport;
+            UMSocketError err2 = [_ucPrivate receiveData:&data fromAddress:&address fromPort:&rxport];
+            if(err2 == UMSocketError_no_error)
+            {
+                if(data)
+                {
+                    [self receiveStatus:data fromAddress:address];
+                }
+            }
+        }
+    }
 }
 
 - (void)checkForTimeouts
