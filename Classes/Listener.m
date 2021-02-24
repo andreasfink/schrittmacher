@@ -36,10 +36,6 @@
                 NSDictionary *di = (NSDictionary *)obj;
                 NSString *resource      = [di[@"resource"] stringValue];
                 NSString *status    = [di[@"status"] stringValue];
-                
-                [self.logFeed debugText:[NSString stringWithFormat:@"RX <-%@: %@",address,di]];
-
-
                 NSMutableDictionary *dict  = [di mutableCopy];
                 dict[@"address"]    = address;
                 dict[@"pdu"]        = statusData;
@@ -48,6 +44,8 @@
                 if(daemon)
                 {
                     [daemon eventReceived:status dict:dict];
+                    [daemon.logFeed debugText:[NSString stringWithFormat:@"RX <-%@: %@",address,di]];
+
                 }
                 else
                 {
