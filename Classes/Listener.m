@@ -159,44 +159,45 @@
 
 - (void) checkForPackets
 {
-    fprintf(stdout,"polling-for-data\n");
-    fflush(stdout);
     UMSocketError err;
     @autoreleasepool
     {
         err = [_ucPublic dataIsAvailable:0];
         if(err == UMSocketError_has_data)
         {
-            fprintf(stdout,"rx from public\n");
-            fflush(stdout);
-
             NSData  *data = NULL;
             NSString *address = NULL;
             int rxport;
             UMSocketError err2 = [_ucPublic receiveData:&data fromAddress:&address fromPort:&rxport];
-            if(err2 == UMSocketError_no_error)
+            if((err2 == UMSocketError_no_error) || (err2==UMSocketError_has_data) || (err2 == UMSocketError_has_data_and_hup))
             {
                 if(data)
                 {
                     [self receiveStatus:data fromAddress:address];
                 }
             }
+            else
+            {
+                NSLog(@"receiveData on public interface failed with error %d",err2);
+            }
         }
         err = [_ucPrivate dataIsAvailable:0];
         if(err == UMSocketError_has_data)
         {
-            fprintf(stdout,"rx from private\n");
-            fflush(stdout);
             NSData  *data = NULL;
             NSString *address = NULL;
             int rxport;
             UMSocketError err2 = [_ucPrivate receiveData:&data fromAddress:&address fromPort:&rxport];
-            if(err2 == UMSocketError_no_error)
+            if((err2 == UMSocketError_no_error) || (err2==UMSocketError_has_data) || (err2 == UMSocketError_has_data_and_hup))
             {
                 if(data)
                 {
                     [self receiveStatus:data fromAddress:address];
                 }
+            }
+            else
+            {
+                NSLog(@"receiveData on private interface failed with error %d",err2);
             }
         }
     }
