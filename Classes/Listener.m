@@ -44,10 +44,10 @@
                 if(daemon)
                 {
                     [daemon eventReceived:status dict:dict];
-                    if(        _logLevel = UMLOG_MAJOR;
-)
-                    [daemon.logFeed debugText:[NSString stringWithFormat:@"RX <-%@: %@",address,di]];
-
+                    if(_logLevel <= UMLOG_DEBUG)
+                    {
+                        [daemon.logFeed debugText:[NSString stringWithFormat:@"RX <-%@: %@",address,di]];
+                    }
                 }
                 else
                 {
