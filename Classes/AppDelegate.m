@@ -138,7 +138,7 @@ AppDelegate *_global_appdel= NULL;
     }
     if(_timeout < (3*_heartbeat))
     {
-        _timeout=3*_heartbeat;
+        _timeout= 3 * _heartbeat;
     }
 }
 
