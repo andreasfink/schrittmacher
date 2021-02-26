@@ -15,7 +15,8 @@
     UMHost *            _localHost;
     int                 _port;
     NSMutableDictionary *_daemons;
-    UMSocket            *_uc;
+    UMSocket            *_rxSocket;
+    UMSocket            *_txSocket;
     int                 _addressType;
     UMTimer             *_pollTimer;
     UMLogLevel          _logLevel;
