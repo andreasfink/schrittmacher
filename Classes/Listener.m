@@ -167,7 +167,7 @@
         UMSocketError err;
         @autoreleasepool
         {
-            err = [_rxSocket dataIsAvailable:0];
+            err = [_rxSocket dataIsAvailable:1000];
             if(err == UMSocketError_has_data)
             {
                 NSData  *data = NULL;
