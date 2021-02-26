@@ -260,12 +260,6 @@ AppDelegate *_global_appdel= NULL;
         _listener.port = _port;
         _listener.addressType= addrType;
         
-        _listener.pollTimer =  [[UMTimer alloc]initWithTarget:_listener
-                                            selector:@selector(pollAction)
-                                              object:NULL
-                                             seconds:0.050
-                                                name:@"poll-timer"
-                                             repeats:YES];
         NSArray *configs = [_config getMultiGroups:@"resource"];
         for(NSDictionary *daemonConfig in configs)
         {
@@ -316,7 +310,6 @@ AppDelegate *_global_appdel= NULL;
             [d.checkIfUpTimer start];
         }
         [_listener start];
-        [_listener.pollTimer start];
     }
 }
 

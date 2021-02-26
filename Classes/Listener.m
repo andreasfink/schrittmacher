@@ -14,7 +14,7 @@
 
 - (Listener *)init
 {
-    self = [super init];
+    self = [super initWithName:@"listener" workSleeper:NULL];
     if(self)
     {
         _daemons =[[NSMutableDictionary alloc]init];
@@ -150,24 +150,26 @@
             }
         }
     }
+    [super startBackgroundTask];
 }
 
--(void)pollAction
+-(int)work
 {
-    [self checkForPackets];
+    int i = [self checkForPackets];
     [self checkForTimeouts];
+    return i;
 }
 
 
-- (void) checkForPackets
+- (int) checkForPackets
 {
-    BOOL packetsProcessed = NO;
+    int packetsProcessed = 0;
     do
     {
         UMSocketError err;
         @autoreleasepool
         {
-            err = [_rxSocket dataIsAvailable:1000];
+            err = [_rxSocket dataIsAvailable:250]; /* lets check every 250ms */
             if(err == UMSocketError_has_data)
             {
                 NSData  *data = NULL;
@@ -176,11 +178,15 @@
                 UMSocketError err2 = [_rxSocket receiveData:&data fromAddress:&address fromPort:&rxport];
                 if((err2 == UMSocketError_no_error) || (err2==UMSocketError_has_data) || (err2 == UMSocketError_has_data_and_hup))
                 {
-                    packetsProcessed = YES;
+                    packetsProcessed++;
                     if(data)
                     {
                         [self receiveStatus:data fromAddress:address];
                     }
+                }
+                else if((err2==UMSocketError_no_data) || (err2==UMSocketError_try_again))
+                {
+                    
                 }
                 else
                 {
@@ -189,7 +195,8 @@
             }
         }
     }
-    while(packetsProcessed);
+    while(packetsProcessed>0);
+    return packetsProcessed;
 }
 
 - (void)checkForTimeouts

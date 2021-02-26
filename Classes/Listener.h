@@ -9,7 +9,7 @@
 #import <ulib/ulib.h>
 @class Daemon;
 
-@interface Listener : UMObject
+@interface Listener : UMBackgrounder
 {
     NSString            *_localAddress;
     int                 _port;
@@ -32,11 +32,10 @@
 - (void)start;
 - (void)sendString:(NSString *)msg toAddress:(NSString *)addr toPort:(int)p;
 - (void) attachDaemon:(Daemon *)d;
-- (void)checkForPackets;
+- (int)checkForPackets;
 - (void)checkForTimeouts;
 - (NSDictionary *)status;
 - (void)failover:(NSString *)name;
 - (void)takeover:(NSString *)name;
 - (void)receiveStatus:(NSData *)statusData fromAddress:(NSString *)address;
-- (void)pollAction;
 @end
