@@ -256,7 +256,7 @@ AppDelegate *_global_appdel= NULL;
         {
             a = @[@"0.0.0.0"];
         }
-        _listener.localHost  = [[UMHost alloc]initWithLocalhost];
+        _listener.localAddress = _localAddress;
         _listener.port = _port;
         _listener.addressType= addrType;
         

@@ -110,10 +110,10 @@
             _txSocket = [[UMSocket alloc]initWithType:UMSOCKET_TYPE_UDP4ONLY];
         }
 
-        _rxSocket.localHost = [[UMHost alloc]initWithLocalhost];
+        _rxSocket.localHost = [[UMHost alloc] initWithLocalhost];               /* im listening on all addresses */
         _rxSocket.localPort = _port;
 
-        _txSocket.localHost = [[UMHost alloc]initWithLocalhost];
+        _txSocket.localHost = [[UMHost alloc] initWithAddress:_localAddress];   /* im sending out from specific address */
         _txSocket.localPort = 0;
 
         UMSocketError err = [_rxSocket bind];
