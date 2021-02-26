@@ -125,8 +125,14 @@ AppDelegate *_global_appdel= NULL;
     _localAddress     = [UMSocket unifyIP:[coreConfig[@"local-address"]stringValue]];
     _remoteAddress    = [UMSocket unifyIP:[coreConfig[@"remote-address"]stringValue]];
     _sharedAddress    = [UMSocket unifyIP:[coreConfig[@"shared-address"]stringValue]];
-    _publicPort      = [coreConfig[@"public-port"]intValue];
-    _privatePort     = [coreConfig[@"private-port"]intValue];
+    if(coreConfig[@"port"])
+    {
+        _port             = [coreConfig[@"port"]intValue];
+    }
+    if(coreConfig[@"public-port"])
+    {
+        _port             = [coreConfig[@"public-port"]intValue];
+    }
     _webPort          = [coreConfig[@"http-port"]intValue];
     _logDirectory     = [coreConfig[@"log-dir"]  stringValue];
     _heartbeat        = [coreConfig[@"heartbeat"] doubleValue];
@@ -250,15 +256,8 @@ AppDelegate *_global_appdel= NULL;
         {
             a = @[@"0.0.0.0"];
         }
-        _listener.localHostPublic  = [[UMHost alloc]init];
-        [_listener.localHostPublic addAddress:[UMSocket unifyIP:_localAddress]];
-        [_listener.localHostPublic addAddress:[UMSocket unifyIP:@"127.0.0.1"]];
-
-        _listener.localHostPrivate = [[UMHost alloc]init];
-        [_listener.localHostPrivate addAddress:[UMSocket unifyIP:@"127.0.0.1"]];
-
-        _listener.publicPort = _publicPort;
-        _listener.privatePort = _privatePort;
+        _listener.localHost  = [[UMHost alloc]initWithLocalhost];
+        _listener.port = _port;
         _listener.addressType= addrType;
         
         _listener.pollTimer =  [[UMTimer alloc]initWithTarget:_listener
@@ -288,7 +287,7 @@ AppDelegate *_global_appdel= NULL;
             d.localAddress = _localAddress;
             d.remoteAddress = _remoteAddress;
             d.sharedAddress = _sharedAddress;
-            d.remotePort = _publicPort;
+            d.remotePort = _port;
             d.resourceId = resourceName;
             d.startAction = startAction;
             d.stopAction = stopAction;

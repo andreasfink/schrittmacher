@@ -101,37 +101,23 @@
     {
         if(_addressType==6)
         {
-            _ucPrivate = [[UMSocket alloc]initWithType:UMSOCKET_TYPE_UDP6ONLY];
-            _ucPublic = [[UMSocket alloc]initWithType:UMSOCKET_TYPE_UDP6ONLY];
+            _uc = [[UMSocket alloc]initWithType:UMSOCKET_TYPE_UDP6ONLY];
         }
         else
         {
-            _ucPrivate = [[UMSocket alloc]initWithType:UMSOCKET_TYPE_UDP4ONLY];
-            _ucPublic = [[UMSocket alloc]initWithType:UMSOCKET_TYPE_UDP4ONLY];
+            _uc = [[UMSocket alloc]initWithType:UMSOCKET_TYPE_UDP4ONLY];
         }
 
-        _ucPublic.localHost = _localHostPublic;
-        _ucPublic.localPort = _publicPort;
-        _ucPrivate.localHost = _localHostPrivate;
-        _ucPrivate.localPort = _privatePort;
-
-        UMSocketError err = [_ucPublic bind];
-        if (![_ucPublic isBound] )
+        _uc.localHost = _localHost;
+        _uc.localPort = _port;
+        UMSocketError err = [_uc bind];
+        if (![_uc isBound] )
         {
             @throw([NSException exceptionWithName:@"udp"
                                            reason:@"can not bind to publicIP"
-                                         userInfo:@{ @"port":@(_publicPort),
+                                         userInfo:@{ @"port":@(_port),
                                                      @"socket-err": @(err),
-                                                     @"host" : _localHostPublic}]);
-        }
-        err = [_ucPrivate bind];
-        if (![_ucPrivate isBound] )
-        {
-            @throw([NSException exceptionWithName:@"udp"
-                                           reason:@"can not bind to privateIP (127.0.0.1)"
-                                         userInfo:@{ @"port":@(_privatePort),
-                                                     @"socket-err": @(err),
-                                                     @"host" : _localHostPrivate}]);
+                                                     @"host" : _localHost}]);
         }
         
         NSArray *allKeys;
@@ -165,13 +151,13 @@
         UMSocketError err;
         @autoreleasepool
         {
-            err = [_ucPublic dataIsAvailable:0];
+            err = [_uc dataIsAvailable:0];
             if(err == UMSocketError_has_data)
             {
                 NSData  *data = NULL;
                 NSString *address = NULL;
                 int rxport;
-                UMSocketError err2 = [_ucPublic receiveData:&data fromAddress:&address fromPort:&rxport];
+                UMSocketError err2 = [_uc receiveData:&data fromAddress:&address fromPort:&rxport];
                 if((err2 == UMSocketError_no_error) || (err2==UMSocketError_has_data) || (err2 == UMSocketError_has_data_and_hup))
                 {
                     packetsProcessed = YES;
@@ -183,26 +169,6 @@
                 else
                 {
                     NSLog(@"receiveData on public interface failed with error %d",err2);
-                }
-            }
-            err = [_ucPrivate dataIsAvailable:0];
-            if(err == UMSocketError_has_data)
-            {
-                NSData  *data = NULL;
-                NSString *address = NULL;
-                int rxport;
-                UMSocketError err2 = [_ucPrivate receiveData:&data fromAddress:&address fromPort:&rxport];
-                if((err2 == UMSocketError_no_error) || (err2==UMSocketError_has_data) || (err2 == UMSocketError_has_data_and_hup))
-                {
-                    packetsProcessed = YES;
-                    if(data)
-                    {
-                        [self receiveStatus:data fromAddress:address];
-                    }
-                }
-                else
-                {
-                    NSLog(@"receiveData on private interface failed with error %d",err2);
                 }
             }
         }
@@ -235,7 +201,7 @@
     const char *utf8 = msg.UTF8String;
     size_t len = strlen(utf8);
     NSData *d = [NSData dataWithBytes:utf8 length:len];
-    UMSocketError e = [_ucPublic sendData:d toAddress:addr toPort:p];
+    UMSocketError e = [_uc sendData:d toAddress:addr toPort:p];
     if(e)
     {
         NSString *s = [UMSocket getSocketErrorString:e];

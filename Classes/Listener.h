@@ -12,22 +12,17 @@
 @interface Listener : UMObject
 {
     UMLogHandler        *_logHandler;
-    UMHost *            _localHostPublic;
-    UMHost *            _localHostPrivate;
-    int                 _publicPort;
-    int                 _privatePort;
+    UMHost *            _localHost;
+    int                 _port;
     NSMutableDictionary *_daemons;
-    UMSocket            *_ucPublic;
-    UMSocket            *_ucPrivate;
+    UMSocket            *_uc;
     int                 _addressType;
     UMTimer             *_pollTimer;
     UMLogLevel          _logLevel;
 }
 
-@property(readwrite,strong) UMHost *localHostPublic;
-@property(readwrite,strong) UMHost *localHostPrivate;
-@property(readwrite,assign) int publicPort;
-@property(readwrite,assign) int privatePort;
+@property(readwrite,strong) UMHost *localHost;
+@property(readwrite,assign) int port;
 @property(readwrite,assign) int addressType;
 @property(readwrite,strong) UMTimer *pollTimer;
 @property(readwrite,assign) UMLogLevel logLevel;
