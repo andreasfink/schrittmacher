@@ -103,37 +103,37 @@
         {
             _rxSocket = [[UMSocket alloc]initWithType:UMSOCKET_TYPE_UDP6ONLY];
             _txSocket = [[UMSocket alloc]initWithType:UMSOCKET_TYPE_UDP6ONLY];
+            _rxSocket.localHost = [[UMHost alloc] initWithAddress:@"::"];
+            _txSocket.localHost = [[UMHost alloc] initWithAddress:@"::"];
+
         }
         else
         {
             _rxSocket = [[UMSocket alloc]initWithType:UMSOCKET_TYPE_UDP4ONLY];
             _txSocket = [[UMSocket alloc]initWithType:UMSOCKET_TYPE_UDP4ONLY];
+            _rxSocket.localHost = [[UMHost alloc] initWithAddress:@"0.0.0.0"];
+            _txSocket.localHost = [[UMHost alloc] initWithAddress:@"0.0.0.0"];
         }
 
-        _rxSocket.localHost = [[UMHost alloc] initWithLocalhost];               /* im listening on all addresses */
         _rxSocket.localPort = _port;
-
-        _txSocket.localHost = [[UMHost alloc] initWithAddress:_localAddress];   /* im sending out from specific address */
         _txSocket.localPort = 0;
 
         UMSocketError err = [_rxSocket bind];
         if (![_rxSocket isBound] )
         {
             @throw([NSException exceptionWithName:@"udp"
-                                           reason:@"can not bind to publicIP"
+                                           reason:@"can not bind rxSocket"
                                          userInfo:@{ @"port":@(_port),
-                                                     @"socket-err": @(err),
-                                                     @"host" : _localHost}]);
+                                                     @"socket-err": @(err) } ]);
         }
 
         err = [_txSocket bind];
         if (![_txSocket isBound] )
         {
             @throw([NSException exceptionWithName:@"udp"
-                                           reason:@"can not bind to publicIP"
+                                           reason:@"can not bind txSocket"
                                          userInfo:@{ @"port":@(_port),
-                                                     @"socket-err": @(err),
-                                                     @"host" : _localHost}]);
+                                                     @"socket-err": @(err) } ]);
         }
 
         NSArray *allKeys;
