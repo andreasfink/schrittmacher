@@ -25,8 +25,8 @@ DaemonRandomValue GetDaemonRandomValue(void)
     {
         _lastLocalRx = [NSDate date];
         _lastRemoteRx = [NSDate date];
-        _lastLocalMessage =@"<none received yet>";
-        _lastRemoteMessage=@"<none received yet>";
+        _lastLocalMessage = @"<i>nothing received yet</i>";
+        _lastRemoteMessage= @"<i>nothing received yet</i>";
     }
     return self;
 }

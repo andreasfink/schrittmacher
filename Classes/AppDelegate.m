@@ -200,11 +200,11 @@ AppDelegate *_global_appdel= NULL;
             NSDictionary *dict = states[key];
             NSString *action=@"";
 
-            if([dict[@"state"] isEqualToString:@"hot"])
+            if([dict[@"state"] isCaseInsensitiveLike:@"hot"])
             {
                 action = [NSString stringWithFormat:@"<a href=/?failover=%@>failover</a>", [key urlencode] ];
             }
-            else if([dict[@"state"] isEqualToString:@"standby"])
+            else if([dict[@"state"] isCaseInsensitiveLike:@"standby"])
             {
                 action = [NSString stringWithFormat:@"<a href=/?takeover=%@>takeover</a>", [key urlencode] ];
             }
