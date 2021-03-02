@@ -176,55 +176,44 @@ AppDelegate *_global_appdel= NULL;
 {
     @autoreleasepool
     {
-
         NSMutableString *s = [[NSMutableString alloc]init];
         [s appendFormat:@"<H1>Status</H1>\n"];
         [s appendFormat:@"<table border=1>\n"];
         [s appendFormat:@"<tr>\n"];
-        [s appendFormat:@"<th rowspan=2>Resource</th>\n"];
-        [s appendFormat:@"<th rowspan=2>Remote Status</th>\n"];
-        [s appendFormat:@"<th rowspan=2>Local Status</th>\n"];
-        [s appendFormat:@"<th colspan=2>Heartbeat</th>\n"];
-        [s appendFormat:@"<th colspan=2>Failure</th>\n"];
-        [s appendFormat:@"<th rowspan=2>Action</th>\n"];
-        [s appendFormat:@"</tr>"];
-
-        [s appendFormat:@"<tr>\n"];
-        [s appendFormat:@"<th>Remote</th>\n"];
-        [s appendFormat:@"<th>Local</th>\n"];
-        [s appendFormat:@"<th>Remote</th>\n"];
-        [s appendFormat:@"<th>Local</th>\n"];
+        [s appendFormat:@"<th>Resource</th>\n"];
+        [s appendFormat:@"<th>Status</th>\n"];
+        [s appendFormat:@"<th>Last Local Message</th>\n"];
+        [s appendFormat:@"<th>Last Remote Message</th>\n"];
+        [s appendFormat:@"<th>Action</th>\n"];
         [s appendFormat:@"</tr>"];
 
         NSDictionary *states = [_listener status];
         NSArray *keys = [states allKeys];
 
-        keys = [keys sortedArrayUsingComparator: ^(id a, id b) {
+        keys = [keys sortedArrayUsingComparator: ^(id a, id b)
+        {
             return [a compare:b];
         }];
 
         for(NSString *key in keys)
         {
             NSDictionary *dict = states[key];
-            NSString *action;
+            NSString *action=@"";
 
-            if([dict[@"local-state"] isEqualToString:@"hot"])
+            if([dict[@"state"] isEqualToString:@"hot"])
             {
                 action = [NSString stringWithFormat:@"<a href=/?failover=%@>failover</a>", [key urlencode] ];
             }
-            else if([dict[@"local-state"] isEqualToString:@"standby"])
+            else if([dict[@"state"] isEqualToString:@"standby"])
             {
                 action = [NSString stringWithFormat:@"<a href=/?takeover=%@>takeover</a>", [key urlencode] ];
             }
 
             [s appendFormat:@"<tr>"];
             [s appendFormat:@"<td>%@</td>",dict[@"resource-id"]];
-            [s appendFormat:@"<td>%@</td>",dict[@"remote-state"]];
-            [s appendFormat:@"<td>%@</td>",dict[@"local-state"]];
-            [s appendFormat:@"<td>%@</td>",dict[@"lastRemoteRx"]];
-            [s appendFormat:@"<td>%@</td>",dict[@"lastLocalRx"]];
-            [s appendFormat:@"<td>%@</td>",dict[@"remoteIsFailed"]];
-            [s appendFormat:@"<td>%@</td>",dict[@"localIsFailed"]];
+            [s appendFormat:@"<td>%@</td>",dict[@"state"]];
+            [s appendFormat:@"<td>%@<br>%@</td>",dict[@"last-local-message"],dict[@"last-local-message-received"]];
+            [s appendFormat:@"<td>%@<br>%@</td>",dict[@"last-remote-message"],dict[@"last-remote-message-received"]];
             [s appendFormat:@"<td>%@</td>",action];
             [s appendFormat:@"</tr>"];
         }

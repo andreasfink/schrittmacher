@@ -48,8 +48,8 @@ typedef enum DaemonInterfaceState
 @interface Daemon : UMObject
 {
     DaemonState     *_currentState;
-    NSString        *_lastRemoteState;
-    NSString        *_lastLocalState;
+    NSString        *_lastRemoteMessage;
+    NSString        *_lastLocalMessage;
     NSString        *_resourceId;
     int             _localPriority;
     BOOL            _iAmHot;
@@ -123,8 +123,8 @@ typedef enum DaemonInterfaceState
 @property (readwrite,assign,atomic) BOOL localStartActionRequested;
 @property (readwrite,assign,atomic) NSTimeInterval goingHotTimeout;
 @property (readwrite,assign,atomic) NSTimeInterval goingStandbyTimeout;
-@property (readwrite,strong) NSString        *lastRemoteState;
-@property (readwrite,strong) NSString        *lastLocalState;
+@property (readwrite,strong) NSString        *lastRemoteMessage;
+@property (readwrite,strong) NSString        *lastLocalMessage;
 
 @property (readwrite,strong) NSDate          *lastHotSent;
 @property (readwrite,strong) NSDate          *lastStandbySent;

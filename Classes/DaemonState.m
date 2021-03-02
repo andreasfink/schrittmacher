@@ -162,14 +162,14 @@
 - (DaemonState *)eventRemoteTimeout
 {
     /* other side's daemon is dead */
-    daemon.lastRemoteState = @"event-remote-timeout";
+    daemon.lastRemoteMessage = @"event-remote-timeout";
     return [self eventStatusRemoteFailure:NULL];
 }
 
 - (DaemonState *)eventLocalTimeout
 {
     /* this side's app is dead */
-    daemon.lastLocalState = @"event-local-timeout";
+    daemon.lastLocalMessage = @"event-local-timeout";
     return [self eventStatusLocalFailure:NULL];
 }
 
