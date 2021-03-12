@@ -154,7 +154,7 @@
     /* as we dont wait confirmation from the local process                                */
     [daemon callDeactivateInterface];
     [daemon actionSendFailed];
-    return [[DaemonState_Standby alloc]initWithDaemon:daemon];
+    return [[DaemonState_Failed alloc]initWithDaemon:daemon];
 }
 
 - (DaemonState *)eventStatusLocalUnknown:(NSDictionary *)dict
