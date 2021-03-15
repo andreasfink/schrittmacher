@@ -1,0 +1,25 @@
+Schrittmacher Messages:
+
+Messages between Schrittmacher instances:
+
+UNK		MESSAGE_UNKNOWN					Schrittmacher declares it doesn't know which state it should go to. 
+HOTT	MESSAGE_HOT						Schrittmacher declares its hot
+STBY	MESSAGE_STANDBY					Schrittmacher declares its standby
+TREQ	MESSAGE_TAKEOVER_REQUEST		Schrittmacher challenges status and says it wants to go hot
+TCNF	MESSAGE_TAKEOVER_CONF			Schrittmacher confirms takeover
+TREJ	MESSAGE_TAKEOVER_REJECT			Schrittmacher rejects takeover
+FAIL	MESSAGE_FAILED					Schrittmacher declares local instance is failed
+FOVR	MESSAGE_FAILOVER				Schrittmacher declares it doesnt want to be hot anymore
+2HOT	MESSAGE_TRANSITING_TO_HOT		Schrittmacher declares its in the process to switch to hot
+2SBY	MESSAGE_TRANSITING_TO_STANDBY	Schrittmacher declares its in the process to switch to standby
+
+Messages sent from MessageMover to Schrittmacher:
+
+LHOT	MESSAGE_LOCAL_HOT					Messagemover declares its active
+LSBY	MESSAGE_LOCAL_STANDBY				Messagemover declares its inactive
+LUNK	MESSAGE_LOCAL_UNKNOWN				Messagemover declares it doesnt know its state. Schrittmacher should tell it.
+LFAI	MESSAGE_LOCAL_FAIL					Messagemover declares its failed
+L2HT	MESSAGE_LOCAL_TRANSITING_TO_HOT		Messagemover declares its in the process to switch to active
+L2SB	MESSAGE_LOCAL_TRANSITING_TO_STANDBY	Messagemover declares its in the process to switch to standby
+LRFO	MESSAGE_LOCAL_REQUEST_FAILOVER		Messagemover declares its user wants this system to failover (button in GUI)
+LRTO	MESSAGE_LOCAL_REQUEST_TAKEOVER		Messagemover declares its user wants this system to take over (button in GUI)
