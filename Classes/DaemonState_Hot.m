@@ -154,6 +154,7 @@
     /* as we dont wait confirmation from the local process                                */
     [daemon callDeactivateInterface];
     [daemon actionSendFailed];
+    [daemon callStopAction];
     return [[DaemonState_Failed alloc]initWithDaemon:daemon];
 }
 
