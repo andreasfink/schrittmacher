@@ -359,6 +359,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
         _currentState = [[DaemonState_Unknown alloc]init];
     }
     _currentState = [_currentState eventHeartbeat];
+    [self checkForTimeouts];
 }
 
 - (void)eventForceFailover
