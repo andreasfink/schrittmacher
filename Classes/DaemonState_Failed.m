@@ -87,12 +87,14 @@
 #pragma mark - Local Status
 - (DaemonState *)eventStatusLocalHot:(NSDictionary *)pdu
 {
+    daemon.localIsFailed = NO;
     [daemon actionSendTakeoverRequest];
     return [[DaemonState_Unknown alloc]initWithDaemon:daemon];
 }
 
 - (DaemonState *)eventStatusLocalStandby:(NSDictionary *)dict
 {
+    daemon.localIsFailed = NO;
     [daemon actionSendStandby];
     [daemon callDeactivateInterface];
     return [[DaemonState_Standby alloc]initWithDaemon:daemon];
@@ -100,17 +102,20 @@
 
 - (DaemonState *)eventStatusLocalFailure:(NSDictionary *)dict
 {
+    daemon.localIsFailed = YES;
     return self;
 }
 
 - (DaemonState *)eventStatusLocalUnknown:(NSDictionary *)dict
 {
+    daemon.localIsFailed = NO;
     [daemon actionSendUnknown];
     return [[DaemonState_Unknown alloc]initWithDaemon:daemon];
 }
 
 - (DaemonState *)eventStatusLocalTransitingToStandby:(NSDictionary *)dict
 {
+    daemon.localIsFailed = NO;
     [daemon callStopAction];
     [daemon callDeactivateInterface];
     [daemon actionSendTransitingToStandby];
@@ -119,6 +124,7 @@
 
 - (DaemonState *)eventStatusLocalTransitingToHot:(NSDictionary *)dict
 {
+    daemon.localIsFailed = NO;
     [daemon callActivateInterface];
     [daemon actionSendTransitingToHot];
     return [[DaemonState_transiting_to_hot alloc]initWithDaemon:daemon];

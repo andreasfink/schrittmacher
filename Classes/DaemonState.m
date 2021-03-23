@@ -108,6 +108,7 @@
 
 - (DaemonState *)eventStatusLocalStandby:(NSDictionary *)dict
 {
+    daemon.localIsFailed = NO;
     [daemon.logFeed warningText:@"Unexpected eventStatusLocalStandby"];
     return [[DaemonState_Unknown alloc]initWithDaemon:daemon];
 }

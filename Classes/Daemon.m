@@ -159,6 +159,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
 
     if ([event isEqualToString:MESSAGE_LOCAL_REQUEST_TAKEOVER])
     {
+        self.localIsFailed=NO;
         DEBUGLOG(_currentState,@"eventForceTakeover");
         _lastLocalRx = [NSDate date];
         _lastLocalMessage=@"local-request-takeover";
@@ -166,6 +167,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
     }
     else if ([event isEqualToString:MESSAGE_LOCAL_REQUEST_FAILOVER])
     {
+        self.localIsFailed=NO;
         DEBUGLOG(_currentState,@"eventForceFailover");
         _lastLocalRx = [NSDate date];
         _lastLocalMessage=@"local-request-failover";
@@ -175,7 +177,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
     {
         _lastLocalRx = [NSDate date];
         _lastLocalMessage=@"hot";
-        self.localIsFailed=NO;
+        self.localIsFailed = NO;
         DEBUGLOG(_currentState,@"localHotIndication");
         _currentState = [_currentState eventStatusLocalHot:dict];
     }

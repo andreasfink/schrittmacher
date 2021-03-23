@@ -103,12 +103,14 @@
 #pragma mark - Local Status
 - (DaemonState *)eventStatusLocalHot:(NSDictionary *)pdu
 {
+    daemon.localIsFailed = NO;
     [daemon actionSendHot];
     return [[DaemonState_Hot alloc]initWithDaemon:daemon];
 }
 
 - (DaemonState *)eventStatusLocalStandby:(NSDictionary *)dict
 {
+    daemon.localIsFailed = NO;
     [daemon callActivateInterface];
     [daemon callStartAction];
     return self;

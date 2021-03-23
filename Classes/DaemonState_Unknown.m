@@ -122,6 +122,7 @@
 - (DaemonState *)eventStatusLocalHot:(NSDictionary *)dict
 {
     /* if we are hot, the interface should be activated if not already */
+    daemon.localIsFailed = NO;
     [daemon actionSendHot];
     [daemon callActivateInterface];
     return [[DaemonState_Hot alloc]initWithDaemon:daemon];
@@ -129,6 +130,7 @@
 
 - (DaemonState *)eventStatusLocalStandby:(NSDictionary *)dict
 {
+    daemon.localIsFailed = NO;
     /* we go straigth to standby if the local app tells us so */
     [daemon actionSendStandby];
     [daemon callDeactivateInterface];

@@ -122,6 +122,7 @@
 #pragma mark - Local Status
 - (DaemonState *)eventStatusLocalHot:(NSDictionary *)pdu
 {
+    daemon.localIsFailed = NO;
     /* local app tells us its hot while we have agreed with remote to be standby. lets switch off local.*/
     [daemon callStopAction];
     [daemon callDeactivateInterface];

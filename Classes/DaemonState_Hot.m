@@ -141,6 +141,7 @@
 
 - (DaemonState *)eventStatusLocalStandby:(NSDictionary *)dict
 {
+    daemon.localIsFailed = NO;
     [daemon callActivateInterface];
     [daemon callStartAction];
     return self;
