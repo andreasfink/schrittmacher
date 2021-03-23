@@ -31,7 +31,6 @@
     {
         [daemon actionSendFailed];
         return [[DaemonState_Failed alloc]initWithDaemon:daemon];
-
     }
     else
     {
@@ -132,7 +131,7 @@
 
 - (DaemonState *)eventStatusLocalStandby:(NSDictionary *)dict
 {
-    
+    daemon.localIsFailed = NO;
     NSDate *now = [NSDate date];
     if(daemon.lastStandbySent==NULL)
     {
