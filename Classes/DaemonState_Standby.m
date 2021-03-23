@@ -27,7 +27,7 @@
 - (DaemonState *)eventStatusRemoteStandby:(NSDictionary *)dict
 {
     /* both sides standby, this can't work. So we jump to hot IF WE CAN */
-    if(daemon.localIsFailed)
+    if(daemon.localIsFailed == YES)
     {
         [daemon actionSendFailed];
         return [[DaemonState_Failed alloc]initWithDaemon:daemon];

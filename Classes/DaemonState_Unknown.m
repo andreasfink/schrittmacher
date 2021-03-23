@@ -125,6 +125,7 @@
     daemon.localIsFailed = NO;
     [daemon actionSendHot];
     [daemon callActivateInterface];
+    [daemon callStartAction];
     return [[DaemonState_Hot alloc]initWithDaemon:daemon];
 }
 
@@ -134,6 +135,7 @@
     /* we go straigth to standby if the local app tells us so */
     [daemon actionSendStandby];
     [daemon callDeactivateInterface];
+    [daemon callStopAction];
     return [[DaemonState_Standby alloc]initWithDaemon:daemon];
 }
 
