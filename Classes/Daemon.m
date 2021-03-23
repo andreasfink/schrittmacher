@@ -37,6 +37,10 @@ DaemonRandomValue GetDaemonRandomValue(void)
     {
         _timeout=6.0;
     }
+    if(_timeout > 60)
+    {
+        _timeout = 6;
+    }
     if(_goingHotTimeout <=0)
     {
         _goingHotTimeout = 20.0;
@@ -159,6 +163,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
 
     if ([event isEqualToString:MESSAGE_LOCAL_REQUEST_TAKEOVER])
     {
+        _outstandingLocalHeartbeats = 0;
         self.localIsFailed=NO;
         DEBUGLOG(_currentState,@"eventForceTakeover");
         _lastLocalRx = [NSDate date];
@@ -167,6 +172,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
     }
     else if ([event isEqualToString:MESSAGE_LOCAL_REQUEST_FAILOVER])
     {
+        _outstandingLocalHeartbeats = 0;
         self.localIsFailed=NO;
         DEBUGLOG(_currentState,@"eventForceFailover");
         _lastLocalRx = [NSDate date];
@@ -175,6 +181,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
     }
     else if ([event isEqualToString:MESSAGE_LOCAL_HOT])
     {
+        _outstandingLocalHeartbeats = 0;
         _lastLocalRx = [NSDate date];
         _lastLocalMessage=@"hot";
         self.localIsFailed = NO;
@@ -183,6 +190,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
     }
     else if ([event isEqualToString:MESSAGE_LOCAL_STANDBY])
     {
+        _outstandingLocalHeartbeats = 0;
         _lastLocalRx = [NSDate date];
         _lastLocalMessage=@"standby";
         self.localIsFailed=NO;
@@ -191,6 +199,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
     }
     else if ([event isEqualToString:MESSAGE_LOCAL_UNKNOWN])
     {
+        _outstandingLocalHeartbeats = 0;
         _lastLocalRx = [NSDate date];
         _lastLocalMessage=@"unknown";
         self.localIsFailed=NO;
@@ -199,6 +208,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
     }
     else if ([event isEqualToString:MESSAGE_LOCAL_FAIL])
     {
+        _outstandingLocalHeartbeats = 0;
         _lastLocalRx = [NSDate date];
         _lastLocalMessage=@"fail";
         self.localIsFailed=YES;
@@ -208,6 +218,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
     
     else if ([event isEqualToString:MESSAGE_LOCAL_TRANSITING_TO_HOT])
     {
+        _outstandingLocalHeartbeats = 0;
         _lastLocalRx = [NSDate date];
         _lastLocalMessage=@"transiting-to-hot";
         self.localIsFailed=NO;
@@ -217,6 +228,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
 
     else if ([event isEqualToString:MESSAGE_LOCAL_TRANSITING_TO_STANDBY])
     {
+        _outstandingLocalHeartbeats = 0;
         _lastLocalRx = [NSDate date];
         _lastLocalMessage=@"transiting-to-standby";
         self.localIsFailed=NO;
@@ -232,6 +244,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
     /* the other side says it doesnt know its status */
     else if ([event isEqualToString:MESSAGE_UNKNOWN])
     {
+        _outstandingRemoteHeartbeats = 0;
         _lastRemoteRx = [NSDate date];
         _lastRemoteMessage=@"unknown";
         self.remoteIsFailed=NO;
@@ -242,6 +255,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
     /* the other side says it doesnt know its status */
     else if ([event isEqualToString:MESSAGE_FAILED])
     {
+        _outstandingRemoteHeartbeats = 0;
         _lastRemoteRx = [NSDate date];
         _lastRemoteMessage=@"failed";
         self.remoteIsFailed=YES;
@@ -251,6 +265,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
 
     else if ([event isEqualToString:MESSAGE_FAILOVER])
     {
+        _outstandingRemoteHeartbeats = 0;
         _lastRemoteRx = [NSDate date];
         _lastRemoteMessage=@"failover";
         self.remoteIsFailed=NO;
@@ -260,7 +275,8 @@ DaemonRandomValue GetDaemonRandomValue(void)
 
     else if ([event isEqualToString:MESSAGE_TAKEOVER_REQUEST])
     {
-        _lastRemoteRx = [NSDate date];
+        _outstandingRemoteHeartbeats = 0;
+       _lastRemoteRx = [NSDate date];
         _lastRemoteMessage=@"takeover-request";
         self.remoteIsFailed=NO;
         DEBUGLOG(_currentState,@"eventStatusRemoteTakeoverRequest");
@@ -268,6 +284,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
     }
     else if ([event isEqualToString:MESSAGE_TAKEOVER_REJECT])
     {
+        _outstandingRemoteHeartbeats = 0;
         _lastRemoteRx = [NSDate date];
         _lastRemoteMessage=@"takeover-reject";
         DEBUGLOG(_currentState,@"eventStatusRemoteTakeoverReject");
@@ -276,6 +293,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
 
     else if ([event isEqualToString:MESSAGE_TAKEOVER_CONF])
     {
+        _outstandingRemoteHeartbeats = 0;
         _lastRemoteRx = [NSDate date];
         _lastRemoteMessage=@"takeover-confirmed";
         DEBUGLOG(_currentState,@"eventTakeoverConf");
@@ -283,6 +301,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
     }
     else if ([event isEqualToString:MESSAGE_STANDBY])
     {
+        _outstandingRemoteHeartbeats = 0;
         _lastRemoteMessage=@"standby";
         _lastRemoteRx = [NSDate date];
         DEBUGLOG(_currentState,@"eventStatusStandby");
@@ -291,7 +310,8 @@ DaemonRandomValue GetDaemonRandomValue(void)
     /* the other side says it doesnt know its status */
     else if ([event isEqualToString:MESSAGE_HOT])
     {
-        _lastRemoteRx = [NSDate date];
+        _outstandingRemoteHeartbeats = 0;
+       _lastRemoteRx = [NSDate date];
         _lastRemoteMessage=@"hot";
         DEBUGLOG(_currentState,@"eventStatusHot");
         _currentState = [_currentState eventStatusRemoteHot:dict];
@@ -299,6 +319,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
     
     else if ([event isEqualToString:MESSAGE_TRANSITING_TO_HOT])
     {
+        _outstandingRemoteHeartbeats = 0;
         _lastRemoteMessage=@"transiting-to-hot";
         _lastRemoteRx = [NSDate date];
         DEBUGLOG(_currentState,@"eventStatusRemoteTransitingToHot");
@@ -307,6 +328,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
 
     else if ([event isEqualToString:MESSAGE_TRANSITING_TO_STANDBY])
     {
+        _outstandingRemoteHeartbeats = 0;
         _lastRemoteRx = [NSDate date];
         _lastRemoteMessage=@"transiting-to-standby";
         DEBUGLOG(_currentState,@"eventStatusRemoteTransitingToStandby");
@@ -366,20 +388,17 @@ DaemonRandomValue GetDaemonRandomValue(void)
         NSLog(@"ouch. currentState is NULL! assuming unknown");
         _currentState = [[DaemonState_Unknown alloc]init];
     }
-    NSDate *now = [NSDate date];
-    NSTimeInterval delay = [now timeIntervalSinceDate:_lastRemoteRx];
-    if(delay > _timeout)
+    _outstandingLocalHeartbeats++;
+    _outstandingRemoteHeartbeats++;
+    if(_outstandingLocalHeartbeats > 4)
     {
-        NSLog(@"delay %lf s , timeout: %lf s",delay,_timeout);
-        _currentState = [_currentState eventRemoteTimeout];
-    }
-    delay = [now timeIntervalSinceDate:_lastLocalRx];
-    if(delay > _timeout)
-    {
-        NSLog(@"delay %lf s , timeout: %lf s",delay,_timeout);
         _currentState = [_currentState eventLocalTimeout];
     }
 
+    if(_outstandingRemoteHeartbeats > 4)
+    {
+        _currentState = [_currentState eventRemoteTimeout];
+    }
 }
 
 - (int)goToHot /* returns 0 on success  */

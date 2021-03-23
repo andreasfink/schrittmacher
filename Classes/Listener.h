@@ -33,7 +33,6 @@
 - (void)sendString:(NSString *)msg toAddress:(NSString *)addr toPort:(int)p;
 - (void) attachDaemon:(Daemon *)d;
 - (int)checkForPackets;
-- (void)checkForTimeouts;
 - (NSDictionary *)status;
 - (void)failover:(NSString *)name;
 - (void)takeover:(NSString *)name;

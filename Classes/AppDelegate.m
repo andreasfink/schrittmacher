@@ -135,17 +135,40 @@ AppDelegate *_global_appdel= NULL;
     }
     _webPort          = [coreConfig[@"http-port"]intValue];
     _logDirectory     = [coreConfig[@"log-dir"]  stringValue];
-    _heartbeat        = [coreConfig[@"heartbeat"] doubleValue];
-    _timeout          = [coreConfig[@"timeout"] doubleValue];
-
+    
+    NSString *s =   coreConfig[@"heartbeat"];
+    if((s == NULL) || (s.length ==0))
+    {
+        _heartbeat = 2.0;
+    }
+    else
+    {
+        _heartbeat = [s doubleValue];
+    }
     if(_heartbeat <= 0.01)
     {
-        _heartbeat=2.0;
+        _heartbeat = 2.0;
     }
-    if(_timeout < (3*_heartbeat))
+    if(_heartbeat > 20)
     {
-        _timeout= 3 * _heartbeat;
+        _heartbeat = 20;
     }
+
+    s = coreConfig[@"timeout"];
+    if((s == NULL) || (s.length ==0))
+    {
+        _timeout = 6.0;
+    }
+    else
+    {
+        _timeout          = [coreConfig[@"timeout"] doubleValue];
+    }
+
+    if(_timeout < (3.0 *_heartbeat))
+    {
+        _timeout = 3.0 * _heartbeat;
+    }
+    
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification

@@ -90,7 +90,8 @@ typedef enum DaemonInterfaceState
     UMTimer         *_heartbeatTimer;
     UMTimer         *_checkIfUpTimer;
     UMLogLevel      _logLevel;
-
+    int             _outstandingRemoteHeartbeats;
+    int             _outstandingLocalHeartbeats;
 }
 
 @property (readwrite,strong) DaemonState *currentState;

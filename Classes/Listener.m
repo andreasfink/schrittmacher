@@ -156,7 +156,6 @@
 -(int)work
 {
     int i = [self checkForPackets];
-    [self checkForTimeouts];
     return i;
 }
 
@@ -197,26 +196,6 @@
     }
     while(packetsProcessed>0);
     return packetsProcessed;
-}
-
-- (void)checkForTimeouts
-{
-    @autoreleasepool
-    {
-        NSArray *allKeys;
-        @synchronized(_daemons)
-        {
-            allKeys =[_daemons allKeys];
-        }
-        for(NSString *key in allKeys)
-        {
-            Daemon *d = [self daemonByName:key];
-            if(d)
-            {
-                [d checkForTimeouts];
-            }
-        }
-    }
 }
 
 - (void)sendString:(NSString *)msg toAddress:(NSString *)addr toPort:(int)p
