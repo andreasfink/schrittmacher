@@ -104,12 +104,12 @@ typedef enum DaemonInterfaceState
 @property (readwrite,assign) int        remotePort;
 
 @property (readwrite,strong) Listener        *listener;
-@property (readwrite,assign) NSTimeInterval  timeout;
-@property (readwrite,strong) NSDate          *lastRemoteRx;
-@property (readwrite,strong) NSDate          *lastLocalRx;
-@property (readwrite,strong) NSString        *startAction;
-@property (readwrite,strong) NSString        *stopAction;
-@property (readwrite,strong) NSString        *pidFile;
+@property (readwrite,assign,atomic) NSTimeInterval  timeout;
+@property (readwrite,strong,atomic) NSDate      *lastRemoteRx;
+@property (readwrite,strong,atomic) NSDate      *lastLocalRx;
+@property (readwrite,strong,atomic) NSString    *startAction;
+@property (readwrite,strong,atomic) NSString    *stopAction;
+@property (readwrite,strong,atomic) NSString    *pidFile;
 
 @property (readwrite,strong) NSString *activateInterfaceCommand;
 @property (readwrite,strong) NSString *deactivateInterfaceCommand;
