@@ -245,6 +245,7 @@ int main(int argc, char *argv[])
                         signal_SIGTERM();
                     }
                 }
+                usleep(100000);
             }
         }
         fprintf(stderr,"terminating");
