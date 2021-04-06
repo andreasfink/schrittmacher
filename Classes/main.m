@@ -225,7 +225,7 @@ int main(int argc, char *argv[])
         {
             @autoreleasepool
             {
-                isRunning = [runLoop runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
+                isRunning = [runLoop runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:1.0]];
                 if(sig>0)
                 {
                     if(signal_sigpipe>0)
@@ -245,7 +245,7 @@ int main(int argc, char *argv[])
                         signal_SIGTERM();
                     }
                 }
-                usleep(100000);
+                usleep(50000);
             }
         }
         fprintf(stderr,"terminating");
