@@ -225,7 +225,7 @@ int main(int argc, char *argv[])
         {
             @autoreleasepool
             {
-                isRunning = [runLoop runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:-1.0]];
+                isRunning = [runLoop runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
                 if(sig>0)
                 {
                     if(signal_sigpipe>0)
