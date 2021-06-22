@@ -225,7 +225,6 @@ AppDelegate *_global_appdel= NULL;
 
             if(   ([dict[@"state"] isEqualTo:@"Hot"])
                || ([dict[@"state"] isEqualTo:@"hot"]))
-
             {
                 action = [NSString stringWithFormat:@"<a href=/?failover=%@>failover</a>", [key urlencode] ];
             }
