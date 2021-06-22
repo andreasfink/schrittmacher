@@ -36,7 +36,8 @@
                 NSDictionary *di = (NSDictionary *)obj;
                 NSString *resource      = [di[@"resource"] stringValue];
                 NSString *status        = [di[@"status"] stringValue];
-                long rx_pid         = [di[@"status"] longValue];
+                long rx_pid             = [di[@"pid"] longValue];
+                long admin_port         = [di[@"admin-port"] longValue];
                 NSMutableDictionary *dict  = [di mutableCopy];
                 dict[@"address"]    = address;
                 dict[@"pdu"]        = statusData;
@@ -47,6 +48,10 @@
                     if(rx_pid>0)
                     {
                         daemon.pid = rx_pid;
+                    }
+                    if(admin_port>0)
+                    {
+                        daemon.admin_port = admin_port;
                     }
                     [daemon eventReceived:status dict:dict];
                     if(_logLevel <= UMLOG_DEBUG)

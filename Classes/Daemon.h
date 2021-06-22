@@ -93,6 +93,7 @@ typedef enum DaemonInterfaceState
     UMLogLevel      _logLevel;
     int             _outstandingRemoteHeartbeats;
     int             _outstandingLocalHeartbeats;
+    long            _admin_port;
 }
 
 @property (readwrite,strong) DaemonState *currentState;
@@ -135,6 +136,7 @@ typedef enum DaemonInterfaceState
 @property (readwrite,strong) UMTimer         *checkIfUpTimer;
 @property(readwrite,assign) UMLogLevel logLevel;
 @property(readwrite,assign) long pid;
+@property(readwrite,assign) long admin_port;
 
 
 - (void)eventReceived:(NSString *)event dict:(NSDictionary *)dict;
