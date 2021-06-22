@@ -27,6 +27,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
         _lastRemoteRx = [NSDate date];
         _lastLocalMessage = @"<i>nothing received yet</i>";
         _lastRemoteMessage= @"<i>nothing received yet</i>";
+        _pid = 0;
     }
     return self;
 }
@@ -447,6 +448,15 @@ DaemonRandomValue GetDaemonRandomValue(void)
     SETENV("SHARED_ADDRESS", _sharedAddress);
     SETENV("RESOURCE_NAME", _resourceId);
     SETENV("PID_FILE", _pidFile);
+    if(_pid > 0)
+    {
+        NSString *p = [NSString stringWithFormat:@"%ld",_pid];
+        SETENV("RESOURCE_PID",p);
+    }
+    else
+    {
+        unsetenv("RESOURCE_PID");
+    }
     SETENV("HEARTBEAT_INTERVAL", heartbeatIntervall);
 }
 
@@ -459,6 +469,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
     unsetenv("SHARED_ADDRESS");
     unsetenv("RESOURCE_NAME");
     unsetenv("PID_FILE");
+    unsetenv("RESOURCE_PID");
     unsetenv("ACTION");
     unsetenv("HEARTBEAT_INTERVAL");
 }

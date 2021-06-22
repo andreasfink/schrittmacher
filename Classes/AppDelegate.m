@@ -305,6 +305,7 @@ AppDelegate *_global_appdel= NULL;
             d.deactivateInterfaceCommand = deactivate;
             d.intervallDelay = intervallDelay;
             d.pidFile = pidFile;
+            d.pid = 0;
             d.logLevel = _logLevel;
             d.heartbeatTimer =  [[UMTimer alloc]initWithTarget:d
                                                       selector:@selector(eventHeartbeat)

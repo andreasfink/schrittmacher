@@ -63,6 +63,7 @@ typedef enum DaemonInterfaceState
     NSString        *_startAction;
     NSString        *_stopAction;
     NSString        *_pidFile;
+    long            _pid;
     NSString        *_activateInterfaceCommand;
     NSString        *_deactivateInterfaceCommand;
     NSTimeInterval  _intervallDelay; /* how often do we get local heartbeat */
@@ -133,6 +134,8 @@ typedef enum DaemonInterfaceState
 @property (readwrite,strong) UMTimer         *heartbeatTimer;
 @property (readwrite,strong) UMTimer         *checkIfUpTimer;
 @property(readwrite,assign) UMLogLevel logLevel;
+@property(readwrite,assign) long pid;
+
 
 - (void)eventReceived:(NSString *)event dict:(NSDictionary *)dict;
 - (void)eventHeartbeat;
