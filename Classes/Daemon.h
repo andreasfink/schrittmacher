@@ -7,6 +7,7 @@
 //
 
 #import <ulib/ulib.h>
+#import "SchrittmacherMetrics.h"
 
 #define MESSAGE_UNKNOWN                     @"UNK"
 #define MESSAGE_HOT                         @"HOTT"
@@ -94,6 +95,8 @@ typedef enum DaemonInterfaceState
     int             _outstandingRemoteHeartbeats;
     int             _outstandingLocalHeartbeats;
     long            _adminweb_port;
+    SchrittmacherMetrics    *_prometheusMetrics;
+
 }
 
 @property (readwrite,strong) DaemonState *currentState;
@@ -137,6 +140,7 @@ typedef enum DaemonInterfaceState
 @property(readwrite,assign) UMLogLevel logLevel;
 @property(readwrite,assign) long pid;
 @property(readwrite,assign) long adminweb_port;
+@property(readwrite,strong,atomic) SchrittmacherMetrics *prometheusMetrics;
 
 
 - (void)eventReceived:(NSString *)event dict:(NSDictionary *)dict;

@@ -30,6 +30,7 @@
     NSString            *_sharedAddress;
     Listener            *_listener;
     UMLogLevel          _logLevel;
+    UMPrometheus        *_prometheus;
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification;
