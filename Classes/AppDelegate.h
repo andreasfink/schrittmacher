@@ -34,7 +34,7 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification;
 
-@property(readwrite,strong,atomic)  UMConfig *config;
+@property(readwrite,strong,atomic) UMConfig *config;
 @property(readonly,assign)          time_t g_statup_time;
 @property(readwrite,assign) UMLogLevel logLevel;
 

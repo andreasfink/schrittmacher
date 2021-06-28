@@ -97,6 +97,8 @@ typedef enum DaemonInterfaceState
 }
 
 @property (readwrite,strong) DaemonState *currentState;
+
+
 @property (readwrite,assign) int        localPriority;
 @property (readwrite,strong) NSString   *resourceId;
 @property (readwrite,strong) NSString   *remoteAddress;
