@@ -21,6 +21,7 @@
 
 #import "Listener.h"
 #import "Daemon.h"
+#import "SchrittmacherMetrics.h"
 
 extern int  global_argc;
 extern char **global_argv;
@@ -63,7 +64,7 @@ AppDelegate *_global_appdel= NULL;
         time(&now);
         unsigned int speed = (unsigned int) now;
         srandom(speed);
-
+        _prometheus = [[UMPrometheus alloc]init];
     }
     return self;
 }
@@ -104,6 +105,14 @@ AppDelegate *_global_appdel= NULL;
         }
         NSString *s = [self htmlStatus];
         [req setResponseHtmlString:s];
+        req.responseCode = HTTP_RESPONSE_CODE_OK;
+    }
+    else if ([req.url.relativePath isEqualToString:@"/metrics"])
+    {
+        NSString *html = [_prometheus prometheusOutput];
+        NSData *d = [html dataUsingEncoding:NSUTF8StringEncoding];
+        [req setResponseHeader:@"Content-Type" withValue:@"text/plain; version=0.0.4"];
+        [req setResponseData:d];
         req.responseCode = HTTP_RESPONSE_CODE_OK;
     }
     else
@@ -306,6 +315,9 @@ AppDelegate *_global_appdel= NULL;
             d.pidFile = pidFile;
             d.pid = 0;
             d.logLevel = _logLevel;
+            d.prometheusMetrics = [[SchrittmacherMetrics alloc]initWithPrometheus:_prometheus];
+            [d.prometheusMetrics setSubname1:@"resource-name" value:resourceName];
+            [d.prometheusMetrics registerMetrics];
             d.heartbeatTimer =  [[UMTimer alloc]initWithTarget:d
                                                       selector:@selector(eventHeartbeat)
                                                         object:NULL

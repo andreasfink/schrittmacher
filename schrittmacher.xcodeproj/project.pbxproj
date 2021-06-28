@@ -18,6 +18,7 @@
 		A6B59CBF25BC37AD0014D9E2 /* DaemonState_transiting_to_hot.m in Sources */ = {isa = PBXBuildFile; fileRef = A6B59CBE25BC37AD0014D9E2 /* DaemonState_transiting_to_hot.m */; };
 		A6B59CC325BC37B80014D9E2 /* DaemonState_transiting_to_standby.m in Sources */ = {isa = PBXBuildFile; fileRef = A6B59CC225BC37B80014D9E2 /* DaemonState_transiting_to_standby.m */; };
 		A6B59CC725BC3A0E0014D9E2 /* DaemonState_Failed.m in Sources */ = {isa = PBXBuildFile; fileRef = A6B59CC625BC3A0E0014D9E2 /* DaemonState_Failed.m */; };
+		A6C60A4526897CC700EDBC5C /* SchrittmacherMetrics.m in Sources */ = {isa = PBXBuildFile; fileRef = A6C60A4426897CC700EDBC5C /* SchrittmacherMetrics.m */; };
 		A6E54FCE1B0DBE640090FC94 /* Listener.m in Sources */ = {isa = PBXBuildFile; fileRef = A6E54FCD1B0DBE640090FC94 /* Listener.m */; };
 /* End PBXBuildFile section */
 
@@ -58,6 +59,8 @@
 		A6B59CC525BC3A0E0014D9E2 /* DaemonState_Failed.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DaemonState_Failed.h; sourceTree = "<group>"; };
 		A6B59CC625BC3A0E0014D9E2 /* DaemonState_Failed.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DaemonState_Failed.m; sourceTree = "<group>"; };
 		A6B862B12489DA47000A79B5 /* VERSION */ = {isa = PBXFileReference; lastKnownFileType = text; path = VERSION; sourceTree = SOURCE_ROOT; };
+		A6C60A4326897CC700EDBC5C /* SchrittmacherMetrics.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SchrittmacherMetrics.h; sourceTree = "<group>"; };
+		A6C60A4426897CC700EDBC5C /* SchrittmacherMetrics.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SchrittmacherMetrics.m; sourceTree = "<group>"; };
 		A6E54FC91B0DAB7D0090FC94 /* DaemonState_all.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DaemonState_all.h; sourceTree = "<group>"; };
 		A6E54FCC1B0DBE640090FC94 /* Listener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Listener.h; sourceTree = "<group>"; };
 		A6E54FCD1B0DBE640090FC94 /* Listener.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Listener.m; sourceTree = "<group>"; };
@@ -102,6 +105,8 @@
 				A6018F851B0D391000854472 /* AppDelegate.m */,
 				A6E54FCC1B0DBE640090FC94 /* Listener.h */,
 				A6E54FCD1B0DBE640090FC94 /* Listener.m */,
+				A6C60A4326897CC700EDBC5C /* SchrittmacherMetrics.h */,
+				A6C60A4426897CC700EDBC5C /* SchrittmacherMetrics.m */,
 				A6018FA31B0D480100854472 /* Daemon.h */,
 				A6018FA41B0D480100854472 /* Daemon.m */,
 				A6018F8B1B0D442C00854472 /* DaemonState.h */,
@@ -223,6 +228,7 @@
 				A6E54FCE1B0DBE640090FC94 /* Listener.m in Sources */,
 				A6018FA51B0D480100854472 /* Daemon.m in Sources */,
 				A6018F8D1B0D442C00854472 /* DaemonState.m in Sources */,
+				A6C60A4526897CC700EDBC5C /* SchrittmacherMetrics.m in Sources */,
 				A6B59CBF25BC37AD0014D9E2 /* DaemonState_transiting_to_hot.m in Sources */,
 				A6B59CC725BC3A0E0014D9E2 /* DaemonState_Failed.m in Sources */,
 				A6018F961B0D479400854472 /* DaemonState_Unknown.m in Sources */,
