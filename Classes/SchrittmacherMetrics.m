@@ -17,143 +17,143 @@
     {
         _prometheus = prom;
         _metricReceivedUNK = [[UMPrometheusMetric alloc]init];
-        _metricReceivedUNK.metricName       = @"rx-unk";
+        _metricReceivedUNK.metricName       = @"rx_unk";
         _metricReceivedUNK.help             = @"Total number of received UNK packets";
         _metricReceivedUNK.metricType       = UMPrometheusMetricType_counter;
 
         _metricReceivedHOTT = [[UMPrometheusMetric alloc]init];
-        _metricReceivedHOTT.metricName       = @"rx-hott";
+        _metricReceivedHOTT.metricName       = @"rx_hott";
         _metricReceivedHOTT.help             = @"Total number of received HOTT packets";
         _metricReceivedHOTT.metricType       = UMPrometheusMetricType_counter;
 
         _metricReceivedSTBY = [[UMPrometheusMetric alloc]init];
-        _metricReceivedSTBY.metricName       = @"rx-sby";
+        _metricReceivedSTBY.metricName       = @"rx_sby";
         _metricReceivedSTBY.help             = @"Total number of received SBY packets";
         _metricReceivedSTBY.metricType       = UMPrometheusMetricType_counter;
 
         _metricReceivedTREQ = [[UMPrometheusMetric alloc]init];
-        _metricReceivedTREQ.metricName       = @"rx-treq";
+        _metricReceivedTREQ.metricName       = @"rx_treq";
         _metricReceivedTREQ.help             = @"Total number of received TREQ packets";
         _metricReceivedTREQ.metricType       = UMPrometheusMetricType_counter;
 
         _metricReceivedTCNF = [[UMPrometheusMetric alloc]init];
-        _metricReceivedTCNF.metricName       = @"rx-tcnf";
+        _metricReceivedTCNF.metricName       = @"rx_tcnf";
         _metricReceivedTCNF.help             = @"Total number of received TCNF packets";
         _metricReceivedTCNF.metricType       = UMPrometheusMetricType_counter;
 
         _metricReceivedTREJ = [[UMPrometheusMetric alloc]init];
-        _metricReceivedTREJ.metricName       = @"rx-trej";
+        _metricReceivedTREJ.metricName       = @"rx_trej";
         _metricReceivedTREJ.help             = @"Total number of received TREJ packets";
         _metricReceivedTREJ.metricType       = UMPrometheusMetricType_counter;
 
         _metricReceivedFAIL = [[UMPrometheusMetric alloc]init];
-        _metricReceivedFAIL.metricName       = @"rx-fail";
+        _metricReceivedFAIL.metricName       = @"rx_fail";
         _metricReceivedFAIL.help             = @"Total number of received FAIL packets";
         _metricReceivedFAIL.metricType       = UMPrometheusMetricType_counter;
 
         _metricReceivedFOVR = [[UMPrometheusMetric alloc]init];
-        _metricReceivedFOVR.metricName       = @"rx-fovr";
+        _metricReceivedFOVR.metricName       = @"rx_fovr";
         _metricReceivedFOVR.help             = @"Total number of received FOVR packets";
         _metricReceivedFOVR.metricType       = UMPrometheusMetricType_counter;
 
         _metricReceived2HOT = [[UMPrometheusMetric alloc]init];
-        _metricReceived2HOT.metricName       = @"rx-2sby";
+        _metricReceived2HOT.metricName       = @"rx_2sby";
         _metricReceived2HOT.help             = @"Total number of received 2HOT packets";
         _metricReceived2HOT.metricType       = UMPrometheusMetricType_counter;
 
         _metricReceived2SBY = [[UMPrometheusMetric alloc]init];
-        _metricReceived2SBY.metricName       = @"rx-2sby";
+        _metricReceived2SBY.metricName       = @"rx_2sby";
         _metricReceived2SBY.help             = @"Total number of received 2SBY packets";
         _metricReceived2SBY.metricType       = UMPrometheusMetricType_counter;
 
         _metricReceivedLHOT = [[UMPrometheusMetric alloc]init];
-        _metricReceivedLHOT.metricName       = @"rx-lhot";
+        _metricReceivedLHOT.metricName       = @"rx_lhot";
         _metricReceivedLHOT.help             = @"Total number of received LHOT packets";
         _metricReceivedLHOT.metricType       = UMPrometheusMetricType_counter;
 
         _metricReceivedLSBY = [[UMPrometheusMetric alloc]init];
-        _metricReceivedLSBY.metricName       = @"rx-lsby";
+        _metricReceivedLSBY.metricName       = @"rx_lsby";
         _metricReceivedLSBY.help             = @"Total number of received LSBY packets";
         _metricReceivedLSBY.metricType       = UMPrometheusMetricType_counter;
 
         _metricReceivedLUNK = [[UMPrometheusMetric alloc]init];
-        _metricReceivedLUNK.metricName       = @"rx-lunk";
+        _metricReceivedLUNK.metricName       = @"rx_lunk";
         _metricReceivedLUNK.help             = @"Total number of received LUNK packets";
         _metricReceivedLUNK.metricType       = UMPrometheusMetricType_counter;
 
         _metricReceivedLFAI = [[UMPrometheusMetric alloc]init];
-        _metricReceivedLFAI.metricName       = @"rx-lfai";
+        _metricReceivedLFAI.metricName       = @"rx_lfai";
         _metricReceivedLFAI.help             = @"Total number of received LFAI packets";
         _metricReceivedLFAI.metricType       = UMPrometheusMetricType_counter;
 
         _metricReceivedL2HT = [[UMPrometheusMetric alloc]init];
-        _metricReceivedL2HT.metricName       = @"rx-l2ht";
+        _metricReceivedL2HT.metricName       = @"rx_l2ht";
         _metricReceivedL2HT.help             = @"Total number of received L2HT packets";
         _metricReceivedL2HT.metricType       = UMPrometheusMetricType_counter;
 
         _metricReceivedL2SB = [[UMPrometheusMetric alloc]init];
-        _metricReceivedL2SB.metricName       = @"rx-l2sb";
+        _metricReceivedL2SB.metricName       = @"rx_l2sb";
         _metricReceivedL2SB.help             = @"Total number of received L2SB packets";
         _metricReceivedL2SB.metricType       = UMPrometheusMetricType_counter;
 
         _metricReceivedLRFO = [[UMPrometheusMetric alloc]init];
-        _metricReceivedLRFO.metricName       = @"rx-lrfo";
+        _metricReceivedLRFO.metricName       = @"rx_lrfo";
         _metricReceivedLRFO.help             = @"Total number received LRFO packets";
         _metricReceivedLRFO.metricType       = UMPrometheusMetricType_counter;
 
         _metricReceivedLRTO = [[UMPrometheusMetric alloc]init];
-        _metricReceivedLRTO.metricName       = @"rx-ltto";
+        _metricReceivedLRTO.metricName       = @"rx_ltto";
         _metricReceivedLRTO.help             = @"Total number of received LRTO packets";
         _metricReceivedLRTO.metricType       = UMPrometheusMetricType_counter;
         
         
         _metricSentUNK = [[UMPrometheusMetric alloc]init];
-        _metricSentUNK.metricName       = @"tx-unk";
+        _metricSentUNK.metricName       = @"tx_unk";
         _metricSentUNK.help             = @"Total number of sent UNK packets";
         _metricSentUNK.metricType       = UMPrometheusMetricType_counter;
 
         _metricSentHOTT = [[UMPrometheusMetric alloc]init];
-        _metricSentHOTT.metricName       = @"tx-hott";
+        _metricSentHOTT.metricName       = @"tx_hott";
         _metricSentHOTT.help             = @"Total number of sent HOTT packets";
         _metricSentHOTT.metricType       = UMPrometheusMetricType_counter;
 
         _metricSentSTBY = [[UMPrometheusMetric alloc]init];
-        _metricSentSTBY.metricName       = @"tx-sby";
+        _metricSentSTBY.metricName       = @"tx_sby";
         _metricSentSTBY.help             = @"Total number of sent SBY packets";
         _metricSentSTBY.metricType       = UMPrometheusMetricType_counter;
 
         _metricSentTREQ = [[UMPrometheusMetric alloc]init];
-        _metricSentTREQ.metricName       = @"tx-treq";
+        _metricSentTREQ.metricName       = @"tx_treq";
         _metricSentTREQ.help             = @"Total number of sent TREQ packets";
         _metricSentTREQ.metricType       = UMPrometheusMetricType_counter;
 
         _metricSentTCNF = [[UMPrometheusMetric alloc]init];
-        _metricSentTCNF.metricName       = @"tx-tcnf";
+        _metricSentTCNF.metricName       = @"tx_tcnf";
         _metricSentTCNF.help             = @"Total number of sent TCNF packets";
         _metricSentTCNF.metricType       = UMPrometheusMetricType_counter;
 
         _metricSentTREJ = [[UMPrometheusMetric alloc]init];
-        _metricSentTREJ.metricName       = @"tx-trej";
+        _metricSentTREJ.metricName       = @"tx_trej";
         _metricSentTREJ.help             = @"Total number of sent TREJ packets";
         _metricSentTREJ.metricType       = UMPrometheusMetricType_counter;
 
         _metricSentFAIL = [[UMPrometheusMetric alloc]init];
-        _metricSentFAIL.metricName       = @"tx-fail";
+        _metricSentFAIL.metricName       = @"tx_fail";
         _metricSentFAIL.help             = @"Total number of sent FAIL packets";
         _metricSentFAIL.metricType       = UMPrometheusMetricType_counter;
 
         _metricSentFOVR = [[UMPrometheusMetric alloc]init];
-        _metricSentFOVR.metricName       = @"tx-fovr";
+        _metricSentFOVR.metricName       = @"tx_fovr";
         _metricSentFOVR.help             = @"Total number of sent FOVR packets";
         _metricSentFOVR.metricType       = UMPrometheusMetricType_counter;
 
         _metricSent2HOT = [[UMPrometheusMetric alloc]init];
-        _metricSent2HOT.metricName       = @"tx-2sby";
+        _metricSent2HOT.metricName       = @"tx_2sby";
         _metricSent2HOT.help             = @"Total number of sent 2HOT packets";
         _metricSent2HOT.metricType       = UMPrometheusMetricType_counter;
 
         _metricSent2SBY = [[UMPrometheusMetric alloc]init];
-        _metricSent2SBY.metricName       = @"tx-2sby";
+        _metricSent2SBY.metricName       = @"tx_2sby";
         _metricSent2SBY.help             = @"Total number of sent 2SBY packets";
         _metricSent2SBY.metricType       = UMPrometheusMetricType_counter;
 
