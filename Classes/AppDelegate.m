@@ -65,6 +65,9 @@ AppDelegate *_global_appdel= NULL;
         unsigned int speed = (unsigned int) now;
         srandom(speed);
         _prometheus = [[UMPrometheus alloc]init];
+        UMPrometheusMetricUptime *uptimeMetric = [[UMPrometheusMetricUptime alloc]init];
+        [_prometheus addMetric:uptimeMetric];
+
     }
     return self;
 }
