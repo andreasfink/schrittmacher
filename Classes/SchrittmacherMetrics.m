@@ -158,12 +158,12 @@
         _metricSent2SBY.metricType       = UMPrometheusMetricType_counter;
 
         _metricsStartActionRequested            = [[UMPrometheusMetric alloc]init];
-        _metricsStartActionRequested.metricName = @"start-action";
+        _metricsStartActionRequested.metricName = @"start_action";
         _metricsStartActionRequested.help       = @"Total count of start action requests";
         _metricsStartActionRequested.metricType = UMPrometheusMetricType_counter;
         
         _metricsStopActionRequested             = [[UMPrometheusMetric alloc]init];
-        _metricsStopActionRequested.metricName  = @"stop-action";
+        _metricsStopActionRequested.metricName  = @"stop_action";
         _metricsStopActionRequested.help        = @"Total count of stop action requests";
         _metricsStopActionRequested.metricType  = UMPrometheusMetricType_counter;
 
