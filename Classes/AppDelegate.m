@@ -51,7 +51,9 @@ AppDelegate *_global_appdel= NULL;
         _global_appdel = self;
         time(&_g_startup_time);
         int threadCount = ulib_cpu_count();
-        _mainTaskQueue =[[UMTaskQueue alloc]initWithNumberOfThreads:threadCount name:@"mainTaskQueue" enableLogging:NO];
+        _mainTaskQueue =[[UMTaskQueue alloc]initWithNumberOfThreads:threadCount
+                                                               name:@"mainTaskQueue"
+                                                      enableLogging:NO];
         _mainTaskQueue.enableLogging = YES;
         [_mainTaskQueue start];
         _console             = [[UMLogConsole alloc] init];
