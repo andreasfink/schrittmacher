@@ -10,6 +10,7 @@
 #import "DaemonState_all.h"
 #import "Listener.h"
 #import <stdint.h>
+#include <signal.h>
 
 DaemonRandomValue GetDaemonRandomValue(void)
 {
@@ -588,16 +589,20 @@ DaemonRandomValue GetDaemonRandomValue(void)
 
 - (int)callStartAction
 {
+    int r = -1;
     [_prometheusMetrics.metricsStartActionRequested increaseBy:1];
     self.localStartActionRequested = YES;
-    if(_startAction.length == 0)
+    if(_startAction.length > 0)
     {
-        return 0;
+        [self setEnvVars];
+        setenv("ACTION", "start", 1);
+        r = [self executeScript:_startAction];
+        [self unsetEnvVars];
     }
-    [self setEnvVars];
-    setenv("ACTION", "start", 1);
-    int r = [self executeScript:_startAction];
-    [self unsetEnvVars];
+    else if(_pid != 0)
+    {
+        r = kill((pid_t)_pid,SIGUSR1);
+    }
     if(r==0)
     {
         _startedAt = [NSDate date];
@@ -607,30 +612,31 @@ DaemonRandomValue GetDaemonRandomValue(void)
 
 -(int)callStopAction
 {
+    int r = -1;
     [_prometheusMetrics.metricsStopActionRequested increaseBy:1];
     self.localStopActionRequested = YES;
-    
-    if(_stopAction.length == 0)
+    if(_stopAction.length > 0)
     {
-        return 0;
+        [self setEnvVars];
+        setenv("ACTION", "stop", 1);
+        const char *cmd = _stopAction.UTF8String;
+        if(_logLevel <= UMLOG_DEBUG)
+        {
+            [_logFeed debugText:[NSString stringWithFormat:@" Executing: %s",cmd]];
+        }
+        r = system(cmd);
+        [self unsetEnvVars];
     }
-    [self setEnvVars];
-    setenv("ACTION", "stop", 1);
-    const char *cmd = _stopAction.UTF8String;
-    if(_logLevel <= UMLOG_DEBUG)
+    else if(_pid != 0)
     {
-        [_logFeed debugText:[NSString stringWithFormat:@" Executing: %s",cmd]];
+        r = kill((pid_t)_pid,SIGUSR2);
     }
-    int r = system(cmd);
-    [self unsetEnvVars];
     if(r==0)
     {
         _stoppedAt = [NSDate date];
     }
     return r;
 }
-
-
 
 - (int)fireUp
 {
