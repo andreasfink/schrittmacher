@@ -334,7 +334,7 @@ AppDelegate *_global_appdel= NULL;
                                                       selector:@selector(checkIfUp)
                                                         object:NULL
                                                        seconds:d.intervallDelay
-                                                          name:@"heartbeat-timer"
+                                                          name:@"check-if-up-timer"
                                                        repeats:YES];
 
             [_listener attachDaemon:d];

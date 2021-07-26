@@ -115,7 +115,7 @@
     {
         /* avoid sending hot more than once per second if nothing changed */
         NSTimeInterval elapsed = [now timeIntervalSinceDate:daemon.lastHotSent];
-        if(elapsed > 1)
+        if(fabs(elapsed) > 1)
         {
             [daemon actionSendHot];
         }

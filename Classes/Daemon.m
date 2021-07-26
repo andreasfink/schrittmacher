@@ -124,7 +124,6 @@ DaemonRandomValue GetDaemonRandomValue(void)
     _randVal = GetDaemonRandomValue();
     [self sendStatus:MESSAGE_TAKEOVER_REQUEST withRandomValue:_randVal];
     [_prometheusMetrics.metricSentTREQ increaseBy:1];
-
 }
 
 - (void)actionSendTakeoverRequestForced

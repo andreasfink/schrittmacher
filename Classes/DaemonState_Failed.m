@@ -32,20 +32,20 @@
 
 - (DaemonState *)eventStatusRemoteFailure:(NSDictionary *)dict
 {
-    /* double failure. well...*/
+    /* double failure. well we are out of luck */
     return self;
 }
 
 - (DaemonState *)eventStatusRemoteFailover:(NSDictionary *)dict
 {
-    /* sorry, we cant help you */
+    /* sorry, we can't help you */
     [daemon actionSendFailed];
     return self;
 }
 
 - (DaemonState *)eventStatusRemoteUnknown:(NSDictionary *)dict
 {
-    /* sorry, we cant help you */
+    /* sorry, we can't help you */
     [daemon actionSendFailed];
     return self;
 }
@@ -88,7 +88,7 @@
 - (DaemonState *)eventStatusLocalHot:(NSDictionary *)pdu
 {
     daemon.localIsFailed = NO;
-    [daemon actionSendTakeoverRequest];
+    [daemon actionSendUnknown];
     return [[DaemonState_Unknown alloc]initWithDaemon:daemon];
 }
 

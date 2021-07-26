@@ -110,9 +110,12 @@
 #pragma mark - Local Status
 - (DaemonState *)eventStatusLocalHot:(NSDictionary *)pdu
 {
-    daemon.localIsFailed = NO;
-    [daemon actionSendTakeoverRequest];
-    return self;
+    /* local wants to be hot while we should go standby. nonono. */
+    daemon.localIsFailed = YES;
+    [daemon actionSendFailed];
+    [daemon callDeactivateInterface];
+    [daemon callStopAction];
+    return [[DaemonState_Failed alloc]initWithDaemon:daemon];
 }
 
 - (DaemonState *)eventStatusLocalStandby:(NSDictionary *)dict
