@@ -584,7 +584,6 @@ DaemonRandomValue GetDaemonRandomValue(void)
         self.interfaceState = DaemonInterfaceState_Unknown;
     }
     return r;
-    
 }
 
 - (int)callStartAction
