@@ -32,7 +32,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
         _lastRemoteReason=@"";
         _pid = 0;
         _localIsFailed = YES; /* until we get heartbeat from the local, we assume its dead */
-        _daemonLock = [[UMMutex alloc]init];
+        _daemonLock = [[UMMutex alloc]initWithName:@"daemonLock"];
     }
     return self;
 }
