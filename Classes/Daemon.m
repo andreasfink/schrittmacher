@@ -723,19 +723,27 @@ DaemonRandomValue GetDaemonRandomValue(void)
 
 - (int) executeScript:(NSString *)command
 {
+    int r=0;
     UMMUTEX_LOCK(_daemonLock);
     if(command.length==0) /* empty script is always a success */
     {
         return 0;
     }
-    const char *cmd = command.UTF8String;
     if(_logLevel <= UMLOG_DEBUG)
     {
-        [_logFeed debugText:[NSString stringWithFormat:@" Executing: %s",cmd]];
+        [_logFeed debugText:[NSString stringWithFormat:@" Executing: %@",command]];
     }
-    int i = system(cmd);
+    
+    NSArray *cmd_array = [command componentsSeparatedByCharactersInSet:[UMUtil whitespaceAndNewlineCharacterSet]];
+    NSArray *lines = [UMUtil readChildProcess:cmd_array];
+    r=0;
+    if(_logLevel <= UMLOG_DEBUG)
+    {
+        NSString *allLines = [lines componentsJoinedByString:@"\n"];
+        [_logFeed debugText:allLines];
+    }
     UMMUTEX_UNLOCK(_daemonLock);
-    return i;
+    return r;
 }
 
 
@@ -828,7 +836,6 @@ DaemonRandomValue GetDaemonRandomValue(void)
 - (int) callStopAction
 {
     UMMUTEX_LOCK(_daemonLock);
-
     [_logFeed infoText:@"*** callStopAction ***"];
     int r = -1;
     [_prometheusMetrics.metricsStopActionRequested increaseBy:1];
@@ -837,12 +844,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
     {
         [self setEnvVars];
         setenv("ACTION", "stop", 1);
-        const char *cmd = _stopAction.UTF8String;
-        if(_logLevel <= UMLOG_DEBUG)
-        {
-            [_logFeed debugText:[NSString stringWithFormat:@" Executing: %s",cmd]];
-        }
-        r = system(cmd);
+        r = [self executeScript:_stopAction];
         [self unsetEnvVars];
     }
     else if(_pid != 0)
