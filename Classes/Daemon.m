@@ -81,7 +81,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
     NSString *msg = [dict jsonString];
     if(_logLevel <=UMLOG_DEBUG)
     {
-        [_logFeed debugText:[NSString stringWithFormat:@"TX %@->%@: %@",_localAddress,_remoteAddress,dict]];
+        [_logFeed debugText:[NSString stringWithFormat:@"TX %@->%@: %@",_localAddress4,_remoteAddress,dict]];
     }
     [_listener sendString:msg toAddress:_remoteAddress toPort:_remotePort];
 }
@@ -685,7 +685,8 @@ DaemonRandomValue GetDaemonRandomValue(void)
 {
     NSString *heartbeatIntervall = [NSString stringWithFormat:@"%lf",_intervallDelay];
     SETENV("NETMASK",  _netmask);
-    SETENV("LOCAL_ADDRESS",  _localAddress);
+    SETENV("LOCAL_ADDRESS",  _localAddress4);
+    SETENV("LOCAL_ADDRESS6",  _localAddress6);
     SETENV("REMOTE_ADDRESS", _remoteAddress);
     SETENV("SHARED_ADDRESS", _sharedAddress);
     SETENV("RESOURCE_NAME", _resourceId);
@@ -883,7 +884,8 @@ DaemonRandomValue GetDaemonRandomValue(void)
         dict[@"last-remote-message-received"] = _lastRemoteRx ? [_lastRemoteRx stringValue] : @"-";
         dict[@"last-local-message-received"] = _lastLocalRx ? [_lastLocalRx stringValue] : @"-";
         dict[@"remote-address"] = _remoteAddress;
-        dict[@"local-address"] = _localAddress;
+        dict[@"local-address"] = _localAddress4;
+        dict[@"local-address6"] = _localAddress6;
         dict[@"shared-address"] = _sharedAddress;
         dict[@"start-action"] = _startAction;
         dict[@"stop-action"] = _stopAction;

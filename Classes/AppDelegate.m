@@ -136,9 +136,10 @@ AppDelegate *_global_appdel= NULL;
     [_config read];
     
     NSDictionary *coreConfig = [_config getSingleGroup:@"core"];
-    _localAddress     = [UMSocket unifyIP:[coreConfig[@"local-address"]stringValue]];
-    _remoteAddress    = [UMSocket unifyIP:[coreConfig[@"remote-address"]stringValue]];
-    _sharedAddress    = [UMSocket unifyIP:[coreConfig[@"shared-address"]stringValue]];
+    _localAddress4     = [UMSocket unifyIP:[coreConfig[@"local-address"]stringValue]];
+    _localAddress6     = [UMSocket unifyIP:[coreConfig[@"local-address6"]stringValue]];
+    _remoteAddress     = [UMSocket unifyIP:[coreConfig[@"remote-address"]stringValue]];
+    _sharedAddress     = [UMSocket unifyIP:[coreConfig[@"shared-address"]stringValue]];
     if(coreConfig[@"port"])
     {
         _port             = [coreConfig[@"port"]intValue];
@@ -269,40 +270,11 @@ AppDelegate *_global_appdel= NULL;
         _listener.logFeed = self.logFeed;
         _listener.logHandler = _mainLogHandler;
         _listener.logLevel = self.logLevel;
-
-        _localhostListener4 = [[Listener alloc]init];
-        _localhostListener4.logFeed = self.logFeed;
-        _localhostListener4.logHandler = _mainLogHandler;
-        _localhostListener4.logLevel = self.logLevel;
-
-        _localhostListener6 = [[Listener alloc]init];
-        _localhostListener6.logFeed     = self.logFeed;
-        _localhostListener6.logHandler  = _mainLogHandler;
-        _localhostListener6.logLevel    = self.logLevel;
-
         int addrType = 4;
-        NSArray *a;
-        if(_localAddress)
-        {
-            NSString *unifiedLocalAddress =  [UMSocket unifyIP:_localAddress];
-            [UMSocket deunifyIp:unifiedLocalAddress type:&addrType];
-            a = @[unifiedLocalAddress,@"127.0.0.1",@"::1"];
-        }
-        else
-        {
-            a = @[@"0.0.0.0"];
-        }
-        _listener.localAddress = _localAddress;
+        _listener.localAddress4 = _localAddress4;
+        _listener.localAddress6 = _localAddress6;
         _listener.port = _port;
         _listener.addressType= addrType;
-
-        _localhostListener4.localAddress = @"127.0.0.1";
-        _localhostListener4.port = _port;
-        _localhostListener4.addressType= 4;
-
-        _localhostListener6.localAddress = @"::1";
-        _localhostListener6.port = _port;
-        _localhostListener6.addressType= 6;
 
         NSArray *configs = [_config getMultiGroups:@"resource"];
         for(NSDictionary *daemonConfig in configs)
@@ -321,7 +293,8 @@ AppDelegate *_global_appdel= NULL;
             }
             Daemon *d = [[Daemon alloc]init];
             d.logFeed = [[UMLogFeed alloc]initWithHandler:_mainLogHandler section:resourceName];
-            d.localAddress = _localAddress;
+            d.localAddress4 = _localAddress4;
+            d.localAddress6 = _localAddress6;
             d.remoteAddress = _remoteAddress;
             d.sharedAddress = _sharedAddress;
             d.remotePort = _port;
@@ -345,13 +318,9 @@ AppDelegate *_global_appdel= NULL;
                                                           name:@"heartbeat-timer"
                                                        repeats:YES];
             [_listener attachDaemon:d];
-            [_localhostListener4 attachDaemon:d];
-            [_localhostListener6 attachDaemon:d];
             [d.heartbeatTimer start];
         }
         [_listener start];
-        [_localhostListener4 start];
-        [_localhostListener6 start];
     }
 }
 

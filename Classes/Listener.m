@@ -114,41 +114,65 @@
 {
     @autoreleasepool
     {
-        if(_addressType==6)
+        UMSocketError err;
+        if(_localAddress4.length > 0)
         {
-            _rxSocket = [[UMSocket alloc]initWithType:UMSOCKET_TYPE_UDP6ONLY];
-            _txSocket = [[UMSocket alloc]initWithType:UMSOCKET_TYPE_UDP6ONLY];
-            _rxSocket.localHost = [[UMHost alloc] initWithAddress:@"::"];
-            _txSocket.localHost = [[UMHost alloc] initWithAddress:@"::"];
-
+            _rxSocket4              = [[UMSocket alloc]initWithType:UMSOCKET_TYPE_UDP];
+            _rxSocket4.localPort    = _port;
+            _rxSocket4.localHost    = [[UMHost alloc] initWithAddress:_localAddress4];
+            err = [_rxSocket4 bind];
+            if(err)
+            {
+                NSLog(@"udp can not bind rxSocket4 to port %d. err = %d",_port,err);
+            }
         }
-        else
+        
+        if(_localAddress6.length > 0)
         {
-            _rxSocket = [[UMSocket alloc]initWithType:UMSOCKET_TYPE_UDP4ONLY];
-            _txSocket = [[UMSocket alloc]initWithType:UMSOCKET_TYPE_UDP4ONLY];
-            _rxSocket.localHost = [[UMHost alloc] initWithAddress:@"0.0.0.0"];
-            _txSocket.localHost = [[UMHost alloc] initWithAddress:@"0.0.0.0"];
+            _rxSocket6              = [[UMSocket alloc]initWithType:UMSOCKET_TYPE_UDP6ONLY];
+            _rxSocket6.localPort    = _port;
+            _rxSocket6.localHost    = [[UMHost alloc] initWithAddress:_localAddress6];
+            err = [_rxSocket6 bind];
+            if(err)
+            {
+                NSLog(@"udp can not bind rxSocket6 to port %d. err = %d",_port,err);
+            }
+        }
+        
+        _txSocket4                  = [[UMSocket alloc]initWithType:UMSOCKET_TYPE_UDP4ONLY];
+        _txSocket4.localPort        = 0;
+        _txSocket4.localHost        = [[UMHost alloc] initWithAddress:@"0.0.0.0"];
+        err = [_txSocket4 bind];
+        if(err)
+        {
+            NSLog(@"udp can not bind txSocket4 err=%d",err);
         }
 
-        _rxSocket.localPort = _port;
-        _txSocket.localPort = 0;
-
-        UMSocketError err = [_rxSocket bind];
-        if (![_rxSocket isBound] )
+        _txSocket6                  = [[UMSocket alloc]initWithType:UMSOCKET_TYPE_UDP6ONLY];
+        _txSocket6.localPort        = 0;
+        _txSocket6.localHost        = [[UMHost alloc] initWithAddress:@"::"];
+        err = [_txSocket6 bind];
+        if(err)
         {
-            @throw([NSException exceptionWithName:@"udp"
-                                           reason:@"can not bind rxSocket"
-                                         userInfo:@{ @"port":@(_port),
-                                                     @"socket-err": @(err) } ]);
+            NSLog(@"udp can not bind txSocket6 err=%d",err);
         }
 
-        err = [_txSocket bind];
-        if (![_txSocket isBound] )
+        _rxSocketLocal4             = [[UMSocket alloc]initWithType:UMSOCKET_TYPE_UDP6ONLY];
+        _rxSocketLocal4.localPort   = _port;
+        _rxSocketLocal4.localHost   = [[UMHost alloc] initWithAddress:@"127.0.0.1"];
+        err = [_rxSocketLocal4 bind];
+        if(err)
         {
-            @throw([NSException exceptionWithName:@"udp"
-                                           reason:@"can not bind txSocket"
-                                         userInfo:@{ @"port":@(_port),
-                                                     @"socket-err": @(err) } ]);
+            NSLog(@"udp can not bind _rxSocketLocal4 err=%d",err);
+        }
+
+        _rxSocketLocal6             = [[UMSocket alloc]initWithType:UMSOCKET_TYPE_UDP6ONLY];
+        _rxSocketLocal6.localPort   = _port;
+        _rxSocketLocal6.localHost   = [[UMHost alloc] initWithAddress:@"::1"];
+        err = [_rxSocketLocal6 bind];
+        if(err)
+        {
+            NSLog(@"udp can not bind _rxSocketLocal6 err=%d",err);
         }
 
         NSArray *allKeys;
@@ -182,33 +206,59 @@
         UMSocketError err;
         @autoreleasepool
         {
-            err = [_rxSocket dataIsAvailable:250]; /* lets check every 250ms */
+            err = [_rxSocket4 dataIsAvailable:0];
             if(err == UMSocketError_has_data)
             {
-                NSData  *data = NULL;
-                NSString *address = NULL;
-                int rxport;
-                UMSocketError err2 = [_rxSocket receiveData:&data fromAddress:&address fromPort:&rxport];
-                if((err2 == UMSocketError_no_error) || (err2==UMSocketError_has_data) || (err2 == UMSocketError_has_data_and_hup))
-                {
-                    packetsProcessed++;
-                    if(data)
-                    {
-                        [self receiveStatus:data fromAddress:address];
-                    }
-                }
-                else if((err2==UMSocketError_no_data) || (err2==UMSocketError_try_again))
-                {
-                    
-                }
-                else
-                {
-                    NSLog(@"receiveData on public interface failed with error %d",err2);
-                }
+                packetsProcessed += [self readDataFromSocket:_rxSocket4];
             }
+            err = [_rxSocket6 dataIsAvailable:0];
+            if(err == UMSocketError_has_data)
+            {
+                packetsProcessed += [self readDataFromSocket:_rxSocket6];
+            }
+            err = [_rxSocketLocal4 dataIsAvailable:0];
+            if(err == UMSocketError_has_data)
+            {
+                packetsProcessed += [self readDataFromSocket:_rxSocketLocal4];
+            }
+            err = [_rxSocketLocal6 dataIsAvailable:0];
+            if(err == UMSocketError_has_data)
+            {
+                packetsProcessed += [self readDataFromSocket:_rxSocketLocal6];
+            }
+        }
+        if(packetsProcessed==0)
+        {
+            usleep(10000); /* sleep 10ms */
         }
     }
     while(packetsProcessed>0);
+    return packetsProcessed;
+}
+
+- (int)readDataFromSocket:(UMSocket *)socket
+{
+    int packetsProcessed = 0;
+    NSData  *data = NULL;
+    NSString *address = NULL;
+    int rxport;
+    UMSocketError err2 = [socket receiveData:&data fromAddress:&address fromPort:&rxport];
+    if((err2 == UMSocketError_no_error) || (err2==UMSocketError_has_data) || (err2 == UMSocketError_has_data_and_hup))
+    {
+        packetsProcessed++;
+        if(data)
+        {
+            [self receiveStatus:data fromAddress:address];
+        }
+    }
+    else if((err2==UMSocketError_no_data) || (err2==UMSocketError_try_again))
+    {
+        
+    }
+    else
+    {
+        NSLog(@"receiveData failed with error %d",err2);
+    }
     return packetsProcessed;
 }
 
@@ -217,7 +267,18 @@
     const char *utf8 = msg.UTF8String;
     size_t len = strlen(utf8);
     NSData *d = [NSData dataWithBytes:utf8 length:len];
-    UMSocketError e = [_txSocket sendData:d toAddress:addr toPort:p];
+
+    int address_type;
+    NSString *s = [UMSocket deunifyIp:addr type:&address_type];
+    UMSocketError e;
+    if(address_type==6)
+    {
+       e = [_txSocket6 sendData:d toAddress:s toPort:p];
+    }
+    else
+    {
+        e = [_txSocket4 sendData:d toAddress:s toPort:p];
+    }
     if(e)
     {
         NSString *s = [UMSocket getSocketErrorString:e];

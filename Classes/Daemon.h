@@ -57,7 +57,8 @@ typedef enum DaemonInterfaceState
     int             _localPriority;
     BOOL            _iAmHot;
     NSString        *_remoteAddress;
-    NSString        *_localAddress;
+    NSString        *_localAddress4;
+    NSString        *_localAddress6;
     NSString        *_sharedAddress;
     NSString        *_netmask;
     int             _remotePort;
@@ -106,7 +107,8 @@ typedef enum DaemonInterfaceState
 @property (readwrite,assign) int        localPriority;
 @property (readwrite,strong) NSString   *resourceId;
 @property (readwrite,strong) NSString   *remoteAddress;
-@property (readwrite,strong) NSString   *localAddress;
+@property (readwrite,strong) NSString   *localAddress4;
+@property (readwrite,strong) NSString   *localAddress6;
 @property (readwrite,strong) NSString   *netmask;
 @property (readwrite,strong) NSString   *sharedAddress;
 @property (readwrite,assign) int        remotePort;

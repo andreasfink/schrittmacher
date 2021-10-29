@@ -25,12 +25,11 @@
     NSTimeInterval      _heartbeat;
     NSTimeInterval      _timeout;
     
-    NSString            *_localAddress;
+    NSString            *_localAddress4;
+    NSString            *_localAddress6;
     NSString            *_remoteAddress;
     NSString            *_sharedAddress;
     Listener            *_listener;
-    Listener            *_localhostListener4;
-    Listener            *_localhostListener6;
     UMLogLevel          _logLevel;
     UMPrometheus        *_prometheus;
 }
