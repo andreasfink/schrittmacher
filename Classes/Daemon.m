@@ -31,6 +31,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
         _lastLocalReason=@"";
         _lastRemoteReason=@"";
         _pid = 0;
+        _localIsFailed = YES; /* until we get heartbeat from the local, we assume its dead */
     }
     return self;
 }
