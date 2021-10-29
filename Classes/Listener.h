@@ -20,8 +20,7 @@
     UMSocket            *_rxSocket6;
     UMSocket            *_rxSocketLocal4;
     UMSocket            *_rxSocketLocal6;
-    UMSocket            *_txSocket4;
-    UMSocket            *_txSocket6;
+    UMSocket            *_txSocket;
     int                 _addressType;
     UMTimer             *_pollTimer;
     UMLogLevel          _logLevel;

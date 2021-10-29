@@ -139,22 +139,13 @@
             }
         }
         
-        _txSocket4                  = [[UMSocket alloc]initWithType:UMSOCKET_TYPE_UDP4ONLY];
-        _txSocket4.localPort        = 0;
-        _txSocket4.localHost        = [[UMHost alloc] initWithAddress:@"0.0.0.0"];
-        err = [_txSocket4 bind];
+        _txSocket                  = [[UMSocket alloc]initWithType:UMSOCKET_TYPE_UDP];
+        _txSocket.localPort        = 0;
+        _txSocket.localHost        = [[UMHost alloc] initWithLocalhost];
+        err = [_txSocket bind];
         if(err)
         {
-            NSLog(@"udp can not bind txSocket4 err=%d",err);
-        }
-
-        _txSocket6                  = [[UMSocket alloc]initWithType:UMSOCKET_TYPE_UDP6ONLY];
-        _txSocket6.localPort        = 0;
-        _txSocket6.localHost        = [[UMHost alloc] initWithAddress:@"::"];
-        err = [_txSocket6 bind];
-        if(err)
-        {
-            NSLog(@"udp can not bind txSocket6 err=%d",err);
+            NSLog(@"udp can not bind txSocket err=%d",err);
         }
 
         _rxSocketLocal4             = [[UMSocket alloc]initWithType:UMSOCKET_TYPE_UDP6ONLY];
@@ -267,19 +258,8 @@
     const char *utf8 = msg.UTF8String;
     size_t len = strlen(utf8);
     NSData *d = [NSData dataWithBytes:utf8 length:len];
-
-    int address_type;
-    NSLog(@"addr=%@",addr);
-    NSString *s = [UMSocket deunifyIp:addr type:&address_type];
     UMSocketError e;
-    if(address_type==6)
-    {
-       e = [_txSocket6 sendData:d toAddress:s toPort:p];
-    }
-    else
-    {
-        e = [_txSocket4 sendData:d toAddress:s toPort:p];
-    }
+    e = [_txSocket sendData:d toAddress:addr toPort:p];
     if(e)
     {
         NSString *s = [UMSocket getSocketErrorString:e];
