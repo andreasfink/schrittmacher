@@ -724,7 +724,6 @@ DaemonRandomValue GetDaemonRandomValue(void)
 - (int) executeScript:(NSString *)command
 {
     int r=0;
-    UMMUTEX_LOCK(_daemonLock);
     if(command.length==0) /* empty script is always a success */
     {
         return 0;
@@ -733,7 +732,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
     {
         [_logFeed debugText:[NSString stringWithFormat:@" Executing: %@",command]];
     }
-    
+    UMMUTEX_LOCK(_daemonLock);
     NSArray *cmd_array = [command componentsSeparatedByCharactersInSet:[UMUtil whitespaceAndNewlineCharacterSet]];
     NSArray *lines = [UMUtil readChildProcess:cmd_array];
     r=0;
