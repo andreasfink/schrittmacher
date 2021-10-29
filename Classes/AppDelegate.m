@@ -263,7 +263,6 @@ AppDelegate *_global_appdel= NULL;
 {
     @autoreleasepool
     {
-
         _listener = [[Listener alloc]init];
         _listener.logFeed = self.logFeed;
         _listener.logHandler = _mainLogHandler;

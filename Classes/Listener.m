@@ -25,6 +25,11 @@
 - (void)receiveStatus:(NSData *)statusData
           fromAddress:(NSString *)address
 {
+    if(_logLevel <= UMLOG_DEBUG)
+    {
+        NSString *s = [NSString stringWithFormat:]@"RX[%@] %@",address,statusData.stringValue];
+        [_logFeed debugText:s];
+    }
     @autoreleasepool
     {
         @try
@@ -61,7 +66,7 @@
                 }
                 else
                 {
-                    [self.logFeed infoText:[NSString stringWithFormat:@"Ignoring unknown resource '%@'",resource]];
+                    [_logFeed infoText:[NSString stringWithFormat:@"Ignoring unknown resource '%@'",resource]];
                 }
             }
         }
