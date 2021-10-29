@@ -285,11 +285,13 @@
     NSString *s = [UMSocket deunifyIp:addr type:&af];
     if(af==6)
     {
+        NSLog(@"addr6=%@/%@",addr,s);
         e = [_txSocket6 sendData:d toAddress:s toPort:p];
 
     }
     else
     {
+        NSLog(@"addr4=%@/%@",addr,s);
         e = [_txSocket4 sendData:d toAddress:s toPort:p];
     }
     if(e)
