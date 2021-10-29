@@ -41,6 +41,7 @@
 
 - (DaemonState *)eventStatusRemoteFailure:(NSDictionary *)dict
 {
+    DaemonState *nextState = self;
     if(daemon.localIsFailed==NO)
     {
         /* other side is failed. lets become master. */
@@ -48,14 +49,15 @@
         [daemon callActivateInterface];
         [daemon callStartAction];
         /* we dont send hot status here as we wait the application to confirm it with the status callbacks */
-        return [[DaemonState_transiting_to_hot alloc]initWithDaemon:daemon];
+        nextState = [[DaemonState_transiting_to_hot alloc]initWithDaemon:daemon];
     }
     else
     {
         /* both sides failed */
         [daemon actionSendFailed];
-        return [[DaemonState_Failed alloc]initWithDaemon:daemon];
+        nextState = [[DaemonState_Failed alloc]initWithDaemon:daemon];
     }
+    return nextState;
 }
 
 - (DaemonState *)eventStatusRemoteFailover:(NSDictionary *)dict

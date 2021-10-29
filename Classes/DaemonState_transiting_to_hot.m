@@ -18,7 +18,7 @@
     self = [super initWithDaemon:d];
     if(self)
     {
-        _goingHotStartTime =[NSDate date];
+        _goingHotStartTime = [NSDate date];
     }
     return self;
 }
