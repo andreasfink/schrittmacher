@@ -197,25 +197,38 @@
         UMSocketError err;
         @autoreleasepool
         {
-            err = [_rxSocket4 dataIsAvailable:0];
-            if(err == UMSocketError_has_data)
+            err = UMSocketError_no_error;
+            if(_rxSocket4)
             {
-                packetsProcessed += [self readDataFromSocket:_rxSocket4];
+                err = [_rxSocket4 dataIsAvailable:0];
+                if(err == UMSocketError_has_data)
+                {
+                    packetsProcessed += [self readDataFromSocket:_rxSocket4];
+                }
             }
-            err = [_rxSocket6 dataIsAvailable:0];
-            if(err == UMSocketError_has_data)
+            if(_rxSocket6)
             {
-                packetsProcessed += [self readDataFromSocket:_rxSocket6];
+                err = [_rxSocket6 dataIsAvailable:0];
+                if(err == UMSocketError_has_data)
+                {
+                    packetsProcessed += [self readDataFromSocket:_rxSocket6];
+                }
             }
-            err = [_rxSocketLocal4 dataIsAvailable:0];
-            if(err == UMSocketError_has_data)
+            if(_rxSocketLocal4)
             {
-                packetsProcessed += [self readDataFromSocket:_rxSocketLocal4];
+                err = [_rxSocketLocal4 dataIsAvailable:0];
+                if(err == UMSocketError_has_data)
+                {
+                    packetsProcessed += [self readDataFromSocket:_rxSocketLocal4];
+                }
             }
-            err = [_rxSocketLocal6 dataIsAvailable:0];
-            if(err == UMSocketError_has_data)
+            if(_rxSocketLocal6)
             {
-                packetsProcessed += [self readDataFromSocket:_rxSocketLocal6];
+                err = [_rxSocketLocal6 dataIsAvailable:0];
+                if(err == UMSocketError_has_data)
+                {
+                    packetsProcessed += [self readDataFromSocket:_rxSocketLocal6];
+                }
             }
         }
         if(packetsProcessed==0)
