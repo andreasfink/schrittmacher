@@ -728,10 +728,10 @@ DaemonRandomValue GetDaemonRandomValue(void)
     {
         return 0;
     }
-    if(_logLevel <= UMLOG_DEBUG)
-    {
+//    if(_logLevel <= UMLOG_DEBUG)
+//    {
         [_logFeed debugText:[NSString stringWithFormat:@" Executing: %@",command]];
-    }
+//    }
     UMMUTEX_LOCK(_daemonLock);
     NSArray *cmd_array = [command componentsSeparatedByCharactersInSet:[UMUtil whitespaceAndNewlineCharacterSet]];
     NSArray *lines = [UMUtil readChildProcess:cmd_array];
