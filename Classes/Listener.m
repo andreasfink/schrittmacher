@@ -139,24 +139,30 @@
             }
         }
         
-        _txSocket4                  = [[UMSocket alloc]initWithType:UMSOCKET_TYPE_UDP];
-        _txSocket4.localPort        = 0;
-        _txSocket4.localHost        = [[UMHost alloc] initWithAddress:_localAddress4];
-        err = [_txSocket4 bind];
-        if(err)
+        if(_localAddress4.length > 0)
         {
-            NSLog(@"udp can not bind txSocket err=%d",err);
+            _txSocket4                  = [[UMSocket alloc]initWithType:UMSOCKET_TYPE_UDP4ONLY];
+            _txSocket4.localPort        = 0;
+            _txSocket4.localHost        = [[UMHost alloc] initWithAddress:_localAddress4];
+            err = [_txSocket4 bind];
+            if(err)
+            {
+                NSLog(@"udp can not bind txSocket err=%d",err);
+            }
         }
-
-        _txSocket6                  = [[UMSocket alloc]initWithType:UMSOCKET_TYPE_UDP];
-        _txSocket6.localPort        = 0;
-        _txSocket6.localHost        = [[UMHost alloc] initWithAddress:_localAddress6];
-        err = [_txSocket6 bind];
-        if(err)
+        
+        if(_localAddress6.length > 0)
         {
-            NSLog(@"udp can not bind txSocket err=%d",err);
+            _txSocket6                  = [[UMSocket alloc]initWithType:UMSOCKET_TYPE_UDP6ONLY];
+            _txSocket6.localPort        = 0;
+            _txSocket6.localHost        = [[UMHost alloc] initWithAddress:_localAddress6];
+            err = [_txSocket6 bind];
+            if(err)
+            {
+                NSLog(@"udp can not bind txSocket err=%d",err);
+            }
         }
-
+        
         _rxSocketLocal4             = [[UMSocket alloc]initWithType:UMSOCKET_TYPE_UDP6ONLY];
         _rxSocketLocal4.localPort   = _port;
         _rxSocketLocal4.localHost   = [[UMHost alloc] initWithAddress:@"127.0.0.1"];
