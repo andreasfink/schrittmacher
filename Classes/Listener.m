@@ -269,6 +269,7 @@
     NSData *d = [NSData dataWithBytes:utf8 length:len];
 
     int address_type;
+    NSLog(@"addr=%@",addr);
     NSString *s = [UMSocket deunifyIp:addr type:&address_type];
     UMSocketError e;
     if(address_type==6)
