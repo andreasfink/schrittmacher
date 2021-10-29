@@ -248,8 +248,8 @@ AppDelegate *_global_appdel= NULL;
             [s appendFormat:@"<tr>"];
             [s appendFormat:@"<td>%@</td>",dict[@"resource-id"]];
             [s appendFormat:@"<td>%@</td>",dict[@"state"]];
-            [s appendFormat:@"<td>%@<br>%@</td>",dict[@"last-local-message"],dict[@"last-local-message-received"]];
-            [s appendFormat:@"<td>%@<br>%@</td>",dict[@"last-remote-message"],dict[@"last-remote-message-received"]];
+            [s appendFormat:@"<td>%@<br>%@<br>%@</td>",dict[@"last-local-message"],dict[@"last-local-message-received"],dict[@"last-local-reason"]];
+            [s appendFormat:@"<td>%@<br>%@<br>%@</td>",dict[@"last-remote-message"],dict[@"last-remote-message-received"],dict[@"last-remote-reason"]];
             [s appendFormat:@"<td>%@</td>",action];
             [s appendFormat:@"</tr>"];
         }

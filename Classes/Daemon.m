@@ -847,9 +847,17 @@ DaemonRandomValue GetDaemonRandomValue(void)
         {
             dict[@"last-local-reason"] = _lastLocalReason;
         }
+        else
+        {
+            dict[@"last-local-reason"] = @"";
+        }
         if(_lastRemoteReason.length > 0)
         {
             dict[@"last-remote-reason"] = _lastRemoteReason;
+        }
+        else
+        {
+            dict[@"last-remote-reason"] = @"";
         }
     }
     return dict;
