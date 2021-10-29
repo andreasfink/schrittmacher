@@ -914,6 +914,11 @@ DaemonRandomValue GetDaemonRandomValue(void)
         {
             dict[@"last-remote-reason"] = @"";
         }
+        NSString *s = [_daemonLock lockStatusDescription];
+        if(s.length > 0)
+        {
+            dict[@"lock"] = s;
+        }
     }
     return dict;
 }

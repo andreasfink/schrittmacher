@@ -219,6 +219,7 @@ AppDelegate *_global_appdel= NULL;
         [s appendFormat:@"<th>Last Local Message</th>\n"];
         [s appendFormat:@"<th>Last Remote Message</th>\n"];
         [s appendFormat:@"<th>Action</th>\n"];
+        [s appendFormat:@"<th>Lock</th>\n"];
         [s appendFormat:@"</tr>"];
 
         NSDictionary *states = [_listener status];
@@ -251,6 +252,7 @@ AppDelegate *_global_appdel= NULL;
             [s appendFormat:@"<td>%@<br>%@<br>%@</td>",dict[@"last-local-message"],dict[@"last-local-message-received"],dict[@"last-local-reason"]];
             [s appendFormat:@"<td>%@<br>%@<br>%@</td>",dict[@"last-remote-message"],dict[@"last-remote-message-received"],dict[@"last-remote-reason"]];
             [s appendFormat:@"<td>%@</td>",action];
+            [s appendFormat:@"<td>%@</td>",dict[@"lock"]];
             [s appendFormat:@"</tr>"];
         }
         [s appendFormat:@"</table>"];
