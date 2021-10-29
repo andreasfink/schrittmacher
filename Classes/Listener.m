@@ -25,11 +25,11 @@
 - (void)receiveStatus:(NSData *)statusData
           fromAddress:(NSString *)address
 {
-    if(_logLevel <= UMLOG_DEBUG)
-    {
+ //   if(_logLevel <= UMLOG_DEBUG)
+ //   {
         NSString *s = [NSString stringWithFormat:@"RX[%@] %@",address,statusData.stringValue];
         [_logFeed debugText:s];
-    }
+ //   }
     @autoreleasepool
     {
         @try
@@ -269,6 +269,7 @@
     NSString *address = NULL;
     int rxport;
     UMSocketError err2 = [socket receiveData:&data fromAddress:&address fromPort:&rxport];
+    NSLog(@"RX: %@",data);
     if((err2 == UMSocketError_no_error) || (err2==UMSocketError_has_data) || (err2 == UMSocketError_has_data_and_hup))
     {
         packetsProcessed++;
