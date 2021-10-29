@@ -27,7 +27,7 @@
 {
     if(_logLevel <= UMLOG_DEBUG)
     {
-        NSString *s = [NSString stringWithFormat:]@"RX[%@] %@",address,statusData.stringValue];
+        NSString *s = [NSString stringWithFormat:@"RX[%@] %@",address,statusData.stringValue];
         [_logFeed debugText:s];
     }
     @autoreleasepool
