@@ -184,7 +184,6 @@
 {
     [self logEvent:@"eventRemoteTimeout"];
     /* other side's daemon is dead */
-    ,[_currentState.name];
     daemon.lastRemoteMessage = @"event-remote-timeout";
     return [self eventStatusRemoteFailure:NULL];
 }
@@ -229,8 +228,8 @@
 
 - (void)logEvent:(NSString *)event
 {
-    NSString *s = NSString stringWithFormat:@"%@/%@",self.name,event];
-    [_daemon.logFeed infoText:s];
+    NSString *s = [NSString stringWithFormat:@"%@/%@",self.name,event];
+    [_logFeed infoText:s];
 }
 
 @end
