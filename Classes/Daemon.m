@@ -923,25 +923,4 @@ DaemonRandomValue GetDaemonRandomValue(void)
     return dict;
 }
 
-- (void)checkIfUp
-{
-    /* we check if we have received the heartbeat from the local instance */
-    UMMUTEX_LOCK(_daemonLock);
-    if(_lastLocalRx == NULL)
-    {
-        _lastLocalRx = [NSDate date];
-        UMMUTEX_UNLOCK(_daemonLock);
-        return;
-    }
-    _lastChecked = [NSDate date];
-    NSTimeInterval delay = [_lastChecked timeIntervalSinceDate:_lastLocalRx];
-    if(delay > (3 * _intervallDelay)) /* if we have not heard anything for 3 * heartbeat delay from the local
-                                         host, we assume its dead this is normally 6 seconds. */
-    {
-        DEBUGLOG(_currentState,@"eventStatusLocalFailure");
-        _currentState = [_currentState eventStatusLocalFailure:@{}];
-    }
-    UMMUTEX_UNLOCK(_daemonLock);
-}
-
 @end

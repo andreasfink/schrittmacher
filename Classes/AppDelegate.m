@@ -297,7 +297,6 @@ AppDelegate *_global_appdel= NULL;
             NSString *activate         = [daemonConfig[@"interface-activate"] stringValue];
             NSString *deactivate       = [daemonConfig[@"interface-deactivate"] stringValue];
             double  intervallDelay     = [daemonConfig[@"heartbeat-intervall"] doubleValue];
-
             if(intervallDelay < 2.0)
             {
                 intervallDelay = 2.0;
@@ -327,16 +326,8 @@ AppDelegate *_global_appdel= NULL;
                                                        seconds:d.intervallDelay
                                                           name:@"heartbeat-timer"
                                                        repeats:YES];
-            
-            d.checkIfUpTimer =  [[UMTimer alloc]initWithTarget:d
-                                                      selector:@selector(checkIfUp)
-                                                        object:NULL
-                                                       seconds:d.intervallDelay
-                                                          name:@"check-if-up-timer"
-                                                       repeats:YES];
             [_listener attachDaemon:d];
             [d.heartbeatTimer start];
-            [d.checkIfUpTimer start];
         }
         [_listener start];
     }

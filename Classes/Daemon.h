@@ -92,7 +92,6 @@ typedef enum DaemonInterfaceState
     NSDate          *_lastStandbySent;
     
     UMTimer         *_heartbeatTimer;
-    UMTimer         *_checkIfUpTimer;
     UMLogLevel      _logLevel;
     int             _outstandingRemoteHeartbeats;
     int             _outstandingLocalHeartbeats;
@@ -142,7 +141,6 @@ typedef enum DaemonInterfaceState
 @property (readwrite,strong) NSDate          *lastStandbySent;
 
 @property (readwrite,strong) UMTimer         *heartbeatTimer;
-@property (readwrite,strong) UMTimer         *checkIfUpTimer;
 @property(readwrite,assign) UMLogLevel logLevel;
 @property(readwrite,assign) long pid;
 @property(readwrite,assign) long adminweb_port;
@@ -179,7 +177,5 @@ typedef enum DaemonInterfaceState
 - (int)callStopAction;
 - (int)callStartAction;
 - (int)executeScript:(NSString *)command;
-- (void)checkIfUp;
-
 
 @end
