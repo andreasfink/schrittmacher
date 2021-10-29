@@ -19,7 +19,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
 
 @implementation Daemon
 
-- (Daemon *)init
+- (Daemon *) init
 {
     self = [super init];
     if(self)
@@ -28,12 +28,14 @@ DaemonRandomValue GetDaemonRandomValue(void)
         _lastRemoteRx = [NSDate date];
         _lastLocalMessage = @"<i>nothing received yet</i>";
         _lastRemoteMessage= @"<i>nothing received yet</i>";
+        _lastLocalReason=@"";
+        _lastRemoteReason=@"";
         _pid = 0;
     }
     return self;
 }
 
-- (void)actionStart
+- (void) actionStart
 {
     if(_timeout<=0)
     {
@@ -55,28 +57,32 @@ DaemonRandomValue GetDaemonRandomValue(void)
     _currentState = [startState eventStart];
 }
 
-- (void)sendStatus:(NSString *)status
+- (void) sendStatus:(NSString *)status
 {
     return [self sendStatus:status withRandomValue:0];
 }
 
-- (void)sendStatus:(NSString *)status withRandomValue:(DaemonRandomValue)r
+- (void) sendStatus:(NSString *)status withRandomValue:(DaemonRandomValue)r
 {
-    NSDictionary *dict = @{ @"resource" : _resourceId,
-                            @"status"   : status,
-                            @"priority" : @(_localPriority),
-                            @"random"   : @(r)};
-    
+
+    NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
+    dict[@"resource"]   = _resourceId;
+    dict[@"status"]     = status;
+    dict[@"priority"]   = @(_localPriority);
+    dict[@"random"]     = @(r);
+    if(_lastLocalReason)
+    {
+        dict[@"reason"] = _lastLocalReason;
+    }
     NSString *msg = [dict jsonString];
     if(_logLevel <=UMLOG_DEBUG)
     {
         [_logFeed debugText:[NSString stringWithFormat:@"TX %@->%@: %@",_localAddress,_remoteAddress,dict]];
     }
     [_listener sendString:msg toAddress:_remoteAddress toPort:_remotePort];
-    
 }
 
-- (void)actionSendUnknown
+- (void) actionSendUnknown
 {
     _randVal = GetDaemonRandomValue();
     _lastHotSent = NULL;
@@ -85,7 +91,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
     [_prometheusMetrics.metricSentUNK increaseBy:1];
 }
 
-- (void)actionSendFailed
+- (void) actionSendFailed
 {
     [self sendStatus:MESSAGE_FAILED];
     _lastHotSent = NULL;
@@ -94,7 +100,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
 
 }
 
-- (void)actionSendFailover
+- (void) actionSendFailover
 {
     [self sendStatus:MESSAGE_FAILOVER];
     _lastHotSent = NULL;
@@ -103,7 +109,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
 
 }
 
-- (void)actionSendHot
+- (void) actionSendHot
 {
     [self sendStatus:MESSAGE_HOT];
     _lastHotSent = [NSDate date];
@@ -112,7 +118,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
 
 }
 
-- (void)actionSendStandby
+- (void) actionSendStandby
 {
     [self sendStatus:MESSAGE_STANDBY];
     _lastHotSent = NULL;
@@ -120,41 +126,41 @@ DaemonRandomValue GetDaemonRandomValue(void)
     [_prometheusMetrics.metricSentSTBY increaseBy:1];
 }
 
-- (void)actionSendTakeoverRequest
+- (void) actionSendTakeoverRequest
 {
     _randVal = GetDaemonRandomValue();
     [self sendStatus:MESSAGE_TAKEOVER_REQUEST withRandomValue:_randVal];
     [_prometheusMetrics.metricSentTREQ increaseBy:1];
 }
 
-- (void)actionSendTakeoverRequestForced
+- (void) actionSendTakeoverRequestForced
 {
     _randVal = GetDaemonRandomValue();
     [self sendStatus:MESSAGE_TAKEOVER_REQUEST withRandomValue:UINT_MAX];
     [_prometheusMetrics.metricSentTREQ increaseBy:1];
 }
 
-- (void)actionSendTakeoverReject
+- (void) actionSendTakeoverReject
 {
     [self sendStatus:MESSAGE_TAKEOVER_REJECT];
     [_prometheusMetrics.metricSentTREJ increaseBy:1];
 }
 
-- (void)actionSendTakeoverConfirm
+- (void) actionSendTakeoverConfirm
 {
     [self sendStatus:MESSAGE_TAKEOVER_CONF];
     [_prometheusMetrics.metricSentTCNF increaseBy:1];
 }
 
 
-- (void)actionSendTransitingToHot
+- (void) actionSendTransitingToHot
 {
     [self sendStatus:MESSAGE_TRANSITING_TO_HOT];
     [_prometheusMetrics.metricSent2HOT increaseBy:1];
 }
 
 
-- (void)actionSendTransitingToStandby
+- (void) actionSendTransitingToStandby
 {
     [self sendStatus:MESSAGE_TRANSITING_TO_STANDBY];
     [_prometheusMetrics.metricSent2SBY increaseBy:1];
@@ -169,20 +175,30 @@ DaemonRandomValue GetDaemonRandomValue(void)
     } \
 }
 
-- (void)eventReceived:(NSString *)event
-                 dict:(NSDictionary *)dict;
+- (void) eventReceived:(NSString *)event
+                  dict:(NSDictionary *)dict;
 {
     NSString *oldstate = [_currentState name];
-   
+
+    NSString *reason = dict[@"reason"];
     /*
      * LOCAL MESSAGES
      */
 
+    
     if ([event isEqualToString:MESSAGE_LOCAL_REQUEST_TAKEOVER])
     {
         _outstandingLocalHeartbeats = 0;
         self.localIsFailed=NO;
         DEBUGLOG(_currentState,@"eventForceTakeover");
+        if(reason)
+        {
+            _lastLocalReason = reason;
+        }
+        else
+        {
+            _lastLocalReason = @"manual-requested-takeover-from-app";
+        }
         _lastLocalRx = [NSDate date];
         _lastLocalMessage=@"local-request-takeover";
         [self eventForceTakeover];
@@ -193,6 +209,14 @@ DaemonRandomValue GetDaemonRandomValue(void)
         _outstandingLocalHeartbeats = 0;
         self.localIsFailed=NO;
         DEBUGLOG(_currentState,@"eventForceFailover");
+        if(reason)
+        {
+            _lastLocalReason = reason;
+        }
+        else
+        {
+            _lastLocalReason = @"manual-requested-failover-from-app";
+        }
         _lastLocalRx = [NSDate date];
         _lastLocalMessage=@"local-request-failover";
         [self eventForceFailover];
@@ -206,6 +230,15 @@ DaemonRandomValue GetDaemonRandomValue(void)
         _lastLocalMessage=@"hot";
         self.localIsFailed = NO;
         DEBUGLOG(_currentState,@"localHotIndication");
+        if(reason)
+        {
+            _lastLocalReason = reason;
+        }
+        else
+        {
+            _lastLocalReason = NULL;
+        }
+
         _currentState = [_currentState eventStatusLocalHot:dict];
         [_prometheusMetrics.metricReceivedLHOT increaseBy:1];
 
@@ -217,6 +250,14 @@ DaemonRandomValue GetDaemonRandomValue(void)
         _lastLocalMessage=@"standby";
         self.localIsFailed=NO;
         DEBUGLOG(_currentState,@"localStandbyIndication");
+        if(reason)
+        {
+            _lastLocalReason = reason;
+        }
+        else
+        {
+            _lastLocalReason = NULL;
+        }
         _currentState = [_currentState eventStatusLocalStandby:dict];
         [_prometheusMetrics.metricReceivedLSBY increaseBy:1];
 
@@ -228,6 +269,10 @@ DaemonRandomValue GetDaemonRandomValue(void)
         _lastLocalMessage=@"unknown";
         self.localIsFailed=NO;
         DEBUGLOG(_currentState,@"localUnknownIndication");
+        if(reason)
+        {
+            _lastLocalReason = reason;
+        }
         _currentState = [_currentState eventStatusLocalUnknown:dict];
         [_prometheusMetrics.metricReceivedLUNK increaseBy:1];
 
@@ -239,6 +284,14 @@ DaemonRandomValue GetDaemonRandomValue(void)
         _lastLocalMessage=@"fail";
         self.localIsFailed=YES;
         DEBUGLOG(_currentState,@"localFailureIndication");
+        if(reason)
+        {
+            _lastLocalReason = reason;
+        }
+        else
+        {
+            _lastLocalReason = @"unknown-local-failure-indication";
+        }
         _currentState = [_currentState eventStatusLocalFailure:dict];
         [_prometheusMetrics.metricReceivedLFAI increaseBy:1];
     }
@@ -250,6 +303,14 @@ DaemonRandomValue GetDaemonRandomValue(void)
         _lastLocalMessage=@"transiting-to-hot";
         self.localIsFailed=NO;
         DEBUGLOG(_currentState,@"localTransitingToHot");
+        if(reason)
+        {
+            _lastLocalReason = reason;
+        }
+        else
+        {
+            _lastLocalReason = NULL;
+        }
         _currentState = [_currentState eventStatusLocalTransitingToHot:dict];
         [_prometheusMetrics.metricReceivedL2HT increaseBy:1];
     }
@@ -261,6 +322,14 @@ DaemonRandomValue GetDaemonRandomValue(void)
         _lastLocalMessage=@"transiting-to-standby";
         self.localIsFailed=NO;
         DEBUGLOG(_currentState,@"localTransitingToStandby");
+        if(reason)
+        {
+            _lastLocalReason = reason;
+        }
+        else
+        {
+            _lastLocalReason = NULL;
+        }
         _currentState = [_currentState eventStatusLocalTransitingToStandby:dict];
         [_prometheusMetrics.metricReceivedL2SB increaseBy:1];
     }
@@ -278,6 +347,14 @@ DaemonRandomValue GetDaemonRandomValue(void)
         _lastRemoteMessage=@"unknown";
         self.remoteIsFailed=NO;
         DEBUGLOG(_currentState,@"eventUnknown");
+        if(reason)
+        {
+            _lastRemoteReason = reason;
+        }
+        else
+        {
+            _lastRemoteReason = @"unknown-state";
+        }
         _currentState = [_currentState eventStatusRemoteUnknown:dict];
         [_prometheusMetrics.metricReceivedUNK increaseBy:1];
     }
@@ -290,6 +367,14 @@ DaemonRandomValue GetDaemonRandomValue(void)
         _lastRemoteMessage=@"failed";
         self.remoteIsFailed=YES;
         DEBUGLOG(_currentState,@"eventRemoteFailed");
+        if(reason)
+        {
+            _lastRemoteReason = reason;
+        }
+        else
+        {
+            _lastRemoteReason = @"eventRemoteFailed";
+        }
         _currentState = [_currentState eventStatusRemoteFailure:dict];
         [_prometheusMetrics.metricReceivedFAIL increaseBy:1];
 
@@ -302,6 +387,14 @@ DaemonRandomValue GetDaemonRandomValue(void)
         _lastRemoteMessage=@"failover";
         self.remoteIsFailed=NO;
         DEBUGLOG(_currentState,@"eventRemoteFailover");
+        if(reason)
+        {
+            _lastRemoteReason = reason;
+        }
+        else
+        {
+            _lastRemoteReason = @"remote-reports-failed";
+        }
         _currentState = [_currentState eventStatusRemoteFailover:dict];
         [_prometheusMetrics.metricReceivedFOVR increaseBy:1];
 
@@ -314,6 +407,14 @@ DaemonRandomValue GetDaemonRandomValue(void)
         _lastRemoteMessage=@"takeover-request";
         self.remoteIsFailed=NO;
         DEBUGLOG(_currentState,@"eventStatusRemoteTakeoverRequest");
+        if(reason)
+        {
+            _lastRemoteReason = reason;
+        }
+        else
+        {
+            _lastRemoteReason = NULL;
+        }
         _currentState = [_currentState eventStatusRemoteTakeoverRequest:dict];
         [_prometheusMetrics.metricReceivedTREQ increaseBy:1];
 
@@ -324,6 +425,15 @@ DaemonRandomValue GetDaemonRandomValue(void)
         _lastRemoteRx = [NSDate date];
         _lastRemoteMessage=@"takeover-reject";
         DEBUGLOG(_currentState,@"eventStatusRemoteTakeoverReject");
+        if(reason)
+        {
+            _lastRemoteReason = reason;
+        }
+        else
+        {
+            _lastRemoteReason = NULL;
+        }
+
         _currentState = [_currentState eventStatusRemoteTakeoverReject:dict];
         [_prometheusMetrics.metricReceivedTREJ increaseBy:1];
 
@@ -335,6 +445,15 @@ DaemonRandomValue GetDaemonRandomValue(void)
         _lastRemoteRx = [NSDate date];
         _lastRemoteMessage=@"takeover-confirmed";
         DEBUGLOG(_currentState,@"eventTakeoverConf");
+        if(reason)
+        {
+            _lastRemoteReason = reason;
+        }
+        else
+        {
+            _lastRemoteReason = NULL;
+        }
+
         _currentState = [_currentState eventStatusRemoteTakeoverConf:dict];
         [_prometheusMetrics.metricReceivedTCNF increaseBy:1];
 
@@ -345,6 +464,14 @@ DaemonRandomValue GetDaemonRandomValue(void)
         _lastRemoteMessage=@"standby";
         _lastRemoteRx = [NSDate date];
         DEBUGLOG(_currentState,@"eventStatusStandby");
+        if(reason)
+        {
+            _lastRemoteReason = reason;
+        }
+        else
+        {
+            _lastRemoteReason = @"remote-reports-standby";
+        }
         _currentState = [_currentState eventStatusRemoteStandby:dict];
         [_prometheusMetrics.metricReceivedSTBY increaseBy:1];
 
@@ -356,6 +483,14 @@ DaemonRandomValue GetDaemonRandomValue(void)
        _lastRemoteRx = [NSDate date];
         _lastRemoteMessage=@"hot";
         DEBUGLOG(_currentState,@"eventStatusHot");
+        if(reason)
+        {
+            _lastRemoteReason = reason;
+        }
+        else
+        {
+            _lastRemoteReason = NULL;
+        }
         _currentState = [_currentState eventStatusRemoteHot:dict];
         [_prometheusMetrics.metricReceivedHOTT increaseBy:1];
     }
@@ -366,6 +501,14 @@ DaemonRandomValue GetDaemonRandomValue(void)
         _lastRemoteMessage=@"transiting-to-hot";
         _lastRemoteRx = [NSDate date];
         DEBUGLOG(_currentState,@"eventStatusRemoteTransitingToHot");
+        if(reason)
+        {
+            _lastRemoteReason = reason;
+        }
+        else
+        {
+            _lastRemoteReason = NULL;
+        }
         _currentState = [_currentState eventStatusRemoteTransitingToHot:dict];
         [_prometheusMetrics.metricReceived2HOT increaseBy:1];
     }
@@ -376,6 +519,14 @@ DaemonRandomValue GetDaemonRandomValue(void)
         _lastRemoteRx = [NSDate date];
         _lastRemoteMessage=@"transiting-to-standby";
         DEBUGLOG(_currentState,@"eventStatusRemoteTransitingToStandby");
+        if(reason)
+        {
+            _lastRemoteReason = reason;
+        }
+        else
+        {
+            _lastRemoteReason = NULL;
+        }
         _currentState = [_currentState eventStatusRemoteTransitingToStandby:dict];
         [_prometheusMetrics.metricReceived2SBY increaseBy:1];
     }
@@ -391,12 +542,20 @@ DaemonRandomValue GetDaemonRandomValue(void)
     NSString *newstate = [_currentState name];
     if(![oldstate isEqualToString:newstate])
     {
-        NSString *s = [NSString stringWithFormat:@"State Change %@->%@",oldstate,newstate];
+        NSString *s;
+        if(reason)
+        {
+            s = [NSString stringWithFormat:@"State Change %@->%@ (%@)",oldstate,newstate,reason];
+        }
+        else
+        {
+            s = [NSString stringWithFormat:@"State Change %@->%@",oldstate,newstate];
+        }
         [_logFeed infoText:s];
     }
 }
 
-- (void)eventHeartbeat
+- (void) eventHeartbeat
 {
     if(_currentState==NULL)
     {
@@ -407,7 +566,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
     [self checkForTimeouts];
 }
 
-- (void)eventForceFailover
+- (void) eventForceFailover
 {
     if(_currentState==NULL)
     {
@@ -417,7 +576,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
     _currentState = [_currentState eventStatusLocalFailure:@{}];
 }
 
-- (void)eventForceTakeover
+- (void) eventForceTakeover
 {
     if(_currentState==NULL)
     {
@@ -427,7 +586,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
     _currentState = [_currentState eventForceTakeover:@{}];
 }
 
-- (void)checkForTimeouts
+- (void) checkForTimeouts
 {
     if(_currentState==NULL)
     {
@@ -438,16 +597,20 @@ DaemonRandomValue GetDaemonRandomValue(void)
     _outstandingRemoteHeartbeats++;
     if(_outstandingLocalHeartbeats > 4)
     {
+        _lastLocalReason = @"eventLocalTimeout issued due to outstanding local heartbeats";
+        [_logFeed infoText:_lastLocalReason];
         _currentState = [_currentState eventLocalTimeout];
     }
 
     if(_outstandingRemoteHeartbeats > 4)
     {
+        _lastRemoteReason = @"eventRemoteTimeout issued due to outstanding remote heartbeats";
+        [_logFeed infoText:_lastRemoteReason];
         _currentState = [_currentState eventRemoteTimeout];
     }
 }
 
-- (int)goToHot /* returns 0 on success  */
+- (int) goToHot /* returns 0 on success  */
 {
     if(!_iAmHot)
     {
@@ -469,7 +632,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
     }
 }
 
-- (int)goToStandby /* returns 0 on success */
+- (int) goToStandby /* returns 0 on success */
 {
     int r1 = [self callStopAction];
     int r2 = [self callDeactivateInterface];
@@ -482,8 +645,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
 
 #define     SETENV(a,b)   if(b!=NULL) { setenv(a,b.UTF8String,1);  } else { unsetenv(a); }
 
-
-- (void)setEnvVars
+- (void) setEnvVars
 {
     NSString *heartbeatIntervall = [NSString stringWithFormat:@"%lf",_intervallDelay];
     SETENV("NETMASK",  _netmask);
@@ -492,6 +654,8 @@ DaemonRandomValue GetDaemonRandomValue(void)
     SETENV("SHARED_ADDRESS", _sharedAddress);
     SETENV("RESOURCE_NAME", _resourceId);
     SETENV("PID_FILE", _pidFile);
+    SETENV("LAST_LOCAL_REASON",_lastLocalReason);
+    SETENV("LAST_REMOTE_REASON",_lastRemoteReason);
     if(_pid > 0)
     {
         NSString *p = [NSString stringWithFormat:@"%ld",_pid];
@@ -505,7 +669,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
 }
 
 
-- (void)unsetEnvVars
+- (void) unsetEnvVars
 {
     unsetenv("NETMASK");
     unsetenv("LOCAL_ADDRESS");
@@ -513,12 +677,15 @@ DaemonRandomValue GetDaemonRandomValue(void)
     unsetenv("SHARED_ADDRESS");
     unsetenv("RESOURCE_NAME");
     unsetenv("PID_FILE");
+    unsetenv("LAST_LOCAL_REASON");
+    unsetenv("LAST_REMOTE_REASON");
     unsetenv("RESOURCE_PID");
-    unsetenv("ACTION");
     unsetenv("HEARTBEAT_INTERVAL");
+    
+    unsetenv("ACTION");
 }
 
-- (int)executeScript:(NSString *)command
+- (int) executeScript:(NSString *)command
 {
     if(command.length==0) /* empty script is always a success */
     {
@@ -533,8 +700,9 @@ DaemonRandomValue GetDaemonRandomValue(void)
 }
 
 
-- (int)callActivateInterface
+- (int) callActivateInterface
 {
+    [_logFeed infoText:@"*** callActivateInterface ***"];
     if(self.interfaceState == DaemonInterfaceState_Up)
     {
         return 0;
@@ -558,12 +726,11 @@ DaemonRandomValue GetDaemonRandomValue(void)
         self.interfaceState = DaemonInterfaceState_Unknown;
     }
     return r;
-
 }
-
 
 - (int) callDeactivateInterface
 {
+    [_logFeed infoText:@"*** callDeactivateInterface ***"];
     if(self.interfaceState == DaemonInterfaceState_Down)
     {
         return 0;
@@ -577,7 +744,6 @@ DaemonRandomValue GetDaemonRandomValue(void)
     {
         _deactivatedAt = [NSDate date];
         self.interfaceState = DaemonInterfaceState_Down;
-
     }
     else
     {
@@ -586,8 +752,10 @@ DaemonRandomValue GetDaemonRandomValue(void)
     return r;
 }
 
-- (int)callStartAction
+- (int) callStartAction
 {
+    [_logFeed infoText:@"*** callStartAction ***"];
+
     int r = -1;
     [_prometheusMetrics.metricsStartActionRequested increaseBy:1];
     self.localStartActionRequested = YES;
@@ -609,8 +777,9 @@ DaemonRandomValue GetDaemonRandomValue(void)
     return r;
 }
 
--(int)callStopAction
+- (int) callStopAction
 {
+    [_logFeed infoText:@"*** callStopAction ***"];
     int r = -1;
     [_prometheusMetrics.metricsStopActionRequested increaseBy:1];
     self.localStopActionRequested = YES;
@@ -674,10 +843,17 @@ DaemonRandomValue GetDaemonRandomValue(void)
         dict[@"dectivated-at"] = _deactivatedAt ? [_deactivatedAt stringValue] : @"never";
         dict[@"remote-is-failed"] = _remoteIsFailed ? @"YES" : @"NO";
         dict[@"local-is-failed"] = _localIsFailed ? @"YES" : @"NO";
+        if(_lastLocalReason.length > 0)
+        {
+            dict[@"last-local-reason"] = _lastLocalReason;
+        }
+        if(_lastRemoteReason.length > 0)
+        {
+            dict[@"last-remote-reason"] = _lastRemoteReason;
+        }
     }
     return dict;
 }
-
 
 - (void)checkIfUp
 {

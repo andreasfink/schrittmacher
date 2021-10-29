@@ -182,7 +182,6 @@ AppDelegate *_global_appdel= NULL;
     {
         _timeout = 3.0 * _heartbeat;
     }
-    
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
@@ -202,12 +201,10 @@ AppDelegate *_global_appdel= NULL;
         [self addLogFromConfigGroup:coreConfig
                           toHandler:_mainLogHandler
                              logdir:_logDirectory];
-
         [self setupWebserver];
         [self startupListener];
     }
 }
-
 
 - (NSString *)htmlStatus
 {
@@ -336,7 +333,6 @@ AppDelegate *_global_appdel= NULL;
                                                        seconds:d.intervallDelay
                                                           name:@"check-if-up-timer"
                                                        repeats:YES];
-
             [_listener attachDaemon:d];
             [d.heartbeatTimer start];
             [d.checkIfUpTimer start];

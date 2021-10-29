@@ -131,8 +131,6 @@
 }
 
 
-
-
 #pragma mark - GUI
 
 - (DaemonState *)eventForceFailover:(NSDictionary *)dict

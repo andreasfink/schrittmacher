@@ -5,6 +5,7 @@ remote-address = 192.168.1.12
 shared-address = 192.168.1.10
 http-port       = 7700
 port            = 7700
+log-file   = /opt/schrittmacher/schrittmacher.log
 
 group = resource
 name = smsc-i100
