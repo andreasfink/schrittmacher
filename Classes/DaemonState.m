@@ -18,6 +18,7 @@
     if(self)
     {
         daemon = d;
+        _logFeed = d.logFeed;
         d.lastRemoteRx = [NSDate date];
         d.lastLocalRx = [NSDate date];
     }
