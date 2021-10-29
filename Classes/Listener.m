@@ -276,7 +276,7 @@
     if(e)
     {
         NSString *s = [UMSocket getSocketErrorString:e];
-        [self.logFeed majorError:e withText:[NSString stringWithFormat:@"TX Error %d: %@",e,s]];
+        [self.logFeed majorError:e withText:[NSString stringWithFormat:@"TX Error %d: %@ while sending to %@",e,s,addr]];
     }
 }
 
