@@ -50,6 +50,7 @@
 
 #pragma mark - Helper
 - (int)takeoverChallenge:(NSDictionary *)dict;
+- (void)logEvent:(NSString *)event;
 
 /* returns 1 if we win, -1 if the other wins and 0 if we have a tie */
 

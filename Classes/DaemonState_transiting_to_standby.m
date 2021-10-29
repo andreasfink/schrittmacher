@@ -31,11 +31,13 @@
 
 - (DaemonState *)eventStatusRemoteHot:(NSDictionary *)dict
 {
+    [self logEvent:@"eventStatusRemoteHot"];
     return self;
 }
 
 - (DaemonState *)eventStatusRemoteStandby:(NSDictionary *)dict
 {
+    [self logEvent:@"eventStatusRemoteStandby"];
     /* the other side is standby and we are on the way to standby. Can not be. lets reverse course */
     [daemon actionSendTransitingToHot];
     [daemon callActivateInterface];
@@ -45,6 +47,7 @@
 
 - (DaemonState *)eventStatusRemoteFailure:(NSDictionary *)dict
 {
+    [self logEvent:@"eventStatusRemoteFailure"];
     /* the other side is dead and we are on the way to standby. Can not be. lets reverse course */
     [daemon actionSendTransitingToHot];
     [daemon callActivateInterface];
@@ -54,6 +57,7 @@
 
 - (DaemonState *)eventStatusRemoteFailover:(NSDictionary *)dict
 {
+    [self logEvent:@"eventStatusRemoteFailover"];
     /* the other side is wanting us to be hot. lets do it */
     [daemon actionSendTransitingToHot];
     [daemon callActivateInterface];
@@ -63,6 +67,7 @@
 
 - (DaemonState *)eventStatusRemoteUnknown:(NSDictionary *)dict
 {
+    [self logEvent:@"eventStatusRemoteUnknown"];
     /* we already transiting to standby, so the other side should believe it should go hot */
     [daemon actionSendTransitingToStandby];
     return self;
@@ -70,6 +75,7 @@
 
 - (DaemonState *)eventStatusRemoteTakeoverRequest:(NSDictionary *)dict
 {
+    [self logEvent:@"eventStatusRemoteTakeoverRequest"];
     /* they are challenging us. So we agree to go standby */
     [daemon actionSendTakeoverConfirm];
     [daemon callDeactivateInterface];
@@ -79,6 +85,7 @@
 
 - (DaemonState *)eventStatusRemoteTakeoverConf:(NSDictionary *)dict
 {
+    [self logEvent:@"eventStatusRemoteTakeoverConf"];
     /* there has been a callenge and we are the winner. so we must go to hot now */
     [daemon actionSendTransitingToHot];
     [daemon callActivateInterface];
@@ -88,6 +95,7 @@
 
 - (DaemonState *)eventStatusRemoteTakeoverReject:(NSDictionary *)dict
 {
+    [self logEvent:@"eventStatusRemoteTakeoverReject"];
     [daemon actionSendStandby];
     [daemon callDeactivateInterface];
     [daemon callStopAction];
@@ -96,12 +104,14 @@
 
 - (DaemonState *)eventStatusRemoteTransitingToHot:(NSDictionary *)dict
 {
+    [self logEvent:@"eventStatusRemoteTransitingToHot"];
     /* fine with me */
     return self;
 }
 
 - (DaemonState *)eventStatusRemoteTransitingToStandby:(NSDictionary *)dict
 {
+    [self logEvent:@"eventStatusRemoteTransitingToStandby"];
     [daemon actionSendTakeoverRequest];
     /* both sides want to go to standby? not a good idea */
     return self;
@@ -110,6 +120,7 @@
 #pragma mark - Local Status
 - (DaemonState *)eventStatusLocalHot:(NSDictionary *)pdu
 {
+    [self logEvent:@"eventStatusLocalHot"];
     /* local wants to be hot while we should go standby. nonono. */
     daemon.localIsFailed = YES;
     [daemon actionSendFailed];
@@ -120,6 +131,7 @@
 
 - (DaemonState *)eventStatusLocalStandby:(NSDictionary *)dict
 {
+    [self logEvent:@"eventStatusLocalStandby"];
     daemon.localIsFailed = NO;
     [daemon actionSendStandby];
     [daemon callDeactivateInterface];
@@ -128,6 +140,7 @@
 
 - (DaemonState *)eventStatusLocalFailure:(NSDictionary *)dict
 {
+    [self logEvent:@"eventStatusLocalFailure"];
     [daemon actionSendFailed];
     [daemon callDeactivateInterface];
     return [[DaemonState_Failed alloc]initWithDaemon:daemon];
@@ -135,6 +148,7 @@
 
 - (DaemonState *)eventStatusLocalUnknown:(NSDictionary *)dict
 {
+    [self logEvent:@"eventStatusLocalUnknown"];
     [daemon callDeactivateInterface];
     [daemon callStopAction];
     return self;
@@ -143,11 +157,13 @@
 
 - (DaemonState *)eventStatusLocalTransitingToStandby:(NSDictionary *)dict
 {
+    [self logEvent:@"eventStatusLocalTransitingToStandby"];
     return self;
 }
 
 - (DaemonState *)eventStatusLocalTransitingToHot:(NSDictionary *)dict
 {
+    [self logEvent:@"eventStatusLocalTransitingToHot"];
     [daemon callStopAction];
     [daemon callDeactivateInterface];
     return self;
@@ -157,6 +173,7 @@
 
 - (DaemonState *)eventForceFailover:(NSDictionary *)dict
 {
+    [self logEvent:@"eventForceFailover"];
     [daemon actionSendFailover];
     [daemon callStopAction];
     [daemon callDeactivateInterface];
@@ -165,6 +182,7 @@
 
 - (DaemonState *)eventForceTakeover:(NSDictionary *)dict
 {
+    [self logEvent:@"eventForceTakeover"];
     if(daemon.localIsFailed)
     {
         [daemon actionSendFailed];
@@ -178,6 +196,7 @@
 
 - (DaemonState *)eventHeartbeat
 {
+    [self logEvent:@"eventHeartbeat"];
     /* we are going hot but if it takes too long, we consider it failed */
     if([[NSDate date] timeIntervalSinceDate:_goingStandbyStartTime] > daemon.goingStandbyTimeout)
     {

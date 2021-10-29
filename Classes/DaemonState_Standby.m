@@ -20,12 +20,14 @@
 
 - (DaemonState *)eventStatusRemoteHot:(NSDictionary *)dict
 {
+    [self logEvent:@"eventStatusRemoteHot"];
     /* we both agree on our roles. all fine */
     return self;
 }
 
 - (DaemonState *)eventStatusRemoteStandby:(NSDictionary *)dict
 {
+    [self logEvent:@"eventStatusRemoteStandby"];
     /* both sides standby, this can't work. So we jump to hot IF WE CAN */
     if(daemon.localIsFailed == YES)
     {
@@ -41,6 +43,7 @@
 
 - (DaemonState *)eventStatusRemoteFailure:(NSDictionary *)dict
 {
+    [self logEvent:@"eventStatusRemoteFailure"];
     DaemonState *nextState = self;
     if(daemon.localIsFailed==NO)
     {
@@ -62,6 +65,7 @@
 
 - (DaemonState *)eventStatusRemoteFailover:(NSDictionary *)dict
 {
+    [self logEvent:@"eventStatusRemoteFailover"];
     if(!daemon.localIsFailed)
     {
         /* other side wants to fail over. lets become master. */
@@ -81,18 +85,21 @@
 
 - (DaemonState *)eventStatusRemoteUnknown:(NSDictionary *)dict
 {
-    [daemon actionSendStandby];
+    [self logEvent:@"eventStatusRemoteUnknown"];
+   [daemon actionSendStandby];
     return self;
 }
 
 - (DaemonState *)eventStatusRemoteTakeoverRequest:(NSDictionary *)dict
 {
-    [daemon actionSendTakeoverConfirm];
+    [self logEvent:@"eventStatusRemoteTakeoverRequest"];
+   [daemon actionSendTakeoverConfirm];
     return self;
 }
 
 - (DaemonState *)eventStatusRemoteTakeoverConf:(NSDictionary *)dict
 {
+    [self logEvent:@"eventStatusRemoteTakeoverConf"];
     /* somethings odd here */
     [daemon actionSendTransitingToHot];
     [daemon callActivateInterface];
@@ -103,16 +110,19 @@
 
 - (DaemonState *)eventStatusRemoteTakeoverReject:(NSDictionary *)dict
 {
+    [self logEvent:@"eventStatusRemoteTakeoverReject"];
     return self;
 }
 
 - (DaemonState *)eventStatusRemoteTransitingToHot:(NSDictionary *)dict
 {
+    [self logEvent:@"eventStatusRemoteTransitingToHot"];
     return self;
 }
 
 - (DaemonState *)eventStatusRemoteTransitingToStandby:(NSDictionary *)dict
 {
+    [self logEvent:@"eventStatusRemoteTransitingToStandby"];
     /* somethings odd here */
     [daemon actionSendTransitingToHot];
     [daemon callActivateInterface];
@@ -124,6 +134,7 @@
 #pragma mark - Local Status
 - (DaemonState *)eventStatusLocalHot:(NSDictionary *)pdu
 {
+    [self logEvent:@"eventStatusLocalHot"];
     daemon.localIsFailed = NO;
     /* local app tells us its hot while we have agreed with remote to be standby. lets switch off local.*/
     [daemon callStopAction];
@@ -134,6 +145,7 @@
 
 - (DaemonState *)eventStatusLocalStandby:(NSDictionary *)dict
 {
+    [self logEvent:@"eventStatusLocalStandby"];
     daemon.localIsFailed = NO;
     NSDate *now = [NSDate date];
     if(daemon.lastStandbySent==NULL)
@@ -154,6 +166,7 @@
 
 - (DaemonState *)eventStatusLocalFailure:(NSDictionary *)dict
 {
+    [self logEvent:@"eventStatusLocalFailure"];
     daemon.localIsFailed = YES;
     [daemon actionSendFailed];
     return [[DaemonState_Failed alloc]initWithDaemon:daemon];
@@ -162,6 +175,7 @@
 
 - (DaemonState *)eventStatusLocalUnknown:(NSDictionary *)dict
 {
+    [self logEvent:@"eventStatusLocalUnknown"];
     [daemon actionSendStandby];
     [daemon callDeactivateInterface];
     [daemon callStopAction];
@@ -170,13 +184,15 @@
 
 - (DaemonState *)eventStatusLocalTransitingToStandby:(NSDictionary *)dict
 {
-    [daemon callStopAction];
+    [self logEvent:@"eventStatusLocalTransitingToStandby"];
+   [daemon callStopAction];
     [daemon callDeactivateInterface];
     return self;
 }
 
 - (DaemonState *)eventStatusLocalTransitingToHot:(NSDictionary *)dict
 {
+    [self logEvent:@"eventStatusLocalTransitingToHot"];
     [daemon callStopAction];
     [daemon callDeactivateInterface];
     return self;
@@ -187,6 +203,7 @@
 
 - (DaemonState *)eventForceFailover:(NSDictionary *)dict
 {
+    [self logEvent:@"eventForceFailover"];
     [daemon callStopAction];
     [daemon callDeactivateInterface];
     [daemon actionSendFailover];
@@ -195,6 +212,7 @@
 
 - (DaemonState *)eventForceTakeover:(NSDictionary *)dict
 {
+    [self logEvent:@"eventForceTakeover"];
     if(daemon.localIsFailed)
     {
         [daemon actionSendFailed];
@@ -209,6 +227,7 @@
 /* heartbeat timer called */
 - (DaemonState *)eventHeartbeat
 {
+    [self logEvent:@"eventHeartbeat"];
     [daemon actionSendStandby];
     return self;
 }
