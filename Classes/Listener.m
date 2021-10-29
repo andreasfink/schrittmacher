@@ -174,7 +174,6 @@
     return i;
 }
 
-
 - (int) checkForPackets
 {
     int packetsProcessed = 0;

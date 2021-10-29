@@ -29,6 +29,8 @@
     NSString            *_remoteAddress;
     NSString            *_sharedAddress;
     Listener            *_listener;
+    Listener            *_localhostListener4;
+    Listener            *_localhostListener6;
     UMLogLevel          _logLevel;
     UMPrometheus        *_prometheus;
 }

@@ -270,6 +270,16 @@ AppDelegate *_global_appdel= NULL;
         _listener.logHandler = _mainLogHandler;
         _listener.logLevel = self.logLevel;
 
+        _localhostListener4 = [[Listener alloc]init];
+        _localhostListener4.logFeed = self.logFeed;
+        _localhostListener4.logHandler = _mainLogHandler;
+        _localhostListener4.logLevel = self.logLevel;
+
+        _localhostListener6 = [[Listener alloc]init];
+        _localhostListener6.logFeed     = self.logFeed;
+        _localhostListener6.logHandler  = _mainLogHandler;
+        _localhostListener6.logLevel    = self.logLevel;
+
         int addrType = 4;
         NSArray *a;
         if(_localAddress)
@@ -285,7 +295,15 @@ AppDelegate *_global_appdel= NULL;
         _listener.localAddress = _localAddress;
         _listener.port = _port;
         _listener.addressType= addrType;
-        
+
+        _localhostListener4.localAddress = @"127.0.0.1";
+        _localhostListener4.port = _port;
+        _localhostListener4.addressType= 4;
+
+        _localhostListener6.localAddress = @"::1";
+        _localhostListener6.port = _port;
+        _localhostListener6.addressType= 6;
+
         NSArray *configs = [_config getMultiGroups:@"resource"];
         for(NSDictionary *daemonConfig in configs)
         {
@@ -327,9 +345,13 @@ AppDelegate *_global_appdel= NULL;
                                                           name:@"heartbeat-timer"
                                                        repeats:YES];
             [_listener attachDaemon:d];
+            [_localhostListener4 attachDaemon:d];
+            [_localhostListener6 attachDaemon:d];
             [d.heartbeatTimer start];
         }
         [_listener start];
+        [_localhostListener4 start];
+        [_localhostListener6 start];
     }
 }
 
