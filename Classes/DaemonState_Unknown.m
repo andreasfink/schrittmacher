@@ -44,44 +44,91 @@
 {
     [self logEvent:@"eventStatusRemoteStandby"];
     /* other side says its standby, so we must be hot */
-    [daemon actionSendTransitingToHot];
-    [daemon callActivateInterface];
-    [daemon callStartAction];
-    return [[DaemonState_transiting_to_hot alloc]initWithDaemon:daemon];
+    if(daemon.localIsFailed)
+    {
+        [daemon actionSendFailed];
+        [daemon callDeactivateInterface];
+        [daemon callStopAction];
+        return [[DaemonState_Failed alloc]initWithDaemon:daemon];
+    }
+    else
+    {
+        [daemon actionSendTransitingToHot];
+        [daemon callActivateInterface];
+        [daemon callStartAction];
+        return [[DaemonState_transiting_to_hot alloc]initWithDaemon:daemon];
+    }
 }
 
 - (DaemonState *)eventStatusRemoteFailure:(NSDictionary *)dict
 {
     [self logEvent:@"eventStatusRemoteFailure"];
-    /* other side is failed. lets be master. */
-    [daemon actionSendTransitingToHot];
-    [daemon callActivateInterface];
-    [daemon callStartAction];
-    return [[DaemonState_transiting_to_hot alloc]initWithDaemon:daemon];
+    if(daemon.localIsFailed)
+    {
+        [daemon actionSendFailed];
+        [daemon callDeactivateInterface];
+        [daemon callStopAction];
+        return [[DaemonState_Failed alloc]initWithDaemon:daemon];
+    }
+    else
+    {
+        /* other side is failed. lets be master. */
+        [daemon actionSendTransitingToHot];
+        [daemon callActivateInterface];
+        [daemon callStartAction];
+        return [[DaemonState_transiting_to_hot alloc]initWithDaemon:daemon];
+    }
 }
 
 - (DaemonState *)eventStatusRemoteFailover:(NSDictionary *)dict
 {
     [self logEvent:@"eventStatusRemoteFailover"];
     /* other side wants to fail over. lets be master. */
-    [daemon actionSendTransitingToHot];
-    [daemon callActivateInterface];
-    [daemon callStartAction];
-    return [[DaemonState_transiting_to_hot alloc]initWithDaemon:daemon];
+    if(daemon.localIsFailed)
+    {
+        [daemon actionSendFailed];
+        [daemon callDeactivateInterface];
+        [daemon callStopAction];
+        return [[DaemonState_Failed alloc]initWithDaemon:daemon];
+    }
+    else
+    {
+        [daemon actionSendTransitingToHot];
+        [daemon callActivateInterface];
+        [daemon callStartAction];
+        return [[DaemonState_transiting_to_hot alloc]initWithDaemon:daemon];
+    }
 }
 
 - (DaemonState *)eventStatusRemoteUnknown:(NSDictionary *)dict
 {
     [self logEvent:@"eventStatusRemoteUnknown"];
-   /* the other side doesnt know its state neither. Lets start the negotiations */
-    [daemon actionSendTakeoverRequest];
-    return  self;
+    if(daemon.localIsFailed)
+    {
+        [daemon actionSendFailed];
+        [daemon callDeactivateInterface];
+        [daemon callStopAction];
+        return [[DaemonState_Failed alloc]initWithDaemon:daemon];
+    }
+    else
+    {
+        /* the other side doesnt know its state neither. Lets start the negotiations */
+        [daemon actionSendTakeoverRequest];
+        return  self;
+    }
 }
 
 - (DaemonState *)eventStatusRemoteTakeoverRequest:(NSDictionary *)dict
 {
     [self logEvent:@"eventStatusRemoteTakeoverRequest"];
     /* other side says it wants to take over. let it happen */
+    if(daemon.localIsFailed)
+    {
+        [daemon actionSendFailed];
+        [daemon callDeactivateInterface];
+        [daemon callStopAction];
+        return [[DaemonState_Failed alloc]initWithDaemon:daemon];
+    }
     [daemon actionSendTransitingToStandby];
     [daemon callStopAction];
     [daemon callDeactivateInterface];
@@ -92,40 +139,80 @@
 {
     [self logEvent:@"eventStatusRemoteTakeoverConf"];
    /* other side tells us we can take over. lets be master. */
-    [daemon actionSendTransitingToHot];
-    [daemon callActivateInterface];
-    [daemon callStartAction];
-    return [[DaemonState_transiting_to_hot alloc]initWithDaemon:daemon];
+    if(daemon.localIsFailed)
+    {
+        [daemon actionSendFailed];
+        [daemon callDeactivateInterface];
+        [daemon callStopAction];
+        return [[DaemonState_Failed alloc]initWithDaemon:daemon];
+    }
+    else
+    {
+        [daemon actionSendTransitingToHot];
+        [daemon callActivateInterface];
+        [daemon callStartAction];
+        return [[DaemonState_transiting_to_hot alloc]initWithDaemon:daemon];
+    }
 }
 
 - (DaemonState *)eventStatusRemoteTakeoverReject:(NSDictionary *)dict
 {
     [self logEvent:@"eventStatusRemoteTakeoverReject"];
     /* other side says it doesnt want us to to take over. let it happen */
-    [daemon actionSendTransitingToStandby];
-    [daemon callStopAction];
-    [daemon callDeactivateInterface];
-    return [[DaemonState_transiting_to_standby alloc]initWithDaemon:daemon];
+    if(daemon.localIsFailed)
+    {
+        [daemon actionSendFailed];
+        [daemon callDeactivateInterface];
+        [daemon callStopAction];
+        return [[DaemonState_Failed alloc]initWithDaemon:daemon];
+    }
+    else
+    {
+        [daemon actionSendTransitingToStandby];
+        [daemon callStopAction];
+        [daemon callDeactivateInterface];
+        return [[DaemonState_transiting_to_standby alloc]initWithDaemon:daemon];
+    }
 }
 
 - (DaemonState *)eventStatusRemoteTransitingToHot:(NSDictionary *)dict
 {
     [self logEvent:@"eventStatusRemoteTransitingToHot"];
-    /* other side says it doesnt want us to to take over. let it happen */
-    [daemon actionSendTransitingToStandby];
-    [daemon callStopAction];
-    [daemon callDeactivateInterface];
-    return [[DaemonState_transiting_to_standby alloc]initWithDaemon:daemon];
+    if(daemon.localIsFailed)
+    {
+        [daemon actionSendFailed];
+        [daemon callDeactivateInterface];
+        [daemon callStopAction];
+        return [[DaemonState_Failed alloc]initWithDaemon:daemon];
+    }
+    else
+    {
+        /* other side says it doesnt want us to to take over. let it happen */
+        [daemon actionSendTransitingToStandby];
+        [daemon callStopAction];
+        [daemon callDeactivateInterface];
+        return [[DaemonState_transiting_to_standby alloc]initWithDaemon:daemon];
+    }
 }
 
 - (DaemonState *)eventStatusRemoteTransitingToStandby:(NSDictionary *)dict
 {
     [self logEvent:@"eventStatusRemoteTransitingToStandby"];
-    /* other side tells us we can take over. lets be master. */
-    [daemon actionSendTransitingToHot];
-    [daemon callActivateInterface];
-    [daemon callStartAction];
-    return [[DaemonState_transiting_to_hot alloc]initWithDaemon:daemon];
+    if(daemon.localIsFailed)
+    {
+        [daemon actionSendFailed];
+        [daemon callDeactivateInterface];
+        [daemon callStopAction];
+        return [[DaemonState_Failed alloc]initWithDaemon:daemon];
+    }
+    else
+    {
+        /* other side tells us we can take over. lets be master. */
+        [daemon actionSendTransitingToHot];
+        [daemon callActivateInterface];
+        [daemon callStartAction];
+        return [[DaemonState_transiting_to_hot alloc]initWithDaemon:daemon];
+    }
 }
 
 #pragma mark - Local Status
@@ -144,7 +231,7 @@
 - (DaemonState *)eventStatusLocalStandby:(NSDictionary *)dict
 {
     [self logEvent:@"eventStatusLocalStandby"];
-   daemon.localIsFailed = NO;
+    daemon.localIsFailed = NO;
     /* we go straigth to standby if the local app tells us so */
     [daemon actionSendStandby];
     [daemon callDeactivateInterface];
