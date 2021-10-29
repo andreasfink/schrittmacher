@@ -98,7 +98,7 @@ typedef enum DaemonInterfaceState
     int             _outstandingLocalHeartbeats;
     long            _adminweb_port;
     SchrittmacherMetrics    *_prometheusMetrics;
-
+    UMMutex         *_daemonLock;
 }
 
 @property (readwrite,strong) DaemonState *currentState;

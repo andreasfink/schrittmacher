@@ -32,6 +32,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
         _lastRemoteReason=@"";
         _pid = 0;
         _localIsFailed = YES; /* until we get heartbeat from the local, we assume its dead */
+        _daemonLock = [[UMMutex alloc]init];
     }
     return self;
 }
@@ -55,7 +56,10 @@ DaemonRandomValue GetDaemonRandomValue(void)
         _goingStandbyTimeout = 6;
     }
     DaemonState_Unknown *startState = [[DaemonState_Unknown alloc]initWithDaemon:self];
+    UMMUTEX_LOCK(_daemonLock);
     _currentState = [startState eventStart];
+    UMMUTEX_UNLOCK(_daemonLock);
+
 }
 
 - (void) sendStatus:(NSString *)status
@@ -65,7 +69,6 @@ DaemonRandomValue GetDaemonRandomValue(void)
 
 - (void) sendStatus:(NSString *)status withRandomValue:(DaemonRandomValue)r
 {
-
     NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
     dict[@"resource"]   = _resourceId;
     dict[@"status"]     = status;
@@ -85,86 +88,106 @@ DaemonRandomValue GetDaemonRandomValue(void)
 
 - (void) actionSendUnknown
 {
+    UMMUTEX_LOCK(_daemonLock);
     _randVal = GetDaemonRandomValue();
     _lastHotSent = NULL;
     _lastStandbySent = NULL;
     [self sendStatus:MESSAGE_UNKNOWN withRandomValue:_randVal];
     [_prometheusMetrics.metricSentUNK increaseBy:1];
+    UMMUTEX_UNLOCK(_daemonLock);
+
 }
 
 - (void) actionSendFailed
 {
+    UMMUTEX_LOCK(_daemonLock);
     [self sendStatus:MESSAGE_FAILED];
     _lastHotSent = NULL;
     _lastStandbySent = NULL;
     [_prometheusMetrics.metricSentFAIL increaseBy:1];
-
+    UMMUTEX_UNLOCK(_daemonLock);
 }
 
 - (void) actionSendFailover
 {
+    UMMUTEX_LOCK(_daemonLock);
     [self sendStatus:MESSAGE_FAILOVER];
     _lastHotSent = NULL;
     _lastStandbySent = NULL;
     [_prometheusMetrics.metricSentFOVR increaseBy:1];
-
+    UMMUTEX_UNLOCK(_daemonLock);
 }
 
 - (void) actionSendHot
 {
+    UMMUTEX_LOCK(_daemonLock);
     [self sendStatus:MESSAGE_HOT];
     _lastHotSent = [NSDate date];
     _lastStandbySent = NULL;
     [_prometheusMetrics.metricSentHOTT increaseBy:1];
-
+    UMMUTEX_UNLOCK(_daemonLock);
 }
 
 - (void) actionSendStandby
 {
+    UMMUTEX_LOCK(_daemonLock);
     [self sendStatus:MESSAGE_STANDBY];
     _lastHotSent = NULL;
     _lastStandbySent = [NSDate date];
     [_prometheusMetrics.metricSentSTBY increaseBy:1];
+    UMMUTEX_UNLOCK(_daemonLock);
 }
 
 - (void) actionSendTakeoverRequest
 {
+    UMMUTEX_LOCK(_daemonLock);
     _randVal = GetDaemonRandomValue();
     [self sendStatus:MESSAGE_TAKEOVER_REQUEST withRandomValue:_randVal];
     [_prometheusMetrics.metricSentTREQ increaseBy:1];
+    UMMUTEX_UNLOCK(_daemonLock);
 }
 
 - (void) actionSendTakeoverRequestForced
 {
+    UMMUTEX_LOCK(_daemonLock);
     _randVal = GetDaemonRandomValue();
     [self sendStatus:MESSAGE_TAKEOVER_REQUEST withRandomValue:UINT_MAX];
     [_prometheusMetrics.metricSentTREQ increaseBy:1];
+    UMMUTEX_UNLOCK(_daemonLock);
 }
 
 - (void) actionSendTakeoverReject
 {
+    UMMUTEX_LOCK(_daemonLock);
     [self sendStatus:MESSAGE_TAKEOVER_REJECT];
     [_prometheusMetrics.metricSentTREJ increaseBy:1];
+    UMMUTEX_UNLOCK(_daemonLock);
 }
 
 - (void) actionSendTakeoverConfirm
 {
+    UMMUTEX_LOCK(_daemonLock);
     [self sendStatus:MESSAGE_TAKEOVER_CONF];
     [_prometheusMetrics.metricSentTCNF increaseBy:1];
+    UMMUTEX_UNLOCK(_daemonLock);
 }
 
 
 - (void) actionSendTransitingToHot
 {
-    [self sendStatus:MESSAGE_TRANSITING_TO_HOT];
+    UMMUTEX_LOCK(_daemonLock);
+   [self sendStatus:MESSAGE_TRANSITING_TO_HOT];
     [_prometheusMetrics.metricSent2HOT increaseBy:1];
+    UMMUTEX_UNLOCK(_daemonLock);
 }
 
 
 - (void) actionSendTransitingToStandby
 {
+    UMMUTEX_LOCK(_daemonLock);
     [self sendStatus:MESSAGE_TRANSITING_TO_STANDBY];
     [_prometheusMetrics.metricSent2SBY increaseBy:1];
+    UMMUTEX_UNLOCK(_daemonLock);
 }
 
 #define DEBUGLOG(state,event) \
@@ -179,6 +202,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
 - (void) eventReceived:(NSString *)event
                   dict:(NSDictionary *)dict;
 {
+    UMMUTEX_LOCK(_daemonLock);
     NSString *oldstate = [_currentState name];
 
     NSString *reason = dict[@"reason"];
@@ -554,10 +578,12 @@ DaemonRandomValue GetDaemonRandomValue(void)
         }
         [_logFeed infoText:s];
     }
+    UMMUTEX_UNLOCK(_daemonLock);
 }
 
 - (void) eventHeartbeat
 {
+    UMMUTEX_LOCK(_daemonLock);
     if(_currentState==NULL)
     {
         NSLog(@"ouch. currentState is NULL! assuming unknown");
@@ -565,26 +591,31 @@ DaemonRandomValue GetDaemonRandomValue(void)
     }
     _currentState = [_currentState eventHeartbeat];
     [self checkForTimeouts];
+    UMMUTEX_UNLOCK(_daemonLock);
 }
 
 - (void) eventForceFailover
 {
+    UMMUTEX_LOCK(_daemonLock);
     if(_currentState==NULL)
     {
         NSLog(@"ouch. currentState is NULL! assuming unknown");
         _currentState = [[DaemonState_Unknown alloc]init];
     }
     _currentState = [_currentState eventStatusLocalFailure:@{}];
+    UMMUTEX_UNLOCK(_daemonLock);
 }
 
 - (void) eventForceTakeover
 {
+    UMMUTEX_LOCK(_daemonLock);
     if(_currentState==NULL)
     {
         NSLog(@"ouch. currentState is NULL! assuming unknown");
         _currentState = [[DaemonState_Unknown alloc]init];
     }
     _currentState = [_currentState eventForceTakeover:@{}];
+    UMMUTEX_UNLOCK(_daemonLock);
 }
 
 - (void) checkForTimeouts
@@ -615,7 +646,9 @@ DaemonRandomValue GetDaemonRandomValue(void)
 {
     if(!_iAmHot)
     {
+        UMMUTEX_LOCK(_daemonLock);
         int r = [self fireUp];
+        UMMUTEX_UNLOCK(_daemonLock);
         if(r==0)
         {
             _iAmHot = YES;
@@ -635,8 +668,10 @@ DaemonRandomValue GetDaemonRandomValue(void)
 
 - (int) goToStandby /* returns 0 on success */
 {
+    UMMUTEX_LOCK(_daemonLock);
     int r1 = [self callStopAction];
     int r2 = [self callDeactivateInterface];
+    UMMUTEX_UNLOCK(_daemonLock);
     if(r1!=0)
     {
         return r1;
@@ -688,6 +723,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
 
 - (int) executeScript:(NSString *)command
 {
+    UMMUTEX_LOCK(_daemonLock);
     if(command.length==0) /* empty script is always a success */
     {
         return 0;
@@ -697,7 +733,9 @@ DaemonRandomValue GetDaemonRandomValue(void)
     {
         [_logFeed debugText:[NSString stringWithFormat:@" Executing: %s",cmd]];
     }
-    return system(cmd);
+    int i = system(cmd);
+    UMMUTEX_UNLOCK(_daemonLock);
+    return i;
 }
 
 
@@ -708,11 +746,12 @@ DaemonRandomValue GetDaemonRandomValue(void)
     {
         return 0;
     }
-
     if(_activateInterfaceCommand.length == 0)
     {
+        self.interfaceState = DaemonInterfaceState_Unknown;
         return 0;
     }
+    UMMUTEX_LOCK(_daemonLock);
     [self setEnvVars];
     setenv("ACTION", "activate", 1);
     int r = [self executeScript:_activateInterfaceCommand];
@@ -726,6 +765,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
     {
         self.interfaceState = DaemonInterfaceState_Unknown;
     }
+    UMMUTEX_UNLOCK(_daemonLock);
     return r;
 }
 
@@ -736,7 +776,12 @@ DaemonRandomValue GetDaemonRandomValue(void)
     {
         return 0;
     }
-    
+    if(_deactivateInterfaceCommand.length == 0)
+    {
+        self.interfaceState = DaemonInterfaceState_Unknown;
+        return 0;
+    }
+    UMMUTEX_LOCK(_daemonLock);
     [self setEnvVars];
     setenv("ACTION", "deactivate", 1);
     int r = [self executeScript:_deactivateInterfaceCommand];
@@ -750,13 +795,14 @@ DaemonRandomValue GetDaemonRandomValue(void)
     {
         self.interfaceState = DaemonInterfaceState_Unknown;
     }
+    UMMUTEX_UNLOCK(_daemonLock);
     return r;
 }
 
 - (int) callStartAction
 {
+    UMMUTEX_LOCK(_daemonLock);
     [_logFeed infoText:@"*** callStartAction ***"];
-
     int r = -1;
     [_prometheusMetrics.metricsStartActionRequested increaseBy:1];
     self.localStartActionRequested = YES;
@@ -775,11 +821,14 @@ DaemonRandomValue GetDaemonRandomValue(void)
     {
         _startedAt = [NSDate date];
     }
+    UMMUTEX_UNLOCK(_daemonLock);
     return r;
 }
 
 - (int) callStopAction
 {
+    UMMUTEX_LOCK(_daemonLock);
+
     [_logFeed infoText:@"*** callStopAction ***"];
     int r = -1;
     [_prometheusMetrics.metricsStopActionRequested increaseBy:1];
@@ -804,13 +853,16 @@ DaemonRandomValue GetDaemonRandomValue(void)
     {
         _stoppedAt = [NSDate date];
     }
+    UMMUTEX_UNLOCK(_daemonLock);
     return r;
 }
 
 - (int)fireUp
 {
+    UMMUTEX_LOCK(_daemonLock);
     int r1 = [self callActivateInterface];
     int r2 = [self callStartAction];
+    UMMUTEX_UNLOCK(_daemonLock);
     if(r1!=0)
     {
         return r1;
@@ -867,9 +919,11 @@ DaemonRandomValue GetDaemonRandomValue(void)
 - (void)checkIfUp
 {
     /* we check if we have received the heartbeat from the local instance */
+    UMMUTEX_LOCK(_daemonLock);
     if(_lastLocalRx == NULL)
     {
         _lastLocalRx = [NSDate date];
+        UMMUTEX_UNLOCK(_daemonLock);
         return;
     }
     _lastChecked = [NSDate date];
@@ -880,6 +934,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
         DEBUGLOG(_currentState,@"eventStatusLocalFailure");
         _currentState = [_currentState eventStatusLocalFailure:@{}];
     }
+    UMMUTEX_UNLOCK(_daemonLock);
 }
 
 @end
