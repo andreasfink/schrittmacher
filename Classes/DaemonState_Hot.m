@@ -198,12 +198,7 @@
 - (DaemonState *)eventForceTakeover:(NSDictionary *)dict
 {
     [self logEvent:@"eventForceTakeover"];
-    if(daemon.localIsFailed)
-    {
-        [daemon actionSendFailed];
-        return [[DaemonState_Standby alloc]initWithDaemon:daemon];
-    }
-    [daemon actionSendHot];
+    /* we are already hot. Nothing to be done */
     return self;
 }
 

@@ -143,7 +143,6 @@
 
 - (DaemonState *)eventForceTakeover:(NSDictionary *)dict
 {
-    [daemon actionSendFailed];
     return self;
 }
 

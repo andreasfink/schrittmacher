@@ -178,7 +178,6 @@
     [self logEvent:@"eventForceTakeover"];
     if(daemon.localIsFailed)
     {
-        [daemon actionSendFailed];
         return self;
     }
     [daemon actionSendTakeoverRequestForced];

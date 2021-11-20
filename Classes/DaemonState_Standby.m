@@ -185,7 +185,7 @@
 - (DaemonState *)eventStatusLocalTransitingToStandby:(NSDictionary *)dict
 {
     [self logEvent:@"eventStatusLocalTransitingToStandby"];
-   [daemon callStopAction];
+    [daemon callStopAction];
     [daemon callDeactivateInterface];
     return self;
 }
@@ -213,12 +213,10 @@
 - (DaemonState *)eventForceTakeover:(NSDictionary *)dict
 {
     [self logEvent:@"eventForceTakeover"];
-    if(daemon.localIsFailed)
+    if(!daemon.localIsFailed) /* only allow takeover if we are not failed */
     {
-        [daemon actionSendFailed];
-        return self;
+        [daemon actionSendTakeoverRequestForced];
     }
-    [daemon actionSendTakeoverRequestForced];
     return self;
 }
 
