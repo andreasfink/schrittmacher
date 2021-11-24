@@ -170,7 +170,7 @@
         
         _rxSocketLocal4             = [[UMSocket alloc]initWithType:UMSOCKET_TYPE_UDP6ONLY];
         _rxSocketLocal4.localPort   = _port;
-        _rxSocketLocal4.localHost   = [[UMHost alloc] initWithAddress:@"127.0.0.1"];
+        _rxSocketLocal4.localHost   = [[UMHost alloc] initWithAddress:@"ipv4:127.0.0.1"];
         NSLog(@"binding txSocket4 to 127.0.0.1 on port %d",_port);
         err = [_rxSocketLocal4 bind];
         if(err)
@@ -180,7 +180,7 @@
 
         _rxSocketLocal6             = [[UMSocket alloc]initWithType:UMSOCKET_TYPE_UDP6ONLY];
         _rxSocketLocal6.localPort   = _port;
-        _rxSocketLocal6.localHost   = [[UMHost alloc] initWithAddress:@"::1"];
+        _rxSocketLocal6.localHost   = [[UMHost alloc] initWithAddress:@"ipv6::1"];
         NSLog(@"binding txSocket6 to ::1 on port %d",_port);
         err = [_rxSocketLocal6 bind];
         if(err)

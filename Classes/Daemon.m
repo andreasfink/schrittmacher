@@ -33,6 +33,10 @@ DaemonRandomValue GetDaemonRandomValue(void)
         _pid = 0;
         _localIsFailed = YES; /* until we get heartbeat from the local, we assume its dead */
         _daemonLock = [[UMMutex alloc]initWithName:@"daemonLock"];
+        _startActionRunning = [[UMMutex alloc]initWithName:@"_startActionRunning"];
+        _stopActionRunning = [[UMMutex alloc]initWithName:@"_stopActionRunning"];
+        _activateInterfaceRunning = [[UMMutex alloc]initWithName:@"_activateInterfaceRunning"];
+        _deactivateInterfaceRunning = [[UMMutex alloc]initWithName:@"_deactivateInterfaceRunning"];
     }
     return self;
 }
@@ -642,43 +646,6 @@ DaemonRandomValue GetDaemonRandomValue(void)
     }
 }
 
-- (int) goToHot /* returns 0 on success  */
-{
-    if(!_iAmHot)
-    {
-        UMMUTEX_LOCK(_daemonLock);
-        int r = [self fireUp];
-        UMMUTEX_UNLOCK(_daemonLock);
-        if(r==0)
-        {
-            _iAmHot = YES;
-            return GOTO_HOT_SUCCESS;
-        }
-        else
-        {
-            _iAmHot = NO;
-            return GOTO_HOT_FAILED;
-        }
-    }
-    else
-    {
-        return GOTO_HOT_ALREADY_HOT;
-    }
-}
-
-- (int) goToStandby /* returns 0 on success */
-{
-    UMMUTEX_LOCK(_daemonLock);
-    int r1 = [self callStopAction];
-    int r2 = [self callDeactivateInterface];
-    UMMUTEX_UNLOCK(_daemonLock);
-    if(r1!=0)
-    {
-        return r1;
-    }
-    return r2;
-}
-
 #define     SETENV(a,b)   if(b!=NULL) { setenv(a,b.UTF8String,1);  } else { unsetenv(a); }
 
 - (void) setEnvVars
@@ -733,7 +700,6 @@ DaemonRandomValue GetDaemonRandomValue(void)
 //    {
         [_logFeed debugText:[NSString stringWithFormat:@" Executing: %@",command]];
 //    }
-    UMMUTEX_LOCK(_daemonLock);
     NSArray *cmd_array = [command componentsSeparatedByCharactersInSet:[UMUtil whitespaceAndNewlineCharacterSet]];
     NSArray *lines = [UMUtil readChildProcess:cmd_array];
     r=0;
@@ -742,134 +708,124 @@ DaemonRandomValue GetDaemonRandomValue(void)
         NSString *allLines = [lines componentsJoinedByString:@"\n"];
         [_logFeed debugText:allLines];
     }
-    UMMUTEX_UNLOCK(_daemonLock);
     return r;
 }
 
 
-- (int) callActivateInterface
+- (void) callActivateInterface
 {
-    [_logFeed infoText:@"*** callActivateInterface ***"];
-    if(self.interfaceState == DaemonInterfaceState_Up)
-    {
-        return 0;
-    }
     if(_activateInterfaceCommand.length == 0)
     {
         self.interfaceState = DaemonInterfaceState_Unknown;
-        return 0;
-    }
-    UMMUTEX_LOCK(_daemonLock);
-    [self setEnvVars];
-    setenv("ACTION", "activate", 1);
-    int r = [self executeScript:_activateInterfaceCommand];
-    [self unsetEnvVars];
-    if(r==0)
-    {
-        _activatedAt = [NSDate date];
-        self.interfaceState = DaemonInterfaceState_Up;
     }
     else
     {
-        self.interfaceState = DaemonInterfaceState_Unknown;
+        if(self.interfaceState != DaemonInterfaceState_Up)
+        {
+            [self runSelectorInBackground:@selector(callActivateInterfaceBackground)];
+        }
     }
-    UMMUTEX_UNLOCK(_daemonLock);
-    return r;
 }
 
-- (int) callDeactivateInterface
+- (void) callActivateInterfaceBackground
 {
-    [_logFeed infoText:@"*** callDeactivateInterface ***"];
-    if(self.interfaceState == DaemonInterfaceState_Down)
-    {
-        return 0;
-    }
+    UMMUTEX_LOCK(_activateInterfaceRunning);
+    [_logFeed infoText:@"*** callActivateInterface ***"];
+    [self setEnvVars];
+    setenv("ACTION", "activate", 1);
+    [self executeScript:_activateInterfaceCommand];
+    [self unsetEnvVars];
+    _activatedAt = [NSDate date];
+    self.interfaceState = DaemonInterfaceState_Up;
+    UMMUTEX_UNLOCK(_activateInterfaceRunning);
+}
+
+- (void) callDeactivateInterface
+{
     if(_deactivateInterfaceCommand.length == 0)
     {
         self.interfaceState = DaemonInterfaceState_Unknown;
-        return 0;
-    }
-    UMMUTEX_LOCK(_daemonLock);
-    [self setEnvVars];
-    setenv("ACTION", "deactivate", 1);
-    int r = [self executeScript:_deactivateInterfaceCommand];
-    [self unsetEnvVars];
-    if(r==0)
-    {
-        _deactivatedAt = [NSDate date];
-        self.interfaceState = DaemonInterfaceState_Down;
     }
     else
     {
-        self.interfaceState = DaemonInterfaceState_Unknown;
+        if(self.interfaceState != DaemonInterfaceState_Down)
+        {
+            [self runSelectorInBackground:@selector(callDeactivateInterfaceBackground)];
+        }
     }
-    UMMUTEX_UNLOCK(_daemonLock);
-    return r;
 }
 
-- (int) callStartAction
+- (void) callDeactivateInterfaceBackground
 {
-    UMMUTEX_LOCK(_daemonLock);
+    UMMUTEX_LOCK(_deactivateInterfaceRunning);
+    [_logFeed infoText:@"*** callDeactivateInterface ***"];
+    [self setEnvVars];
+    setenv("ACTION", "deactivate", 1);
+    [self executeScript:_deactivateInterfaceCommand];
+    [self unsetEnvVars];
+    _deactivatedAt = [NSDate date];
+    self.interfaceState = DaemonInterfaceState_Down;
+    UMMUTEX_UNLOCK(_deactivateInterfaceRunning);
+}
+
+
+- (void) callStartAction
+{
+    [self runSelectorInBackground:@selector(callStartActionBackground)];
+}
+
+- (void) callStartActionBackground
+{
+    UMMUTEX_LOCK(_startActionRunning);
     [_logFeed infoText:@"*** callStartAction ***"];
-    int r = -1;
     [_prometheusMetrics.metricsStartActionRequested increaseBy:1];
     self.localStartActionRequested = YES;
     if(_startAction.length > 0)
     {
         [self setEnvVars];
         setenv("ACTION", "start", 1);
-        r = [self executeScript:_startAction];
+        [self executeScript:_startAction];
         [self unsetEnvVars];
     }
     else if(_pid != 0)
     {
-        r = kill((pid_t)_pid,SIGUSR1);
+        kill((pid_t)_pid,SIGUSR1);
     }
-    if(r==0)
-    {
-        _startedAt = [NSDate date];
-    }
-    UMMUTEX_UNLOCK(_daemonLock);
-    return r;
+    _startedAt = [NSDate date];
+    UMMUTEX_UNLOCK(_startActionRunning);
 }
 
-- (int) callStopAction
+
+- (void) callStopAction
 {
-    UMMUTEX_LOCK(_daemonLock);
+    [self runSelectorInBackground:@selector(callStopActionBackground)];
+}
+
+- (void) callStopActionBackground
+{
+    UMMUTEX_LOCK(_stopActionRunning);
     [_logFeed infoText:@"*** callStopAction ***"];
-    int r = -1;
     [_prometheusMetrics.metricsStopActionRequested increaseBy:1];
     self.localStopActionRequested = YES;
     if(_stopAction.length > 0)
     {
         [self setEnvVars];
         setenv("ACTION", "stop", 1);
-        r = [self executeScript:_stopAction];
+        [self executeScript:_stopAction];
         [self unsetEnvVars];
     }
     else if(_pid != 0)
     {
-        r = kill((pid_t)_pid,SIGUSR2);
+        kill((pid_t)_pid,SIGUSR2);
     }
-    if(r==0)
-    {
-        _stoppedAt = [NSDate date];
-    }
-    UMMUTEX_UNLOCK(_daemonLock);
-    return r;
+    _stoppedAt = [NSDate date];
+    UMMUTEX_UNLOCK(_stopActionRunning);
 }
 
-- (int)fireUp
+- (void)fireUp
 {
-    UMMUTEX_LOCK(_daemonLock);
-    int r1 = [self callActivateInterface];
-    int r2 = [self callStartAction];
-    UMMUTEX_UNLOCK(_daemonLock);
-    if(r1!=0)
-    {
-        return r1;
-    }
-    return r2;
+    [self callActivateInterface];
+    [self callStartAction];
 }
 
 - (NSDictionary *)status

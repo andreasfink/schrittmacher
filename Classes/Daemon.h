@@ -99,6 +99,11 @@ typedef enum DaemonInterfaceState
     long            _adminweb_port;
     SchrittmacherMetrics    *_prometheusMetrics;
     UMMutex         *_daemonLock;
+    
+    UMMutex         *_startActionRunning;
+    UMMutex         *_stopActionRunning;
+    UMMutex         *_activateInterfaceRunning;
+    UMMutex         *_deactivateInterfaceRunning;
 }
 
 @property (readwrite,strong) DaemonState *currentState;
@@ -147,6 +152,10 @@ typedef enum DaemonInterfaceState
 @property(readwrite,assign) long pid;
 @property(readwrite,assign) long adminweb_port;
 @property(readwrite,strong,atomic) SchrittmacherMetrics *prometheusMetrics;
+@property(readwrite,strong,atomic) UMMutex  *startActionRunning;
+@property(readwrite,strong,atomic) UMMutex  *stopActionRunning;
+@property(readwrite,strong,atomic) UMMutex  *activateInterfaceRunning;
+@property(readwrite,strong,atomic) UMMutex  *deactivateInterfaceRunning;
 
 
 - (void)eventReceived:(NSString *)event dict:(NSDictionary *)dict;
@@ -174,10 +183,10 @@ typedef enum DaemonInterfaceState
 - (void)eventForceTakeover;
 
 
-- (int)callDeactivateInterface;
-- (int)callActivateInterface;
-- (int)callStopAction;
-- (int)callStartAction;
+- (void)callDeactivateInterface;
+- (void)callActivateInterface;
+- (void)callStopAction;
+- (void)callStartAction;
 - (int)executeScript:(NSString *)command;
 
 @end
