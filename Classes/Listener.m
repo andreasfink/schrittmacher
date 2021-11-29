@@ -216,10 +216,7 @@
     int packetsProcessed = [self checkForPackets];
     if(packetsProcessed==0)
     {
-        if(packetsProcessed==0)
-        {
-            usleep(100000); /* sleep 100ms */
-        }
+        usleep(100000); /* sleep 100ms */
     }
     return packetsProcessed;
 }
