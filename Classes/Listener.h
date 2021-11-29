@@ -23,7 +23,7 @@
     UMSocket            *_txSocket4;
     UMSocket            *_txSocket6;
     int                 _addressType;
-    UMTimer             *_pollTimer;
+    //UMTimer             *_pollTimer;
     UMLogLevel          _logLevel;
 }
 
@@ -31,7 +31,7 @@
 @property(readwrite,strong) NSString *localAddress6;
 @property(readwrite,assign) int port;
 @property(readwrite,assign) int addressType;
-@property(readwrite,strong) UMTimer *pollTimer;
+//@property(readwrite,strong) UMTimer *pollTimer;
 @property(readwrite,assign) UMLogLevel logLevel;
 @property(readwrite,strong) UMLogHandler *logHandler;
 

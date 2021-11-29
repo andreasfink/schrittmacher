@@ -8,7 +8,7 @@
 
 #import "Listener.h"
 #import "Daemon.h"
-#include <poll.h>
+//#include <poll.h>
 
 @implementation Listener
 
@@ -126,6 +126,7 @@
             if(err)
             {
                 NSLog(@"udp can not bind rxSocket4 to port %d. err = %d",_port,err);
+                _rxSocket4 = NULL;
             }
         }
         
@@ -139,6 +140,7 @@
             if(err)
             {
                 NSLog(@"udp can not bind rxSocket6 to port %d. err = %d",_port,err);
+                _rxSocket6 = NULL;
             }
         }
         
@@ -152,6 +154,7 @@
             if(err)
             {
                 NSLog(@"udp can not bind txSocket4 err=%d",err);
+                _txSocket4 = NULL;
             }
         }
         
@@ -165,6 +168,7 @@
             if(err)
             {
                 NSLog(@"udp can not bind txSocket6 err=%d",err);
+                _txSocket6 = NULL;
             }
         }
         
@@ -176,6 +180,7 @@
         if(err)
         {
             NSLog(@"udp can not bind _rxSocketLocal4 err=%d",err);
+            _rxSocketLocal4 = NULL;
         }
 
         _rxSocketLocal6             = [[UMSocket alloc]initWithType:UMSOCKET_TYPE_UDP6ONLY];
@@ -186,6 +191,7 @@
         if(err)
         {
             NSLog(@"udp can not bind _rxSocketLocal6 err=%d",err);
+            _rxSocketLocal6 = NULL;
         }
 
         NSArray *allKeys;
@@ -205,10 +211,17 @@
     [super startBackgroundTask];
 }
 
--(int)work
+-(int) work
 {
-    int i = [self checkForPackets];
-    return i;
+    int packetsProcessed = [self checkForPackets];
+    if(packetsProcessed==0)
+    {
+        if(packetsProcessed==0)
+        {
+            usleep(100000); /* sleep 100ms */
+        }
+    }
+    return packetsProcessed;
 }
 
 - (int) checkForPackets
@@ -252,10 +265,6 @@
                     packetsProcessed += [self readDataFromSocket:_rxSocketLocal6];
                 }
             }
-        }
-        if(packetsProcessed==0)
-        {
-            usleep(10000); /* sleep 10ms */
         }
     }
     while(packetsProcessed>0);
