@@ -232,34 +232,50 @@
             err = UMSocketError_no_error;
             if(_rxSocket4)
             {
-                err = [_rxSocket4 dataIsAvailable:0];
-                if(err == UMSocketError_has_data)
+                err = [_rxSocket4 dataIsAvailable:20];
+                if((err == UMSocketError_has_data) || (err==UMSocketError_has_data_and_hup))
                 {
                     packetsProcessed += [self readDataFromSocket:_rxSocket4];
+                }
+                else if(err!=UMSocketError_no_error)
+                {
+                    _rxSocket4=NULL;
                 }
             }
             if(_rxSocket6)
             {
-                err = [_rxSocket6 dataIsAvailable:0];
-                if(err == UMSocketError_has_data)
+                err = [_rxSocket6 dataIsAvailable:20];
+                if((err == UMSocketError_has_data) || (err==UMSocketError_has_data_and_hup))
                 {
                     packetsProcessed += [self readDataFromSocket:_rxSocket6];
+                }
+                else if(err!=UMSocketError_no_error)
+                {
+                    _rxSocket6=NULL;
                 }
             }
             if(_rxSocketLocal4)
             {
-                err = [_rxSocketLocal4 dataIsAvailable:0];
-                if(err == UMSocketError_has_data)
+                err = [_rxSocketLocal4 dataIsAvailable:20];
+                if((err == UMSocketError_has_data) || (err==UMSocketError_has_data_and_hup))
                 {
                     packetsProcessed += [self readDataFromSocket:_rxSocketLocal4];
+                }
+                else if(err!=UMSocketError_no_error)
+                {
+                    _rxSocketLocal4=NULL;
                 }
             }
             if(_rxSocketLocal6)
             {
-                err = [_rxSocketLocal6 dataIsAvailable:0];
-                if(err == UMSocketError_has_data)
+                err = [_rxSocketLocal6 dataIsAvailable:20];
+                if((err == UMSocketError_has_data) || (err==UMSocketError_has_data_and_hup))
                 {
                     packetsProcessed += [self readDataFromSocket:_rxSocketLocal6];
+                }
+                else if(err!=UMSocketError_no_error)
+                {
+                    _rxSocketLocal6=NULL;
                 }
             }
         }
