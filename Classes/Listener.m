@@ -273,6 +273,10 @@
 
 - (int)readDataFromSocket:(UMSocket *)socket
 {
+    if(socket==NULL)
+    {
+        return 0;
+    }
     int packetsProcessed = 0;
     NSData  *data = NULL;
     NSString *address = NULL;
@@ -281,9 +285,9 @@
     NSLog(@"RX: %@",data);
     if((err2 == UMSocketError_no_error) || (err2==UMSocketError_has_data) || (err2 == UMSocketError_has_data_and_hup))
     {
-        packetsProcessed++;
         if(data)
         {
+            packetsProcessed++;
             [self receiveStatus:data fromAddress:address];
         }
     }
