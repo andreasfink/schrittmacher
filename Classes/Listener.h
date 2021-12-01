@@ -33,10 +33,10 @@
 @property(readwrite,strong) UMLogHandler *logHandler;
 @property(readwrite,strong) NSString *lastError;
 
-- (void)start;
 - (int)checkForPackets;
 - (NSDictionary *)status;
 - (void)failover:(NSString *)name;
 - (void)takeover:(NSString *)name;
 - (void)receiveStatus:(NSData *)statusData fromAddress:(NSString *)address;
+- (Daemon *)daemonByName:(NSString *)name;
 @end

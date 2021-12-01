@@ -17,4 +17,38 @@
     _daemons[d.resourceId] = d;
 }
 
+- (void)start
+{
+    @autoreleasepool
+    {
+        UMSocketError err;
+        if(_localAddress.length > 0)
+        {
+            _rxSocket              = [[UMSocket alloc]initWithType:UMSOCKET_TYPE_UDP4ONLY];
+            _rxSocket.localPort    = _localPort;
+            _rxSocket.localHost    = [[UMHost alloc] initWithAddress:_localAddress];
+            NSLog(@"binding ListenerLocal4 to %@ on port %d",_localAddress,_localPort);
+            err = [_rxSocket bind];
+            if(err)
+            {
+                NSLog(@"udp can not bind ListenerLocal4 to port %d. err = %d",_localPort,err);
+            }
+        }
+
+        NSArray *allKeys;
+        @synchronized(_daemons)
+        {
+            allKeys =[_daemons allKeys];
+        }
+        for(NSString *key in allKeys)
+        {
+            Daemon *d = [self daemonByName:key];
+            if(d)
+            {
+                [d actionStart];
+            }
+        }
+    }
+    [super startBackgroundTask];
+}
 @end

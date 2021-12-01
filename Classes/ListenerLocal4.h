@@ -11,6 +11,7 @@
 @interface ListenerLocal4 : Listener
 
 - (void) attachDaemonIPv4:(Daemon *)d;
+- (void)start;
 
 @end
 

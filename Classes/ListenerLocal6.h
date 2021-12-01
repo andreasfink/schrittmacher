@@ -11,5 +11,5 @@
 @interface ListenerLocal6 : Listener
 
 - (void) attachDaemonIPv6:(Daemon *)d;
-
+- (void)start;
 @end

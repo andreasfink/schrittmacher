@@ -30,6 +30,7 @@
 
 - (void)start
 {
+    
     if(_txSocket4== NULL)
     {
         _txSocket4              = [[UMSocket alloc]initWithType:UMSOCKET_TYPE_UDP4ONLY];
@@ -46,7 +47,35 @@
             NSLog(@"udp can not bind txSocket4 err = %d",err);
         }
     }
-    [super start];
+
+    UMSocketError err;
+    if(_localAddress.length > 0)
+    {
+        _rxSocket              = [[UMSocket alloc]initWithType:UMSOCKET_TYPE_UDP4ONLY];
+        _rxSocket.localPort    = _localPort;
+        _rxSocket.localHost    = [[UMHost alloc] initWithAddress:_localAddress];
+        NSLog(@"binding ListnerPeer4 to %@ on port %d",_localAddress,_localPort);
+        err = [_rxSocket bind];
+        if(err)
+        {
+            NSLog(@"udp can not bind ListenerLocal4 to port %d. err = %d",_localPort,err);
+        }
+    }
+
+    NSArray *allKeys;
+    @synchronized(_daemons)
+    {
+        allKeys =[_daemons allKeys];
+    }
+    for(NSString *key in allKeys)
+    {
+        Daemon *d = [self daemonByName:key];
+        if(d)
+        {
+            [d actionStart];
+        }
+    }
+    [super startBackgroundTask];
 }
 
 - (void) attachDaemonIPv4:(Daemon *)d

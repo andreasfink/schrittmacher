@@ -101,53 +101,6 @@
     }
 }
 
-- (void)start
-{
-    @autoreleasepool
-    {
-        UMSocketError err;
-        if(_localAddress.length > 0)
-        {
-            if(_addressType == 4)
-            {
-                _rxSocket              = [[UMSocket alloc]initWithType:UMSOCKET_TYPE_UDP4ONLY];
-            }
-            else if(_addressType == 6)
-            {
-                _rxSocket              = [[UMSocket alloc]initWithType:UMSOCKET_TYPE_UDP6ONLY];
-            }
-            else
-            {
-                NSLog(@"address type not set");
-                exit(-1);
-            }
-            _rxSocket.localPort    = _localPort;
-            _rxSocket.localHost    = [[UMHost alloc] initWithAddress:_localAddress];
-            NSLog(@"binding rxSocket to %@ on port %d",_localAddress,_localPort);
-            err = [_rxSocket bind];
-            if(err)
-            {
-                NSLog(@"udp can not bind rxSocket to port %d. err = %d",_localPort,err);
-            }
-        }
-
-        NSArray *allKeys;
-        @synchronized(_daemons)
-        {
-            allKeys =[_daemons allKeys];
-        }
-        for(NSString *key in allKeys)
-        {
-            Daemon *d = [self daemonByName:key];
-            if(d)
-            {
-                [d actionStart];
-            }
-        }
-    }
-    [super startBackgroundTask];
-}
-
 -(int) work
 {
     @autoreleasepool

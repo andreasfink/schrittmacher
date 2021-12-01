@@ -15,5 +15,6 @@
 }
 - (void)sendString:(NSString *)msg toAddress:(NSString *)addr toPort:(int)p;
 - (void) attachDaemonIPv6:(Daemon *)d;
+- (void)start;
 
 @end
