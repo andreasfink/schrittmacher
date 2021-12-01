@@ -103,6 +103,10 @@
 
 -(int) work
 {
+    if(_rxSocket==NULL)
+    {
+        return -1; /* terminates background task */
+    }
     @autoreleasepool
     {
         return [self checkForPackets];
