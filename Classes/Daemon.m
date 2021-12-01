@@ -90,7 +90,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
         {
             [_logFeed debugText:[NSString stringWithFormat:@"TX %@->%@: %@",_localAddress4,_remoteAddress,dict]];
         }
-        [_listener6 sendString:msg toAddress:_remoteAddress toPort:_remotePort];
+        [_listener4 sendString:msg toAddress:_remoteAddress toPort:_remotePort];
     }
     else if([_remoteAddress isIPv6])
     {
@@ -98,7 +98,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
         {
             [_logFeed debugText:[NSString stringWithFormat:@"TX %@->%@: %@",_localAddress6,_remoteAddress,dict]];
         }
-        [_listener4 sendString:msg toAddress:_remoteAddress toPort:_remotePort];
+        [_listener6 sendString:msg toAddress:_remoteAddress toPort:_remotePort];
     }
     else
     {
