@@ -21,7 +21,7 @@
     int af;
     NSString *s = [UMSocket deunifyIp:addr type:&af];
     e = [_txSocket sendData:d toAddress:s toPort:p];
-    [self.logFeed debug:e withText:[NSString stringWithFormat:@"TX %@:%d: %@",addr,p,msg]]:
+    [self.logFeed debug:e withText:[NSString stringWithFormat:@"TX %@:%d: %@",addr,p,msg]];
 
     if(e)
     {

@@ -139,8 +139,7 @@ AppDelegate *_global_appdel= NULL;
     [_config read];
     
     NSDictionary *coreConfig = [_config getSingleGroup:@"core"];
-    _localAddress4     = [UMSocket unifyIP:[coreConfig[@"local-address"]stringValue]];
-    _localAddress6     = [UMSocket unifyIP:[coreConfig[@"local-address6"]stringValue]];
+    _localAddress      = [UMSocket unifyIP:[coreConfig[@"local-address"]stringValue]];
     _remoteAddress     = [UMSocket unifyIP:[coreConfig[@"remote-address"]stringValue]];
     _sharedAddress     = [UMSocket unifyIP:[coreConfig[@"shared-address"]stringValue]];
     if(coreConfig[@"peer-port"])
@@ -307,7 +306,7 @@ AppDelegate *_global_appdel= NULL;
         _listenerPeer.logFeed          = self.logFeed;
         _listenerPeer.logHandler       = _mainLogHandler;
         _listenerPeer.logLevel         = self.logLevel;
-        _listenerPeer.localAddress     = _localAddress4;
+        _listenerPeer.localAddress     = _localAddress;
         _listenerPeer.localPort        = 0;
         _listenerPeer.remotePort       = _peerPort;
         _listenerPeer.addressType      = 46;
@@ -329,8 +328,7 @@ AppDelegate *_global_appdel= NULL;
             }
             Daemon *d = [[Daemon alloc]init];
             d.logFeed = [[UMLogFeed alloc]initWithHandler:_mainLogHandler section:resourceName];
-            d.localAddress4 = _localAddress4;
-            d.localAddress6 = _localAddress6;
+            d.localAddress = _localAddress;
             d.remoteAddress = _remoteAddress;
             d.sharedAddress = _sharedAddress;
             d.remotePort = _peerPort;

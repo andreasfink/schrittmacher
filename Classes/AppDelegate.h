@@ -27,8 +27,7 @@
     NSTimeInterval      _heartbeat;
     NSTimeInterval      _timeout;
     
-    NSString            *_localAddress4;
-    NSString            *_localAddress6;
+    NSString            *_localAddress;
     NSString            *_remoteAddress;
     NSString            *_sharedAddress;
     ListenerLocal      *_listenerLocal;
