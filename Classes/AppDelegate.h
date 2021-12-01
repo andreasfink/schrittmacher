@@ -7,10 +7,8 @@
 //
 
 #import <ulib/ulib.h>
-@class ListenerPeer4;
-@class ListenerPeer6;
-@class ListenerLocal4;
-@class ListenerLocal6;
+@class ListenerPeer;
+@class ListenerLocal;
 
 @interface AppDelegate : UMObject<UMHTTPServerHttpGetPostDelegate>
 {
@@ -22,7 +20,8 @@
     UMLogHandler        *_mainLogHandler;
     UMHTTPServer        *_httpServer;
     
-    int                 _port;
+    int                 _localPort;
+    int                 _peerPort;
     int                 _webPort;
     NSString            *_logDirectory;
     NSTimeInterval      _heartbeat;
@@ -32,10 +31,8 @@
     NSString            *_localAddress6;
     NSString            *_remoteAddress;
     NSString            *_sharedAddress;
-    ListenerLocal4      *_listenerLocal4;
-    ListenerLocal6      *_listenerLocal6;
-    ListenerPeer4       *_listenerPeer4;
-    ListenerPeer6       *_listenerPeer6;
+    ListenerLocal      *_listenerLocal;
+    ListenerPeer       *_listenerPeer;
     UMLogLevel          _logLevel;
     UMPrometheus        *_prometheus;
     UMSynchronizedArray *_daemons;

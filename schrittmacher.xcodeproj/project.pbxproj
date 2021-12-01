@@ -14,10 +14,8 @@
 		A6018F991B0D479F00854472 /* DaemonState_Hot.m in Sources */ = {isa = PBXBuildFile; fileRef = A6018F981B0D479F00854472 /* DaemonState_Hot.m */; };
 		A6018F9C1B0D47A700854472 /* DaemonState_Standby.m in Sources */ = {isa = PBXBuildFile; fileRef = A6018F9B1B0D47A700854472 /* DaemonState_Standby.m */; };
 		A6018FA51B0D480100854472 /* Daemon.m in Sources */ = {isa = PBXBuildFile; fileRef = A6018FA41B0D480100854472 /* Daemon.m */; };
-		A661864B27573015001988B0 /* ListenerLocal4.m in Sources */ = {isa = PBXBuildFile; fileRef = A661864A27573015001988B0 /* ListenerLocal4.m */; };
-		A661864E27573028001988B0 /* ListenerPeer4.m in Sources */ = {isa = PBXBuildFile; fileRef = A661864D27573028001988B0 /* ListenerPeer4.m */; };
-		A661865127573030001988B0 /* ListenerPeer6.m in Sources */ = {isa = PBXBuildFile; fileRef = A661865027573030001988B0 /* ListenerPeer6.m */; };
-		A661865427573052001988B0 /* ListenerLocal6.m in Sources */ = {isa = PBXBuildFile; fileRef = A661865327573052001988B0 /* ListenerLocal6.m */; };
+		A661864B27573015001988B0 /* ListenerLocal.m in Sources */ = {isa = PBXBuildFile; fileRef = A661864A27573015001988B0 /* ListenerLocal.m */; };
+		A661864E27573028001988B0 /* ListenerPeer.m in Sources */ = {isa = PBXBuildFile; fileRef = A661864D27573028001988B0 /* ListenerPeer.m */; };
 		A6798A3A22BB744A0019806C /* ulib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A6798A3922BB744A0019806C /* ulib.framework */; };
 		A6B59CBF25BC37AD0014D9E2 /* DaemonState_transiting_to_hot.m in Sources */ = {isa = PBXBuildFile; fileRef = A6B59CBE25BC37AD0014D9E2 /* DaemonState_transiting_to_hot.m */; };
 		A6B59CC325BC37B80014D9E2 /* DaemonState_transiting_to_standby.m in Sources */ = {isa = PBXBuildFile; fileRef = A6B59CC225BC37B80014D9E2 /* DaemonState_transiting_to_standby.m */; };
@@ -55,14 +53,10 @@
 		A6018F9B1B0D47A700854472 /* DaemonState_Standby.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DaemonState_Standby.m; sourceTree = "<group>"; };
 		A6018FA31B0D480100854472 /* Daemon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Daemon.h; sourceTree = "<group>"; };
 		A6018FA41B0D480100854472 /* Daemon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Daemon.m; sourceTree = "<group>"; };
-		A661864927573015001988B0 /* ListenerLocal4.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ListenerLocal4.h; sourceTree = "<group>"; };
-		A661864A27573015001988B0 /* ListenerLocal4.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ListenerLocal4.m; sourceTree = "<group>"; };
-		A661864C27573028001988B0 /* ListenerPeer4.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ListenerPeer4.h; sourceTree = "<group>"; };
-		A661864D27573028001988B0 /* ListenerPeer4.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ListenerPeer4.m; sourceTree = "<group>"; };
-		A661864F27573030001988B0 /* ListenerPeer6.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ListenerPeer6.h; sourceTree = "<group>"; };
-		A661865027573030001988B0 /* ListenerPeer6.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ListenerPeer6.m; sourceTree = "<group>"; };
-		A661865227573052001988B0 /* ListenerLocal6.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ListenerLocal6.h; sourceTree = "<group>"; };
-		A661865327573052001988B0 /* ListenerLocal6.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ListenerLocal6.m; sourceTree = "<group>"; };
+		A661864927573015001988B0 /* ListenerLocal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ListenerLocal.h; sourceTree = "<group>"; };
+		A661864A27573015001988B0 /* ListenerLocal.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ListenerLocal.m; sourceTree = "<group>"; };
+		A661864C27573028001988B0 /* ListenerPeer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ListenerPeer.h; sourceTree = "<group>"; };
+		A661864D27573028001988B0 /* ListenerPeer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ListenerPeer.m; sourceTree = "<group>"; };
 		A6798A3922BB744A0019806C /* ulib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ulib.framework; path = "/Library/Application Support/FinkTelecomServices/frameworks/ulib.framework"; sourceTree = "<absolute>"; };
 		A6B59CBD25BC37AD0014D9E2 /* DaemonState_transiting_to_hot.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DaemonState_transiting_to_hot.h; sourceTree = "<group>"; };
 		A6B59CBE25BC37AD0014D9E2 /* DaemonState_transiting_to_hot.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DaemonState_transiting_to_hot.m; sourceTree = "<group>"; };
@@ -117,14 +111,10 @@
 				A6018F851B0D391000854472 /* AppDelegate.m */,
 				A6E54FCC1B0DBE640090FC94 /* Listener.h */,
 				A6E54FCD1B0DBE640090FC94 /* Listener.m */,
-				A661864927573015001988B0 /* ListenerLocal4.h */,
-				A661864A27573015001988B0 /* ListenerLocal4.m */,
-				A661865227573052001988B0 /* ListenerLocal6.h */,
-				A661865327573052001988B0 /* ListenerLocal6.m */,
-				A661864C27573028001988B0 /* ListenerPeer4.h */,
-				A661864D27573028001988B0 /* ListenerPeer4.m */,
-				A661864F27573030001988B0 /* ListenerPeer6.h */,
-				A661865027573030001988B0 /* ListenerPeer6.m */,
+				A661864927573015001988B0 /* ListenerLocal.h */,
+				A661864A27573015001988B0 /* ListenerLocal.m */,
+				A661864C27573028001988B0 /* ListenerPeer.h */,
+				A661864D27573028001988B0 /* ListenerPeer.m */,
 				A6C60A4326897CC700EDBC5C /* SchrittmacherMetrics.h */,
 				A6C60A4426897CC700EDBC5C /* SchrittmacherMetrics.m */,
 				A6018FA31B0D480100854472 /* Daemon.h */,
@@ -244,14 +234,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				A6018F7C1B0D388200854472 /* main.m in Sources */,
-				A661864B27573015001988B0 /* ListenerLocal4.m in Sources */,
-				A661865427573052001988B0 /* ListenerLocal6.m in Sources */,
+				A661864B27573015001988B0 /* ListenerLocal.m in Sources */,
 				A6018F861B0D391000854472 /* AppDelegate.m in Sources */,
 				A6E54FCE1B0DBE640090FC94 /* Listener.m in Sources */,
-				A661865127573030001988B0 /* ListenerPeer6.m in Sources */,
 				A6018FA51B0D480100854472 /* Daemon.m in Sources */,
 				A6018F8D1B0D442C00854472 /* DaemonState.m in Sources */,
-				A661864E27573028001988B0 /* ListenerPeer4.m in Sources */,
+				A661864E27573028001988B0 /* ListenerPeer.m in Sources */,
 				A6C60A4526897CC700EDBC5C /* SchrittmacherMetrics.m in Sources */,
 				A6B59CBF25BC37AD0014D9E2 /* DaemonState_transiting_to_hot.m in Sources */,
 				A6B59CC725BC3A0E0014D9E2 /* DaemonState_Failed.m in Sources */,

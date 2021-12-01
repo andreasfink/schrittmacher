@@ -1,5 +1,5 @@
 //
-//  ListenerLocal4.h
+//  ListenerLocal.h
 //  schrittmacher
 //
 //  Created by Andreas Fink on 01.12.21.
@@ -8,9 +8,9 @@
 
 #import "Listener.h"
 
-@interface ListenerLocal4 : Listener
+@interface ListenerLocal : Listener
 
-- (void) attachDaemonIPv4:(Daemon *)d;
+- (void) attachDaemon:(Daemon *)d;
 - (void)start;
 
 @end

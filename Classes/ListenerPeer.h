@@ -1,5 +1,5 @@
 //
-//  ListenerPeer4.h
+//  ListenerPeer.h
 //  schrittmacher
 //
 //  Created by Andreas Fink on 01.12.21.
@@ -9,12 +9,12 @@
 #import "Listener.h"
 
 
-@interface ListenerPeer4 : Listener
+@interface ListenerPeer : Listener
 {
-    UMSocket *_txSocket4;
+    UMSocket *_txSocket;
 }
 - (void)sendString:(NSString *)msg toAddress:(NSString *)addr toPort:(int)p;
-- (void) attachDaemonIPv4:(Daemon *)d;
+- (void) attachDaemon:(Daemon *)d;
 - (void)start;
 
 @end

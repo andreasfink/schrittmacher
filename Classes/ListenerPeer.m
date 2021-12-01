@@ -1,15 +1,15 @@
 //
-//  ListenerPeer4.m
+//  ListenerPeerr.m
 //  schrittmacher
 //
 //  Created by Andreas Fink on 01.12.21.
 //  Copyright © 2021 Andreas Fink. All rights reserved.
 //
 
-#import "ListenerPeer4.h"
+#import "ListenerPeer.h"
 #import "Daemon.h"
 
-@implementation ListenerPeer4
+@implementation ListenerPeer
 
 
 - (void)sendString:(NSString *)msg toAddress:(NSString *)addr toPort:(int)p
@@ -20,7 +20,7 @@
     UMSocketError e;
     int af;
     NSString *s = [UMSocket deunifyIp:addr type:&af];
-    e = [_txSocket4 sendData:d toAddress:s toPort:p];
+    e = [_txSocket sendData:d toAddress:s toPort:p];
     if(e)
     {
         NSString *s = [UMSocket getSocketErrorString:e];
@@ -31,34 +31,36 @@
 - (void)start
 {
     
-    if(_txSocket4== NULL)
+    if(_txSocket== NULL)
     {
-        _txSocket4              = [[UMSocket alloc]initWithType:UMSOCKET_TYPE_UDP4ONLY];
-        _txSocket4.localPort    = 0;
-        _txSocket4.localHost    = [[UMHost alloc] initWithAddress:_localAddress];
-        _txSocket4.remotePort    = _remotePort;
-        _txSocket4.remoteHost    = [[UMHost alloc] initWithAddress:_peerAddress];
+        _txSocket              = [[UMSocket alloc]initWithType:UMSOCKET_TYPE_UDP];
+        [_txSocket setIPDualStack];
+        _txSocket.localPort    = 0;
+        _txSocket.localHost    = [[UMHost alloc] initWithAddress:_localAddress];
+        _txSocket.remotePort    = _remotePort;
+        _txSocket.remoteHost    = [[UMHost alloc] initWithAddress:_peerAddress];
 
         UMSocketError err;
-        NSLog(@"binding txSocket4 to %@",_localAddress);
-        err = [_txSocket4 bind];
+        NSLog(@"binding txSocket to %@",_localAddress);
+        err = [_txSocket bind];
         if(err)
         {
-            NSLog(@"udp can not bind txSocket4 err = %d",err);
+            NSLog(@"udp can not bind txSocket err = %d",err);
         }
     }
 
     UMSocketError err;
     if(_localAddress.length > 0)
     {
-        _rxSocket              = [[UMSocket alloc]initWithType:UMSOCKET_TYPE_UDP4ONLY];
+        _rxSocket              = [[UMSocket alloc]initWithType:UMSOCKET_TYPE_UDP];
+        [_rxSocket setIPDualStack];
         _rxSocket.localPort    = _localPort;
         _rxSocket.localHost    = [[UMHost alloc] initWithAddress:_localAddress];
-        NSLog(@"binding ListnerPeer4 to %@ on port %d",_localAddress,_localPort);
+        NSLog(@"binding ListnerPeer to %@ on port %d",_localAddress,_localPort);
         err = [_rxSocket bind];
         if(err)
         {
-            NSLog(@"udp can not bind ListenerLocal4 to port %d. err = %d",_localPort,err);
+            NSLog(@"udp can not bind ListenerPeer to port %d. err = %d",_localPort,err);
         }
     }
 
@@ -78,12 +80,12 @@
     [super startBackgroundTask];
 }
 
-- (void) attachDaemonIPv4:(Daemon *)d
+- (void) attachDaemon:(Daemon *)d
 {
     @synchronized(_daemons)
     {
         _daemons[d.resourceId] = d;
-        d.listener4 = self;
+        d.listener = self;
     }
 }
 

@@ -20,10 +20,8 @@
 #include <stdlib.h>
 
 #import "Listener.h"
-#import "ListenerLocal4.h"
-#import "ListenerLocal6.h"
-#import "ListenerPeer4.h"
-#import "ListenerPeer6.h"
+#import "ListenerLocal.h"
+#import "ListenerPeer.h"
 #import "Daemon.h"
 #import "SchrittmacherMetrics.h"
 
@@ -106,12 +104,12 @@ AppDelegate *_global_appdel= NULL;
         NSString *failovername = req.params[@"failover"];
         if([failovername length]>0)
         {
-            [_listenerLocal4 failover:failovername];
+            [_listenerLocal failover:failovername];
         }
         NSString *takeovername = req.params[@"takeover"];
         if([takeovername length]>0)
         {
-            [_listenerLocal4 takeover:takeovername];
+            [_listenerLocal takeover:takeovername];
         }
         NSString *s = [self htmlStatus];
         [req setResponseHtmlString:s];
@@ -145,13 +143,13 @@ AppDelegate *_global_appdel= NULL;
     _localAddress6     = [UMSocket unifyIP:[coreConfig[@"local-address6"]stringValue]];
     _remoteAddress     = [UMSocket unifyIP:[coreConfig[@"remote-address"]stringValue]];
     _sharedAddress     = [UMSocket unifyIP:[coreConfig[@"shared-address"]stringValue]];
-    if(coreConfig[@"port"])
+    if(coreConfig[@"peer-port"])
     {
-        _port             = [coreConfig[@"port"]intValue];
+        _peerPort             = [coreConfig[@"peer-port"]intValue];
     }
-    if(coreConfig[@"public-port"])
+    if(coreConfig[@"local-port"])
     {
-        _port             = [coreConfig[@"public-port"]intValue];
+        _localPort             = [coreConfig[@"local-port"]intValue];
     }
     _webPort          = [coreConfig[@"http-port"]intValue];
     _logDirectory     = [coreConfig[@"log-dir"]  stringValue];
@@ -275,30 +273,17 @@ AppDelegate *_global_appdel= NULL;
         [s appendFormat:@"</tr>"];
 
         [s appendFormat:@"<tr>\n"];
-        [s appendFormat:@"<td>Local IPv4</td>\n"];
-        [s appendFormat:@"<td>%@</td>\n",(_listenerLocal4.lastError ? _listenerLocal4.lastError : @"-")];
-        [s appendFormat:@"<td>%@</td>\n",(_listenerLocal4.lastMessage ? _listenerLocal4.lastMessage : @"-")];
+        [s appendFormat:@"<td>Local</td>\n"];
+        [s appendFormat:@"<td>%@</td>\n",(_listenerLocal.lastError ? _listenerLocal.lastError : @"-")];
+        [s appendFormat:@"<td>%@</td>\n",(_listenerLocal.lastMessage ? _listenerLocal.lastMessage : @"-")];
 
         [s appendFormat:@"</tr>"];
 
         [s appendFormat:@"<tr>\n"];
-        [s appendFormat:@"<td>Local IPv6</td>\n"];
-        [s appendFormat:@"<td>%@</td>\n",(_listenerLocal6.lastError ? _listenerLocal6.lastError : @"-")];
-        [s appendFormat:@"<td>%@</td>\n",(_listenerLocal6.lastMessage ? _listenerLocal6.lastMessage : @"-")];
+        [s appendFormat:@"<td>Peer</td>\n"];
+        [s appendFormat:@"<td>%@</td>\n",(_listenerPeer.lastError ? _listenerPeer.lastError : @"-")];
+        [s appendFormat:@"<td>%@</td>\n",(_listenerPeer.lastMessage ? _listenerPeer.lastMessage : @"-")];
         [s appendFormat:@"</tr>"];
-
-        [s appendFormat:@"<tr>\n"];
-        [s appendFormat:@"<td>Peer IPv4</td>\n"];
-        [s appendFormat:@"<td>%@</td>\n",(_listenerPeer4.lastError ? _listenerPeer4.lastError : @"-")];
-        [s appendFormat:@"<td>%@</td>\n",(_listenerPeer4.lastMessage ? _listenerPeer4.lastMessage : @"-")];
-        [s appendFormat:@"</tr>"];
-
-        [s appendFormat:@"<tr>\n"];
-        [s appendFormat:@"<td>Peer IPv6</td>\n"];
-        [s appendFormat:@"<td>%@</td>\n",(_listenerPeer6.lastError ? _listenerPeer6.lastError : @"-")];
-        [s appendFormat:@"<td>%@</td>\n",(_listenerPeer6.lastMessage ? _listenerPeer6.lastMessage : @"-")];
-        [s appendFormat:@"</tr>"];
-
         [s appendFormat:@"</table>"];
 
         return s;
@@ -310,39 +295,22 @@ AppDelegate *_global_appdel= NULL;
 {
     @autoreleasepool
     {
-        _listenerLocal4 = [[ListenerLocal4 alloc]init];
-        _listenerLocal4.logFeed         = self.logFeed;
-        _listenerLocal4.logHandler      = _mainLogHandler;
-        _listenerLocal4.logLevel        = self.logLevel;
-        _listenerLocal4.localAddress    = @"127.0.0.1";
-        _listenerLocal4.localPort       = _port;
-        _listenerLocal4.addressType = 4;
+        _listenerLocal = [[ListenerLocal alloc]init];
+        _listenerLocal.logFeed         = self.logFeed;
+        _listenerLocal.logHandler      = _mainLogHandler;
+        _listenerLocal.logLevel        = self.logLevel;
+        _listenerLocal.localAddress    = @"127.0.0.1";
+        _listenerLocal.localPort       = _localPort;
+        _listenerLocal.addressType     = 46;
 
-        _listenerLocal6 = [[ListenerLocal6 alloc]init];
-        _listenerLocal6.logFeed         = self.logFeed;
-        _listenerLocal6.logHandler      = _mainLogHandler;
-        _listenerLocal6.logLevel        = self.logLevel;
-        _listenerLocal6.localAddress    = @"::1";
-        _listenerLocal6.localPort       = _port;
-        _listenerLocal6.addressType     = 6;
-
-        _listenerPeer4 = [[ListenerPeer4 alloc]init];
-        _listenerPeer4.logFeed          = self.logFeed;
-        _listenerPeer4.logHandler       = _mainLogHandler;
-        _listenerPeer4.logLevel         = self.logLevel;
-        _listenerPeer4.localAddress     = _localAddress4;
-        _listenerPeer4.localPort        = 0;
-        _listenerPeer4.remotePort       = _port;
-        _listenerPeer4.addressType     = 4;
-
-        _listenerPeer6                  = [[ListenerPeer6 alloc]init];
-        _listenerPeer6.logFeed          = self.logFeed;
-        _listenerPeer6.logHandler       = _mainLogHandler;
-        _listenerPeer6.logLevel         = self.logLevel;
-        _listenerPeer6.localAddress     = _localAddress6;
-        _listenerPeer6.localPort        = 0;
-        _listenerPeer6.remotePort       = _port;
-        _listenerPeer6.addressType     = 6;
+        _listenerPeer = [[ListenerPeer alloc]init];
+        _listenerPeer.logFeed          = self.logFeed;
+        _listenerPeer.logHandler       = _mainLogHandler;
+        _listenerPeer.logLevel         = self.logLevel;
+        _listenerPeer.localAddress     = _localAddress4;
+        _listenerPeer.localPort        = 0;
+        _listenerPeer.remotePort       = _peerPort;
+        _listenerPeer.addressType      = 46;
 
         NSArray *configs = [_config getMultiGroups:@"resource"];
         for(NSDictionary *daemonConfig in configs)
@@ -365,7 +333,7 @@ AppDelegate *_global_appdel= NULL;
             d.localAddress6 = _localAddress6;
             d.remoteAddress = _remoteAddress;
             d.sharedAddress = _sharedAddress;
-            d.remotePort = _port;
+            d.remotePort = _peerPort;
             d.resourceId = resourceName;
             d.startAction = startAction;
             d.stopAction = stopAction;
@@ -385,17 +353,13 @@ AppDelegate *_global_appdel= NULL;
                                                        seconds:d.intervallDelay
                                                           name:@"heartbeat-timer"
                                                        repeats:YES];
-            [_listenerLocal4 attachDaemonIPv4:d];
-            [_listenerLocal6 attachDaemonIPv6:d];
-            [_listenerPeer4 attachDaemonIPv4:d];
-            [_listenerPeer6 attachDaemonIPv6:d];
+            [_listenerLocal attachDaemon:d];
+            [_listenerPeer attachDaemon:d];
             [_daemons addObject:d];
             [d.heartbeatTimer start];
         }
-        [_listenerLocal4 start];
-        [_listenerLocal6 start];
-        [_listenerPeer4 start];
-        [_listenerPeer6 start];
+        [_listenerLocal start];
+        [_listenerPeer start];
     }
 }
 

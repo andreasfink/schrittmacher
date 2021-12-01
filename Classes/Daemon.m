@@ -8,8 +8,7 @@
 
 #import "Daemon.h"
 #import "DaemonState_all.h"
-#import "ListenerPeer4.h"
-#import "ListenerPeer6.h"
+#import "ListenerPeer.h"
 #import <stdint.h>
 #include <signal.h>
 
@@ -84,27 +83,11 @@ DaemonRandomValue GetDaemonRandomValue(void)
         dict[@"reason"] = _lastLocalReason;
     }
     NSString *msg = [dict jsonString];
-    if([_remoteAddress isIPv4])
+    if(_logLevel <=UMLOG_DEBUG)
     {
-        if(_logLevel <=UMLOG_DEBUG)
-        {
-            [_logFeed debugText:[NSString stringWithFormat:@"TX %@->%@: %@",_localAddress4,_remoteAddress,dict]];
-        }
-        [_listener4 sendString:msg toAddress:_remoteAddress toPort:_remotePort];
+        [_logFeed debugText:[NSString stringWithFormat:@"TX %@->%@: %@",_localAddress4,_remoteAddress,dict]];
     }
-    else if([_remoteAddress isIPv6])
-    {
-        if(_logLevel <=UMLOG_DEBUG)
-        {
-            [_logFeed debugText:[NSString stringWithFormat:@"TX %@->%@: %@",_localAddress6,_remoteAddress,dict]];
-        }
-        [_listener6 sendString:msg toAddress:_remoteAddress toPort:_remotePort];
-    }
-    else
-    {
-        NSLog(@"Can not figure out address type of %@",_remoteAddress);
-        exit(-1);
-    }
+    [_listener sendString:msg toAddress:_remoteAddress toPort:_remotePort];
 }
 
 
