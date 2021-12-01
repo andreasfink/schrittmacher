@@ -160,7 +160,7 @@
 {
     UMAssert(_rxSocket!=NULL,@"_rxSocket can not be NULL");
     int packetsProcessed = 0;
-    UMSocketError err =  [_rxSocket dataIsAvailable:200000];
+    UMSocketError err =  [_rxSocket dataIsAvailable:2000];
     if((err == UMSocketError_has_data) || (err==UMSocketError_has_data_and_hup))
     {
         packetsProcessed += [self readDataFromSocket:_rxSocket];
