@@ -276,22 +276,27 @@ AppDelegate *_global_appdel= NULL;
 
         [s appendFormat:@"<tr>\n"];
         [s appendFormat:@"<td>Local IPv4</td>\n"];
-        [s appendFormat:@"<td>%@/td>\n",(_listenerLocal4.lastError ? _listenerLocal4.lastError : @"-")];
+        [s appendFormat:@"<td>%@</td>\n",(_listenerLocal4.lastError ? _listenerLocal4.lastError : @"-")];
+        [s appendFormat:@"<td>%@</td>\n",(_listenerLocal4.lastMessage ? _listenerLocal4.lastMessage : @"-")];
+
         [s appendFormat:@"</tr>"];
 
         [s appendFormat:@"<tr>\n"];
         [s appendFormat:@"<td>Local IPv6</td>\n"];
-        [s appendFormat:@"<td>%@/td>\n",(_listenerLocal6.lastError ? _listenerLocal6.lastError : @"-")];
+        [s appendFormat:@"<td>%@</td>\n",(_listenerLocal6.lastError ? _listenerLocal6.lastError : @"-")];
+        [s appendFormat:@"<td>%@</td>\n",(_listenerLocal6.lastMessage ? _listenerLocal6.lastMessage : @"-")];
         [s appendFormat:@"</tr>"];
 
         [s appendFormat:@"<tr>\n"];
         [s appendFormat:@"<td>Peer IPv4</td>\n"];
-        [s appendFormat:@"<td>%@/td>\n",(_listenerPeer4.lastError ? _listenerPeer4.lastError : @"-")];
+        [s appendFormat:@"<td>%@</td>\n",(_listenerPeer4.lastError ? _listenerPeer4.lastError : @"-")];
+        [s appendFormat:@"<td>%@</td>\n",(_listenerPeer4.lastMessage ? _listenerPeer4.lastMessage : @"-")];
         [s appendFormat:@"</tr>"];
 
         [s appendFormat:@"<tr>\n"];
         [s appendFormat:@"<td>Peer IPv6</td>\n"];
-        [s appendFormat:@"<td>%@/td>\n",(_listenerPeer6.lastError ? _listenerPeer6.lastError : @"-")];
+        [s appendFormat:@"<td>%@</td>\n",(_listenerPeer6.lastError ? _listenerPeer6.lastError : @"-")];
+        [s appendFormat:@"<td>%@</td>\n",(_listenerPeer6.lastMessage ? _listenerPeer6.lastMessage : @"-")];
         [s appendFormat:@"</tr>"];
 
         [s appendFormat:@"</table>"];

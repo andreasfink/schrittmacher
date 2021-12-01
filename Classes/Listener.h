@@ -22,6 +22,7 @@
     //UMTimer             *_pollTimer;
     UMLogLevel          _logLevel;
     NSString            *_lastError;
+    NSString            *_lastMessage;
 }
 
 @property(readwrite,strong) NSString *localAddress;
@@ -32,6 +33,7 @@
 @property(readwrite,assign) UMLogLevel logLevel;
 @property(readwrite,strong) UMLogHandler *logHandler;
 @property(readwrite,strong) NSString *lastError;
+@property(readwrite,strong) NSString *lastMessage;
 
 - (int)checkForPackets;
 - (NSDictionary *)status;

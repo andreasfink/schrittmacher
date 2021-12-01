@@ -40,6 +40,7 @@
                 NSDictionary *di = (NSDictionary *)obj;
                 NSString *resource      = [di[@"resource"] stringValue];
                 NSString *status        = [di[@"status"] stringValue];
+                _lastMessage            = [NSString stringWithFormat:@"%@: %@",resource,status];
                 long rx_pid             = [di[@"pid"] longValue];
                 long adminweb_port         = [di[@"adminweb-port"] longValue];
                 NSMutableDictionary *dict  = [di mutableCopy];
@@ -105,6 +106,7 @@
 {
     if(_rxSocket==NULL)
     {
+        _lastError = @"socket not available";
         return -1; /* terminates background task */
     }
     @autoreleasepool
@@ -122,7 +124,7 @@
     {
         packetsProcessed += [self readDataFromSocket:_rxSocket];
     }
-    else if(err!=UMSocketError_no_error)
+    else if((err!=UMSocketError_no_error) &&(err!=UMSocketError_no_data))
     {
         _lastError = [UMSocket getSocketErrorString:err];
         NSLog(@"Error %@ while reading from socket",_lastError);
@@ -158,6 +160,7 @@
     }
     else
     {
+        _lastError = [UMSocket getSocketErrorString:err2];
         NSLog(@"receiveData failed with error %d",err2);
     }
     return packetsProcessed;
