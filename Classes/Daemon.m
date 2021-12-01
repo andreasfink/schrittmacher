@@ -87,7 +87,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
     {
         [_logFeed debugText:[NSString stringWithFormat:@"TX %@->%@: %@",_localAddress,_remoteAddress,dict]];
     }
-    [_listener sendString:msg toAddress:_remoteAddress toPort:_remotePort];
+    [_listener sendString:msg toAddress:_remoteAddress toPort:_port];
 }
 
 

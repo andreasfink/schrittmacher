@@ -60,7 +60,7 @@ typedef enum DaemonInterfaceState
     NSString        *_localAddress;
     NSString        *_sharedAddress;
     NSString        *_netmask;
-    int             _remotePort;
+    int             _port;
     ListenerPeer   *_listener;
     NSTimeInterval  _timeout;
     NSString        *_startAction;
@@ -114,7 +114,7 @@ typedef enum DaemonInterfaceState
 @property (readwrite,strong) NSString   *localAddress;
 @property (readwrite,strong) NSString   *netmask;
 @property (readwrite,strong) NSString   *sharedAddress;
-@property (readwrite,assign) int        remotePort;
+@property (readwrite,assign) int        port;
 
 @property (readwrite,strong) ListenerPeer        *listener;
 @property (readwrite,assign,atomic) NSTimeInterval  timeout;

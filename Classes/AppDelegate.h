@@ -20,8 +20,7 @@
     UMLogHandler        *_mainLogHandler;
     UMHTTPServer        *_httpServer;
     
-    int                 _localPort;
-    int                 _peerPort;
+    int                 _port;
     int                 _webPort;
     NSString            *_logDirectory;
     NSTimeInterval      _heartbeat;
@@ -42,5 +41,7 @@
 @property(readwrite,strong,atomic)  UMConfig *config;
 @property(readonly,assign)          time_t g_statup_time;
 @property(readwrite,assign)         UMLogLevel logLevel;
+@property(readwrite,assign)         int port;
+@property(readwrite,assign)         int webPort;
 
 @end

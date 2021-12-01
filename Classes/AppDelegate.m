@@ -142,13 +142,9 @@ AppDelegate *_global_appdel= NULL;
     _localAddress      = [UMSocket unifyIP:[coreConfig[@"local-address"]stringValue]];
     _remoteAddress     = [UMSocket unifyIP:[coreConfig[@"remote-address"]stringValue]];
     _sharedAddress     = [UMSocket unifyIP:[coreConfig[@"shared-address"]stringValue]];
-    if(coreConfig[@"peer-port"])
+    if(coreConfig[@"port"])
     {
-        _peerPort             = [coreConfig[@"peer-port"]intValue];
-    }
-    if(coreConfig[@"local-port"])
-    {
-        _localPort             = [coreConfig[@"local-port"]intValue];
+        _port             = [coreConfig[@"port"]intValue];
     }
     _webPort          = [coreConfig[@"http-port"]intValue];
     _logDirectory     = [coreConfig[@"log-dir"]  stringValue];
@@ -294,23 +290,24 @@ AppDelegate *_global_appdel= NULL;
 {
     @autoreleasepool
     {
-        _listenerLocal = [[ListenerLocal alloc]init];
-        _listenerLocal.logFeed         = self.logFeed;
-        _listenerLocal.logHandler      = _mainLogHandler;
-        _listenerLocal.logLevel        = self.logLevel;
-        _listenerLocal.localAddress    = @"127.0.0.1";
-        _listenerLocal.localPort       = _localPort;
-        _listenerLocal.addressType     = 46;
-
         _listenerPeer = [[ListenerPeer alloc]init];
         _listenerPeer.logFeed          = self.logFeed;
         _listenerPeer.logHandler       = _mainLogHandler;
         _listenerPeer.logLevel         = self.logLevel;
         _listenerPeer.localAddress     = _localAddress;
-        _listenerPeer.localPort        = 0;
-        _listenerPeer.remotePort       = _peerPort;
+        _listenerPeer.localPort        = _port;
+        _listenerPeer.remotePort       = _port;
         _listenerPeer.addressType      = 46;
 
+        _listenerLocal = [[ListenerLocal alloc]init];
+        _listenerLocal.logFeed         = self.logFeed;
+        _listenerLocal.logHandler      = _mainLogHandler;
+        _listenerLocal.logLevel        = self.logLevel;
+        _listenerLocal.localAddress    = @"127.0.0.1";
+        _listenerLocal.localPort       = _port+1;
+        _listenerLocal.addressType     = 46;
+
+   
         NSArray *configs = [_config getMultiGroups:@"resource"];
         for(NSDictionary *daemonConfig in configs)
         {
@@ -331,7 +328,7 @@ AppDelegate *_global_appdel= NULL;
             d.localAddress = _localAddress;
             d.remoteAddress = _remoteAddress;
             d.sharedAddress = _sharedAddress;
-            d.remotePort = _peerPort;
+            d.port = _port+1;
             d.resourceId = resourceName;
             d.startAction = startAction;
             d.stopAction = stopAction;
