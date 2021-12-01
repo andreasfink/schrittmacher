@@ -7,7 +7,10 @@
 //
 
 #import <ulib/ulib.h>
-@class Listener;
+@class ListenerPeer4;
+@class ListenerPeer6;
+@class ListenerLocal4;
+@class ListenerLocal6;
 
 @interface AppDelegate : UMObject<UMHTTPServerHttpGetPostDelegate>
 {
@@ -29,9 +32,13 @@
     NSString            *_localAddress6;
     NSString            *_remoteAddress;
     NSString            *_sharedAddress;
-    Listener            *_listener;
+    ListenerLocal4      *_listenerLocal4;
+    ListenerLocal6      *_listenerLocal6;
+    ListenerPeer4       *_listenerPeer4;
+    ListenerPeer6       *_listenerPeer6;
     UMLogLevel          _logLevel;
     UMPrometheus        *_prometheus;
+    UMSynchronizedArray *_daemons;
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification;

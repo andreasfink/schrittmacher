@@ -20,6 +20,10 @@
 #include <stdlib.h>
 
 #import "Listener.h"
+#import "ListenerLocal4.h"
+#import "ListenerLocal6.h"
+#import "ListenerPeer4.h"
+#import "ListenerPeer6.h"
 #import "Daemon.h"
 #import "SchrittmacherMetrics.h"
 
@@ -48,6 +52,7 @@ AppDelegate *_global_appdel= NULL;
     self =[super init];
     if (self)
     {
+        _daemons = [[UMSynchronizedArray alloc]init];
         _global_appdel = self;
         time(&_g_startup_time);
         int threadCount = ulib_cpu_count();
@@ -101,12 +106,12 @@ AppDelegate *_global_appdel= NULL;
         NSString *failovername = req.params[@"failover"];
         if([failovername length]>0)
         {
-            [_listener failover:failovername];
+            [_listenerLocal4 failover:failovername];
         }
         NSString *takeovername = req.params[@"takeover"];
         if([takeovername length]>0)
         {
-            [_listener takeover:takeovername];
+            [_listenerLocal4 takeover:takeovername];
         }
         NSString *s = [self htmlStatus];
         [req setResponseHtmlString:s];
@@ -203,7 +208,7 @@ AppDelegate *_global_appdel= NULL;
                           toHandler:_mainLogHandler
                              logdir:_logDirectory];
         [self setupWebserver];
-        [self startupListener];
+        [self startupListeners];
     }
 }
 
@@ -223,9 +228,14 @@ AppDelegate *_global_appdel= NULL;
         [s appendFormat:@"<th>Lock</th>\n"];
         [s appendFormat:@"</tr>"];
 
-        NSDictionary *states = [_listener status];
-        NSArray *keys = [states allKeys];
 
+        UMSynchronizedSortedDictionary *states = [[UMSynchronizedSortedDictionary alloc]init];
+        for(Daemon *d in _daemons)
+        {
+            states[d.resourceId] = [d status];
+        }
+        
+        NSArray *keys = [states allKeys];
         keys = [keys sortedArrayUsingComparator: ^(id a, id b)
         {
             return [a compare:b];
@@ -257,24 +267,77 @@ AppDelegate *_global_appdel= NULL;
             [s appendFormat:@"</tr>"];
         }
         [s appendFormat:@"</table>"];
+        
+        [s appendFormat:@"<table border=1>\n"];
+        [s appendFormat:@"<tr>\n"];
+        [s appendFormat:@"<th>Listener</th>\n"];
+        [s appendFormat:@"<th>Last Error</th>\n"];
+        [s appendFormat:@"</tr>"];
+
+        [s appendFormat:@"<tr>\n"];
+        [s appendFormat:@"<td>Local IPv4</td>\n"];
+        [s appendFormat:@"<td>%@/td>\n",(_listenerLocal4.lastError ? _listenerLocal4.lastError : @"-")];
+        [s appendFormat:@"</tr>"];
+
+        [s appendFormat:@"<tr>\n"];
+        [s appendFormat:@"<td>Local IPv6</td>\n"];
+        [s appendFormat:@"<td>%@/td>\n",(_listenerLocal6.lastError ? _listenerLocal6.lastError : @"-")];
+        [s appendFormat:@"</tr>"];
+
+        [s appendFormat:@"<tr>\n"];
+        [s appendFormat:@"<td>Peer IPv4</td>\n"];
+        [s appendFormat:@"<td>%@/td>\n",(_listenerPeer4.lastError ? _listenerPeer4.lastError : @"-")];
+        [s appendFormat:@"</tr>"];
+
+        [s appendFormat:@"<tr>\n"];
+        [s appendFormat:@"<td>Peer IPv6</td>\n"];
+        [s appendFormat:@"<td>%@/td>\n",(_listenerPeer6.lastError ? _listenerPeer6.lastError : @"-")];
+        [s appendFormat:@"</tr>"];
+
+        [s appendFormat:@"</table>"];
+
         return s;
     }
 }
 
 
-- (void)startupListener
+- (void)startupListeners
 {
     @autoreleasepool
     {
-        _listener = [[Listener alloc]init];
-        _listener.logFeed = self.logFeed;
-        _listener.logHandler = _mainLogHandler;
-        _listener.logLevel = self.logLevel;
-        int addrType = 4;
-        _listener.localAddress4 = _localAddress4;
-        _listener.localAddress6 = _localAddress6;
-        _listener.port = _port;
-        _listener.addressType= addrType;
+        _listenerLocal4 = [[ListenerLocal4 alloc]init];
+        _listenerLocal4.logFeed         = self.logFeed;
+        _listenerLocal4.logHandler      = _mainLogHandler;
+        _listenerLocal4.logLevel        = self.logLevel;
+        _listenerLocal4.localAddress    = @"127.0.0.1";
+        _listenerLocal4.localPort       = _port;
+        _listenerLocal4.addressType = 4;
+
+        _listenerLocal6 = [[ListenerLocal6 alloc]init];
+        _listenerLocal6.logFeed         = self.logFeed;
+        _listenerLocal6.logHandler      = _mainLogHandler;
+        _listenerLocal6.logLevel        = self.logLevel;
+        _listenerLocal6.localAddress    = @"::1";
+        _listenerLocal6.localPort       = _port;
+        _listenerLocal6.addressType     = 6;
+
+        _listenerPeer4 = [[ListenerPeer4 alloc]init];
+        _listenerPeer4.logFeed          = self.logFeed;
+        _listenerPeer4.logHandler       = _mainLogHandler;
+        _listenerPeer4.logLevel         = self.logLevel;
+        _listenerPeer4.localAddress     = _localAddress4;
+        _listenerPeer4.localPort        = 0;
+        _listenerPeer4.remotePort       = _port;
+        _listenerPeer4.addressType     = 4;
+
+        _listenerPeer6                  = [[ListenerPeer6 alloc]init];
+        _listenerPeer6.logFeed          = self.logFeed;
+        _listenerPeer6.logHandler       = _mainLogHandler;
+        _listenerPeer6.logLevel         = self.logLevel;
+        _listenerPeer6.localAddress     = _localAddress6;
+        _listenerPeer6.localPort        = 0;
+        _listenerPeer6.remotePort       = _port;
+        _listenerPeer6.addressType     = 6;
 
         NSArray *configs = [_config getMultiGroups:@"resource"];
         for(NSDictionary *daemonConfig in configs)
@@ -317,10 +380,17 @@ AppDelegate *_global_appdel= NULL;
                                                        seconds:d.intervallDelay
                                                           name:@"heartbeat-timer"
                                                        repeats:YES];
-            [_listener attachDaemon:d];
+            [_listenerLocal4 attachDaemonIPv4:d];
+            [_listenerLocal6 attachDaemonIPv6:d];
+            [_listenerPeer4 attachDaemonIPv4:d];
+            [_listenerPeer6 attachDaemonIPv6:d];
+            [_daemons addObject:d];
             [d.heartbeatTimer start];
         }
-        [_listener start];
+        [_listenerLocal4 start];
+        [_listenerLocal6 start];
+        [_listenerPeer4 start];
+        [_listenerPeer6 start];
     }
 }
 

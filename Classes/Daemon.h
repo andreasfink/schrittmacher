@@ -37,7 +37,8 @@ typedef  uint32_t DaemonRandomValue;
 DaemonRandomValue GetDaemonRandomValue(void);
 
 @class DaemonState;
-@class Listener;
+@class ListenerPeer4;
+@class ListenerPeer6;
 
 typedef enum DaemonInterfaceState
 {
@@ -62,7 +63,8 @@ typedef enum DaemonInterfaceState
     NSString        *_sharedAddress;
     NSString        *_netmask;
     int             _remotePort;
-    Listener        *_listener;
+    ListenerPeer4   *_listener4;
+    ListenerPeer6   *_listener6;
     NSTimeInterval  _timeout;
     NSString        *_startAction;
     NSString        *_stopAction;
@@ -118,7 +120,8 @@ typedef enum DaemonInterfaceState
 @property (readwrite,strong) NSString   *sharedAddress;
 @property (readwrite,assign) int        remotePort;
 
-@property (readwrite,strong) Listener        *listener;
+@property (readwrite,strong) ListenerPeer4        *listener4;
+@property (readwrite,strong) ListenerPeer6        *listener6;
 @property (readwrite,assign,atomic) NSTimeInterval  timeout;
 @property (readwrite,strong,atomic) NSDate      *lastRemoteRx;
 @property (readwrite,strong,atomic) NSDate      *lastLocalRx;

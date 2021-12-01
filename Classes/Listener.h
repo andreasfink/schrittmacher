@@ -11,33 +11,29 @@
 
 @interface Listener : UMBackgrounder
 {
-    NSString             *_localAddress4;
-    NSString             *_localAddress6;
-    int                 _port;
+    NSString             *_localAddress;
+    NSString             *_peerAddress;
+    int                 _localPort;
+    int                 _remotePort;
     UMLogHandler        *_logHandler;
-    NSMutableDictionary *_daemons;
-    UMSocket            *_rxSocket4;
-    UMSocket            *_rxSocket6;
-    UMSocket            *_rxSocketLocal4;
-    UMSocket            *_rxSocketLocal6;
-    UMSocket            *_txSocket4;
-    UMSocket            *_txSocket6;
+    UMSynchronizedDictionary *_daemons;
+    UMSocket            *_rxSocket;
     int                 _addressType;
     //UMTimer             *_pollTimer;
     UMLogLevel          _logLevel;
+    NSString            *_lastError;
 }
 
-@property(readwrite,strong) NSString *localAddress4;
-@property(readwrite,strong) NSString *localAddress6;
-@property(readwrite,assign) int port;
+@property(readwrite,strong) NSString *localAddress;
+@property(readwrite,strong) NSString *peerAddress;
+@property(readwrite,assign) int localPort;
+@property(readwrite,assign) int remotePort;
 @property(readwrite,assign) int addressType;
-//@property(readwrite,strong) UMTimer *pollTimer;
 @property(readwrite,assign) UMLogLevel logLevel;
 @property(readwrite,strong) UMLogHandler *logHandler;
+@property(readwrite,strong) NSString *lastError;
 
 - (void)start;
-- (void)sendString:(NSString *)msg toAddress:(NSString *)addr toPort:(int)p;
-- (void) attachDaemon:(Daemon *)d;
 - (int)checkForPackets;
 - (NSDictionary *)status;
 - (void)failover:(NSString *)name;
