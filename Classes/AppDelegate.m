@@ -306,6 +306,7 @@ AppDelegate *_global_appdel= NULL;
         _listenerLocal.logLevel        = self.logLevel;
         _listenerLocal.localAddress    = @"127.0.0.1";
         _listenerLocal.localPort       = _port+1;
+        _listenerPeer.remotePort       = _port+1;
         _listenerLocal.addressType     = 46;
 
    

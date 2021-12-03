@@ -54,4 +54,11 @@
     }
     [super startBackgroundTask];
 }
+
+- (void)backgroundExit
+{
+    _lastError = @"listenerLocal terminated";
+    NSLog(@"%@",_lastError);
+}
+
 @end

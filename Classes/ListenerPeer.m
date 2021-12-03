@@ -96,4 +96,10 @@
     }
 }
 
+- (void)backgroundExit
+{
+    _lastError = @"listenerPeer terminated";
+    NSLog(@"%@",_lastError);
+}
+
 @end
