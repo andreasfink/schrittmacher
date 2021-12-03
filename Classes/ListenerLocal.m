@@ -112,7 +112,7 @@
         if(data)
         {
             packetsProcessed++;
-            [self receiveStatus:data fromAddress:address];
+            [self receiveStatus:data fromAddress:address port:rxport];
         }
     }
     else if((err2==UMSocketError_no_data) || (err2==UMSocketError_try_again))

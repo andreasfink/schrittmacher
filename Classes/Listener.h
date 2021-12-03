@@ -40,6 +40,6 @@
 - (NSDictionary *)status;
 - (void)failover:(NSString *)name;
 - (void)takeover:(NSString *)name;
-- (void)receiveStatus:(NSData *)statusData fromAddress:(NSString *)address;
+- (void)receiveStatus:(NSData *)statusData fromAddress:(NSString *)address port:(int)port;
 - (Daemon *)daemonByName:(NSString *)name;
 @end

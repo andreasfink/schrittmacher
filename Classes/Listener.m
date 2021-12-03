@@ -28,10 +28,11 @@
 
 - (void)receiveStatus:(NSData *)statusData
           fromAddress:(NSString *)address
+                 port:(int)port
 {
  //   if(_logLevel <= UMLOG_DEBUG)
  //   {
-        NSString *s = [NSString stringWithFormat:@"RX%@[%@] %@",_listenerType,address,statusData.stringValue];
+        NSString *s = [NSString stringWithFormat:@"RX%@[%@] %@:%d",_listenerType,address,statusData.stringValue,port];
         [_logFeed debugText:s];
  //   }
     @autoreleasepool
@@ -156,7 +157,7 @@
         if(data)
         {
             packetsProcessed++;
-            [self receiveStatus:data fromAddress:address];
+            [self receiveStatus:data fromAddress:address port:rxport];
         }
     }
     else if((err2==UMSocketError_no_data) || (err2==UMSocketError_try_again))
