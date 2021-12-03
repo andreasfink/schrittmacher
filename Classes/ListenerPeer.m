@@ -13,7 +13,7 @@
 
 - (ListenerPeer *)init
 {
-    return [self initWithName:@"listener-peer" _workSleeper:NULL];
+    return [self initWithName:@"listener-peer" workSleeper:NULL];
 }
 
 

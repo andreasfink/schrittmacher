@@ -13,12 +13,12 @@
 
 - (Listener *)init
 {
-    return [self initWithName:@"listener" _workSleeper:NULL];
+    return [self initWithName:@"listener" workSleeper:NULL];
 }
 
 - (Listener *)initWithName:name workSleeper:(UMSleeper *)ws
 {
-    self = [super initWithName:@"listener" workSleeper:NULL];
+    self = [super initWithName:name workSleeper:ws];
     if(self)
     {
         _daemons = [[UMSynchronizedDictionary alloc]init];
