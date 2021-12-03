@@ -34,6 +34,7 @@
 
 - (void)start
 {
+    _listenerType =@"(peer)";
     if(_txSocket== NULL)
     {
         _txSocket              = [[UMSocket alloc]initWithType:UMSOCKET_TYPE_UDP];

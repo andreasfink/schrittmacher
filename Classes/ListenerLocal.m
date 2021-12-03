@@ -19,6 +19,7 @@
 
 - (void)start
 {
+    _listenerType =@"(local)";
     @autoreleasepool
     {
         UMSocketError err;

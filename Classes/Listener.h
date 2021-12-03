@@ -23,6 +23,7 @@
     UMLogLevel          _logLevel;
     NSString            *_lastError;
     NSString            *_lastMessage;
+    NSString            *_listenerType;
 }
 
 @property(readwrite,strong) NSString *localAddress;
