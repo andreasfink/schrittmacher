@@ -13,6 +13,11 @@
 
 - (Listener *)init
 {
+    return [self initWithName:@"listener" _workSleeper:NULL];
+}
+
+- (Listener *)initWithName:name workSleeper:(UMSleeper *)ws
+{
     self = [super initWithName:@"listener" workSleeper:NULL];
     if(self)
     {

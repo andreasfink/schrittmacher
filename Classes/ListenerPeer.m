@@ -11,6 +11,22 @@
 
 @implementation ListenerPeer
 
+- (ListenerPeer *)init
+{
+    return [self initWithName:@"listener-peer" _workSleeper:NULL];
+}
+
+
+- (ListenerPeer *)initWithName:name workSleeper:(UMSleeper *)ws
+{
+    self = [super initWithName:name workSleeper:ws];
+    if(self)
+    {
+        _listenerType = [NSString stringWithFormat:@"(%@)",name];
+    }
+    return self;
+}
+
 
 - (void)sendString:(NSString *)msg toAddress:(NSString *)addr toPort:(int)p
 {

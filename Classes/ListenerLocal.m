@@ -12,6 +12,21 @@
 @implementation ListenerLocal
 
 
+- (ListenerLocal *)init
+{
+    return [self initWithName:@"listener-local" workSleeper:NULL];
+}
+
+- (ListenerLocal *)initWithName:name workSleeper:(UMSleeper *)ws
+{
+    self = [super initWithName:name workSleeper:ws];
+    if(self)
+    {
+        _listenerType = [NSString stringWithFormat:@"(%@)",name];
+    }
+    return self;
+}
+
 - (void) attachDaemon:(Daemon *)d
 {
     _daemons[d.resourceId] = d;
@@ -19,7 +34,6 @@
 
 - (void)start
 {
-    _listenerType =@"(local)";
     @autoreleasepool
     {
         UMSocketError err;
