@@ -31,7 +31,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
         _lastLocalReason=@"";
         _lastRemoteReason=@"";
         _pid = 0;
-        _localIsFailed = YES; /* until we get heartbeat from the local, we assume its dead */
+        _localIsFailed = NO; /* once we dont hear for 4 heartbeats from localtimeout we assume its dead */
         _daemonLock = [[UMMutex alloc]initWithName:@"daemonLock"];
         _startActionRunning = [[UMMutex alloc]initWithName:@"_startActionRunning"];
         _stopActionRunning = [[UMMutex alloc]initWithName:@"_stopActionRunning"];
