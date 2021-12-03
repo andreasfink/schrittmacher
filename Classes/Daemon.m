@@ -78,6 +78,9 @@ DaemonRandomValue GetDaemonRandomValue(void)
     dict[@"status"]     = status;
     dict[@"priority"]   = @(_localPriority);
     dict[@"random"]     = @(r);
+    dict[@"type"]       = @"schrittmacher";
+    dict[@"host"]       = _localAddress;
+
     if(_lastLocalReason)
     {
         dict[@"reason"] = _lastLocalReason;
