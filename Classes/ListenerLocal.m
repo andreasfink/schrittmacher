@@ -62,4 +62,56 @@
     NSLog(@"%@",_lastError);
 }
 
+- (int) checkForPackets
+{
+    UMAssert(_rxSocket!=NULL,@"_rxSocket can not be NULL");
+    int packetsProcessed = 0;
+    UMSocketError err =  [_rxSocket dataIsAvailable:2000];
+    if((err == UMSocketError_has_data) || (err==UMSocketError_has_data_and_hup))
+    {
+        packetsProcessed += [self readDataFromSocket:_rxSocket];
+    }
+    else if((err!=UMSocketError_no_error) &&(err!=UMSocketError_no_data))
+    {
+        _lastError = [UMSocket getSocketErrorString:err];
+        NSLog(@"Error %@ while reading from socket",_lastError);
+        packetsProcessed = -1; /* terminates background task */
+    }
+    while(packetsProcessed>0);
+    return packetsProcessed;
+}
+
+- (int)readDataFromSocket:(UMSocket *)socket
+{
+    if(socket==NULL)
+    {
+        return 0;
+    }
+    int packetsProcessed = 0;
+    NSData  *data = NULL;
+    NSString *address = NULL;
+    int rxport;
+    UMSocketError err2 = [socket receiveData:&data fromAddress:&address fromPort:&rxport];
+    NSLog(@"RX: %@",data);
+    if((err2 == UMSocketError_no_error) || (err2==UMSocketError_has_data) || (err2 == UMSocketError_has_data_and_hup))
+    {
+        if(data)
+        {
+            packetsProcessed++;
+            [self receiveStatus:data fromAddress:address];
+        }
+    }
+    else if((err2==UMSocketError_no_data) || (err2==UMSocketError_try_again))
+    {
+        
+    }
+    else
+    {
+        _lastError = [UMSocket getSocketErrorString:err2];
+        NSLog(@"receiveData failed with error %d",err2);
+    }
+    return packetsProcessed;
+}
+
+
 @end
