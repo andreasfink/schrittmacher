@@ -60,6 +60,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
         _goingStandbyTimeout = 6;
     }
     DaemonState_Unknown *startState = [[DaemonState_Unknown alloc]initWithDaemon:self];
+    [_heartbeatTimer start];
     UMMUTEX_LOCK(_daemonLock);
     _currentState = [startState eventStart];
     UMMUTEX_UNLOCK(_daemonLock);

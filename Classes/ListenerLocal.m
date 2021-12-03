@@ -52,20 +52,6 @@
                 NSLog(@"%@",s);
             }
         }
-
-        NSArray *allKeys;
-        @synchronized(_daemons)
-        {
-            allKeys =[_daemons allKeys];
-        }
-        for(NSString *key in allKeys)
-        {
-            Daemon *d = [self daemonByName:key];
-            if(d)
-            {
-                [d actionStart];
-            }
-        }
     }
     [super startBackgroundTask];
 }

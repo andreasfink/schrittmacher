@@ -356,11 +356,11 @@ AppDelegate *_global_appdel= NULL;
             [_listenerPeer attachDaemon:d];
             [_daemons addObject:d];
         }
-        [_listenerLocal start];
         [_listenerPeer start];
+        [_listenerLocal start];
         for(Daemon *d in _daemons)
         {
-            [d.heartbeatTimer start];
+            [d actionStart];
         }
     }
 }
