@@ -32,7 +32,7 @@
 {
  //   if(_logLevel <= UMLOG_DEBUG)
  //   {
-    NSString *s = [NSString stringWithFormat:@"RX%@[%@]:d\n%@",_listenerType,address,port,statusData.stringValue];
+    NSString *s = [NSString stringWithFormat:@"RX%@[%@]:%d\n%@",_listenerType,address,port,statusData.stringValue];
         [_logFeed debugText:s];
  //   }
     @autoreleasepool
