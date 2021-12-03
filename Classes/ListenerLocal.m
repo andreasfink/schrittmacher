@@ -24,14 +24,17 @@
         UMSocketError err;
         if(_localAddress.length > 0)
         {
-            _rxSocket              = [[UMSocket alloc]initWithType:UMSOCKET_TYPE_UDP4ONLY];
+            _rxSocket              = [[UMSocket alloc]initWithType:UMSOCKET_TYPE_UDP];
+            [_rxSocket setIPDualStack];
             _rxSocket.localPort    = _localPort;
             _rxSocket.localHost    = [[UMHost alloc] initWithAddress:_localAddress];
-            NSLog(@"binding ListenerLocal4 to %@ on port %d",_localAddress,_localPort);
+            NSLog(@"binding ListenerLocal to %@ on port %d",_localAddress,_localPort);
             err = [_rxSocket bind];
             if(err)
             {
-                NSLog(@"udp can not bind ListenerLocal4 to port %d. err = %d",_localPort,err);
+                NSString *s = [NSString stringWithFormat:@"Can not bind ListenerLocal to udp port %d. err = %d",_localPort,err];
+                _lastError = s;
+                NSLog(@"%@",s);
             }
         }
 

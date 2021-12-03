@@ -265,6 +265,7 @@ AppDelegate *_global_appdel= NULL;
         [s appendFormat:@"<tr>\n"];
         [s appendFormat:@"<th>Listener</th>\n"];
         [s appendFormat:@"<th>Last Error</th>\n"];
+        [s appendFormat:@"<th>Last Message</th>\n"];
         [s appendFormat:@"</tr>"];
 
         [s appendFormat:@"<tr>\n"];

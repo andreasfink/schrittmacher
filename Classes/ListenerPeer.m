@@ -26,13 +26,14 @@
     if(e)
     {
         NSString *s = [UMSocket getSocketErrorString:e];
-        [self.logFeed majorError:e withText:[NSString stringWithFormat:@"TX Error %d: %@ while sending to %@:%d",e,s,addr,p]];
+        NSString *s1 = [NSString stringWithFormat:@"TX Error %d: %@ while sending to %@:%d",e,s,addr,p];
+        [self.logFeed majorError:e withText:s1];
+        _lastError = s1;
     }
 }
 
 - (void)start
 {
-    
     if(_txSocket== NULL)
     {
         _txSocket              = [[UMSocket alloc]initWithType:UMSOCKET_TYPE_UDP];
@@ -47,7 +48,9 @@
         err = [_txSocket bind];
         if(err)
         {
-            NSLog(@"udp can not bind txSocket err = %d",err);
+            NSString *s = [NSString stringWithFormat:@"Can not bind txSocket to local ip %@ port %d. err = %d",_localAddress,_localPort,err];
+            _lastError = s;
+            NSLog(@"%@",s);
         }
     }
 
@@ -62,7 +65,9 @@
         err = [_rxSocket bind];
         if(err)
         {
-            NSLog(@"udp can not bind ListenerPeer to port %d. err = %d",_localPort,err);
+            NSString *s = [NSString stringWithFormat:@"Can not bind rxSocket to address %@ port %d. err = %d",_localAddress,_localPort,err];
+            _lastError = s;
+            NSLog(@"%@",s);
         }
     }
 
