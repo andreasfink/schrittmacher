@@ -24,6 +24,7 @@
     NSString            *_lastError;
     NSString            *_lastMessage;
     NSString            *_listenerType;
+    BOOL                _mustQuit;
 }
 
 @property(readwrite,strong) NSString *localAddress;

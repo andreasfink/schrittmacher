@@ -115,9 +115,14 @@
         _lastError = @"socket not available";
         return -1; /* terminates background task */
     }
-    @autoreleasepool
+    int packetsProcessed = 0;
+    while((_rxSocket != NULL) && (self.runningStatus == UMBackgrounder_running) && (packetsProcessed >=0))
     {
-        return [self checkForPackets];
+        @autoreleasepool
+        {
+            /* not a busy loop because we will be stopped in poll() */
+            packetsProcessed = [self checkForPackets];
+        }
     }
 }
 
