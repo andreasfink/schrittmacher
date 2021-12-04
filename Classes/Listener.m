@@ -122,8 +122,6 @@
         {
             /* not a busy loop because we will be stopped in poll() */
             packetsProcessed = [self checkForPackets];
-            fprintf(stderr,".");
-            fflush(stderr);
         }
     }
     return packetsProcessed;
@@ -158,7 +156,6 @@
     NSString *address = NULL;
     int rxport;
     UMSocketError err2 = [socket receiveData:&data fromAddress:&address fromPort:&rxport];
-    NSLog(@"RX: %@",data);
     if((err2 == UMSocketError_no_error) || (err2==UMSocketError_has_data) || (err2 == UMSocketError_has_data_and_hup))
     {
         if(data)
