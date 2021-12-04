@@ -59,7 +59,7 @@
         _txSocket.localHost    = [[UMHost alloc] initWithAddress:_localAddress];
         _txSocket.remotePort    = _remotePort;
         _txSocket.remoteHost    = [[UMHost alloc] initWithAddress:_peerAddress];
-
+        
         UMSocketError err;
         NSLog(@"binding txSocket to %@",_localAddress);
         err = [_txSocket bind];

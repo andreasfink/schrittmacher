@@ -173,7 +173,10 @@ typedef enum DaemonInterfaceState
 - (void)actionSendTransitingToHot;
 - (void)actionSendTransitingToStandby;
 
-- (void)sendStatus:(NSString *)status;
+- (void) sendStatus:(NSString *)status;
+- (void) sendStatus:(NSString *)status location:(NSString *)location;
+- (void) sendStatus:(NSString *)status withRandomValue:(DaemonRandomValue)r;
+- (void) sendStatus:(NSString *)status withRandomValue:(DaemonRandomValue)r location:(NSString *)loc;
 
 - (void)checkForTimeouts;
 - (NSDictionary *)status;

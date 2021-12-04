@@ -69,10 +69,20 @@ DaemonRandomValue GetDaemonRandomValue(void)
 
 - (void) sendStatus:(NSString *)status
 {
-    return [self sendStatus:status withRandomValue:0];
+    return [self sendStatus:status withRandomValue:0 location:NULL];
+}
+
+- (void) sendStatus:(NSString *)status location:(NSString *)location
+{
+    return [self sendStatus:status withRandomValue:0 location:location];
 }
 
 - (void) sendStatus:(NSString *)status withRandomValue:(DaemonRandomValue)r
+{
+    return [self sendStatus:status withRandomValue:r location:NULL];
+}
+
+- (void) sendStatus:(NSString *)status withRandomValue:(DaemonRandomValue)r location:(NSString *)loc
 {
     NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
     dict[@"resource"]   = _resourceId;
@@ -81,7 +91,10 @@ DaemonRandomValue GetDaemonRandomValue(void)
     dict[@"random"]     = @(r);
     dict[@"type"]       = @"schrittmacher";
     dict[@"host"]       = _localAddress;
-
+    if(loc)
+    {
+        dict[@"location"]   = loc;
+    }
     if(_lastLocalReason)
     {
         dict[@"reason"] = _lastLocalReason;
