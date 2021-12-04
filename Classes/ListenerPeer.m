@@ -8,6 +8,7 @@
 
 #import "ListenerPeer.h"
 #import "Daemon.h"
+#import "ListenerLocal.h"
 
 @implementation ListenerPeer
 
@@ -105,4 +106,23 @@
     NSLog(@"%@",_lastError);
 }
 
+
+- (void)receiveStatus:(NSData *)statusData
+          fromAddress:(NSString *)address
+                 port:(int)port
+{
+    if(     ([address isEqualToString:@"127.0.0.1"])
+        ||  ([address isEqualToString:@"::1"]) )
+    {
+        [_listenerLocal receiveStatus:statusData
+                          fromAddress:address
+                                 port:port];
+    }
+    else
+    {
+        [super receiveStatus:statusData
+                 fromAddress:address
+                        port:port];
+    }
+}
 @end

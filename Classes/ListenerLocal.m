@@ -63,37 +63,4 @@
 }
 
 
-- (int)readDataFromSocket:(UMSocket *)socket
-{
-    if(socket==NULL)
-    {
-        return 0;
-    }
-    int packetsProcessed = 0;
-    NSData  *data = NULL;
-    NSString *address = NULL;
-    int rxport;
-    UMSocketError err2 = [socket receiveData:&data fromAddress:&address fromPort:&rxport];
-    NSLog(@"RX: %@",data);
-    if((err2 == UMSocketError_no_error) || (err2==UMSocketError_has_data) || (err2 == UMSocketError_has_data_and_hup))
-    {
-        if(data)
-        {
-            packetsProcessed++;
-            [self receiveStatus:data fromAddress:address port:rxport];
-        }
-    }
-    else if((err2==UMSocketError_no_data) || (err2==UMSocketError_try_again))
-    {
-        
-    }
-    else
-    {
-        _lastError = [UMSocket getSocketErrorString:err2];
-        NSLog(@"receiveData failed with error %d",err2);
-    }
-    return packetsProcessed;
-}
-
-
 @end

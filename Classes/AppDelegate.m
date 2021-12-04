@@ -291,16 +291,6 @@ AppDelegate *_global_appdel= NULL;
 {
     @autoreleasepool
     {
-        _listenerPeer = [[ListenerPeer alloc]init];
-        _listenerPeer.logFeed          = self.logFeed;
-        _listenerPeer.logHandler       = _mainLogHandler;
-        _listenerPeer.logLevel         = self.logLevel;
-        _listenerPeer.localAddress     = _localAddress;
-        _listenerPeer.peerAddress      = _remoteAddress;
-        _listenerPeer.localPort        = _port;
-        _listenerPeer.remotePort       = _port;
-        _listenerPeer.addressType      = 46;
-
         _listenerLocal = [[ListenerLocal alloc]init];
         _listenerLocal.logFeed         = self.logFeed;
         _listenerLocal.logHandler      = _mainLogHandler;
@@ -310,6 +300,17 @@ AppDelegate *_global_appdel= NULL;
         _listenerLocal.localPort       = _port+1;
         _listenerLocal.remotePort      = 0;
         _listenerLocal.addressType     = 46;
+
+        _listenerPeer = [[ListenerPeer alloc]init];
+        _listenerPeer.logFeed          = self.logFeed;
+        _listenerPeer.logHandler       = _mainLogHandler;
+        _listenerPeer.logLevel         = self.logLevel;
+        _listenerPeer.localAddress     = _localAddress;
+        _listenerPeer.peerAddress      = _remoteAddress;
+        _listenerPeer.localPort        = _port;
+        _listenerPeer.remotePort       = _port;
+        _listenerPeer.addressType      = 46;
+        _listenerPeer.listenerLocal = _listenerLocal;
 
         NSArray *configs = [_config getMultiGroups:@"resource"];
         for(NSDictionary *daemonConfig in configs)
