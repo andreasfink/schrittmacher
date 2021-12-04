@@ -112,7 +112,8 @@
                  port:(int)port
 {
     if(     ([address isEqualToString:@"127.0.0.1"])
-        ||  ([address isEqualToString:@"::1"]) )
+        ||  ([address isEqualToString:@"::1"])
+        ||  ([address isEqualToString:_localAddress]) )
     {
         [_listenerLocal receiveStatus:statusData
                           fromAddress:address
@@ -120,9 +121,16 @@
     }
     else
     {
-        [super receiveStatus:statusData
-                 fromAddress:address
-                        port:port];
+        if([address isEqualToString:_peerAddress])
+        {
+            [super receiveStatus:statusData
+                     fromAddress:address
+                            port:port];
+        }
+        else
+        {
+            _lastError = [NSString stringWithFormat:@"Unexpected packet from %@",([address isEqualToString:_peerAddress])];
+        }
     }
 }
 @end
