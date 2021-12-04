@@ -145,7 +145,6 @@
         NSLog(@"Error %@ while reading from socket",_lastError);
         packetsProcessed = -1; /* terminates background task */
     }
-    while(packetsProcessed>0);
     return packetsProcessed;
 }
 
