@@ -305,10 +305,10 @@ AppDelegate *_global_appdel= NULL;
         _listenerLocal.logFeed         = self.logFeed;
         _listenerLocal.logHandler      = _mainLogHandler;
         _listenerLocal.logLevel        = self.logLevel;
-        _listenerLocal.localAddress    = @"127.0.0.1";
-        _listenerLocal.peerAddress     = @"127.0.0.1";
+        _listenerLocal.localAddress    = _localAddress;
+        _listenerLocal.peerAddress     = NULL;
         _listenerLocal.localPort       = _port+1;
-        _listenerLocal.remotePort      = _port+1;
+        _listenerLocal.remotePort      = 0;
         _listenerLocal.addressType     = 46;
 
    
