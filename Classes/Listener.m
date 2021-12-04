@@ -124,6 +124,7 @@
             packetsProcessed = [self checkForPackets];
         }
     }
+    return packetsProcessed;
 }
 
 - (int) checkForPackets
