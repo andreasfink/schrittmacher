@@ -122,6 +122,8 @@
         {
             /* not a busy loop because we will be stopped in poll() */
             packetsProcessed = [self checkForPackets];
+            fprintf(stderr,".");
+            fflush(stderr);
         }
     }
     return packetsProcessed;

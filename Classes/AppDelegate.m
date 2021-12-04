@@ -311,7 +311,6 @@ AppDelegate *_global_appdel= NULL;
         _listenerLocal.remotePort      = 0;
         _listenerLocal.addressType     = 46;
 
-   
         NSArray *configs = [_config getMultiGroups:@"resource"];
         for(NSDictionary *daemonConfig in configs)
         {
