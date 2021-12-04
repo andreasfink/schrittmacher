@@ -62,24 +62,6 @@
     NSLog(@"%@",_lastError);
 }
 
-- (int) checkForPackets
-{
-    UMAssert(_rxSocket!=NULL,@"_rxSocket can not be NULL");
-    int packetsProcessed = 0;
-    UMSocketError err =  [_rxSocket dataIsAvailable:2000];
-    if((err == UMSocketError_has_data) || (err==UMSocketError_has_data_and_hup))
-    {
-        packetsProcessed += [self readDataFromSocket:_rxSocket];
-    }
-    else if((err!=UMSocketError_no_error) &&(err!=UMSocketError_no_data))
-    {
-        _lastError = [UMSocket getSocketErrorString:err];
-        NSLog(@"Error %@ while reading from socket",_lastError);
-        packetsProcessed = -1; /* terminates background task */
-    }
-    while(packetsProcessed>0);
-    return packetsProcessed;
-}
 
 - (int)readDataFromSocket:(UMSocket *)socket
 {

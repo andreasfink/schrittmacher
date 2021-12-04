@@ -134,6 +134,7 @@
     UMAssert(_rxSocket!=NULL,@"_rxSocket can not be NULL");
     int packetsProcessed = 0;
     UMSocketError err =  [_rxSocket dataIsAvailable:2000];
+    NSLog(@"[_rxSocket dataIsAvailable:2000] returns %d",err);
     if((err == UMSocketError_has_data) || (err==UMSocketError_has_data_and_hup))
     {
         packetsProcessed += [self readDataFromSocket:_rxSocket];
