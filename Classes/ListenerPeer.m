@@ -129,7 +129,7 @@
         }
         else
         {
-            _lastError = [NSString stringWithFormat:@"Unexpected packet from %@",([address isEqualToString:_peerAddress])];
+            _lastError = [NSString stringWithFormat:@"Unexpected packet from %@",address];
         }
     }
 }
