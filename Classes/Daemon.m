@@ -746,8 +746,16 @@ DaemonRandomValue GetDaemonRandomValue(void)
 
 - (void) callActivateInterfaceBackground
 {
-    UMMUTEX_LOCK(_activateInterfaceRunning);
-    [_logFeed infoText:@"*** callActivateInterface ***"];
+    int result = 0;
+    UMMUTEX_TRYLOCK(_activateInterfaceRunning, 10, 0.1, result);
+    if(result != 0)
+    {
+        [_logFeed infoText:@"*** callActivateInterface while LOCK was held over 10 seconds ***"];
+    }
+    else
+    {
+        [_logFeed infoText:@"*** callActivateInterface ***"];
+    }
     [self setEnvVars];
     setenv("ACTION", "activate", 1);
     [self executeScript:_activateInterfaceCommand];
@@ -774,15 +782,26 @@ DaemonRandomValue GetDaemonRandomValue(void)
 
 - (void) callDeactivateInterfaceBackground
 {
-    UMMUTEX_LOCK(_deactivateInterfaceRunning);
-    [_logFeed infoText:@"*** callDeactivateInterface ***"];
+    int result = 0;
+    UMMUTEX_TRYLOCK(_deactivateInterfaceRunning, 10, 0.1, result);
+    if(result != 0)
+    {
+        [_logFeed infoText:@"*** callDeactivateInterface while LOCK was held over 10 seconds ***"];
+    }
+    else
+    {
+        [_logFeed infoText:@"*** callDeactivateInterface ***"];
+    }
     [self setEnvVars];
     setenv("ACTION", "deactivate", 1);
     [self executeScript:_deactivateInterfaceCommand];
     [self unsetEnvVars];
     _deactivatedAt = [NSDate date];
     self.interfaceState = DaemonInterfaceState_Down;
-    UMMUTEX_UNLOCK(_deactivateInterfaceRunning);
+    if(result==0)
+    {
+        UMMUTEX_UNLOCK(_deactivateInterfaceRunning);
+    }
 }
 
 
@@ -793,8 +812,16 @@ DaemonRandomValue GetDaemonRandomValue(void)
 
 - (void) callStartActionBackground
 {
-    UMMUTEX_LOCK(_startActionRunning);
-    [_logFeed infoText:@"*** callStartAction ***"];
+    int result = 0;
+    UMMUTEX_TRYLOCK(_startActionRunning, 10, 0.1, result);
+    if(result != 0)
+    {
+        [_logFeed infoText:@"*** callStartAction while LOCK was held over 10 seconds ***"];
+    }
+    else
+    {
+        [_logFeed infoText:@"*** callStartAction ***"];
+    }
     [_prometheusMetrics.metricsStartActionRequested increaseBy:1];
     self.localStartActionRequested = YES;
     if(_startAction.length > 0)
@@ -809,7 +836,10 @@ DaemonRandomValue GetDaemonRandomValue(void)
         kill((pid_t)_pid,SIGUSR1);
     }
     _startedAt = [NSDate date];
-    UMMUTEX_UNLOCK(_startActionRunning);
+    if(result==0)
+    {
+        UMMUTEX_UNLOCK(_startActionRunning);
+    }
 }
 
 
@@ -820,8 +850,17 @@ DaemonRandomValue GetDaemonRandomValue(void)
 
 - (void) callStopActionBackground
 {
-    UMMUTEX_LOCK(_stopActionRunning);
-    [_logFeed infoText:@"*** callStopAction ***"];
+    
+    int result = 0;
+    UMMUTEX_TRYLOCK(_stopActionRunning, 10, 0.1, result);
+    if(result != 0)
+    {
+        [_logFeed infoText:@"*** callStopAction while LOCK was held over 10 seconds ***"];
+    }
+    else
+    {
+        [_logFeed infoText:@"*** callStopAction ***"];
+    }
     [_prometheusMetrics.metricsStopActionRequested increaseBy:1];
     self.localStopActionRequested = YES;
     if(_stopAction.length > 0)
@@ -836,7 +875,10 @@ DaemonRandomValue GetDaemonRandomValue(void)
         kill((pid_t)_pid,SIGUSR2);
     }
     _stoppedAt = [NSDate date];
-    UMMUTEX_UNLOCK(_stopActionRunning);
+    if(result==0)
+    {
+        UMMUTEX_UNLOCK(_stopActionRunning);
+    }
 }
 
 - (void)fireUp
