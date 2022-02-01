@@ -103,6 +103,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
     if(_logLevel <=UMLOG_DEBUG)
     {
         [_logFeed debugText:[NSString stringWithFormat:@"TX %@->%@: %@",_localAddress,_remoteAddress,dict]];
+        [_logFeedFile debugText:[NSString stringWithFormat:@"TX %@->%@: %@",_localAddress,_remoteAddress,dict]];
     }
      [_listener sendString:msg toAddress:_remoteAddress toPort:_port];
 }
@@ -599,6 +600,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
             s = [NSString stringWithFormat:@"State Change %@->%@",oldstate,newstate];
         }
         [_logFeed infoText:s];
+        [_logFeedFile infoText:s];
     }
     UMMUTEX_UNLOCK(_daemonLock);
 }
@@ -653,6 +655,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
     {
         _lastLocalReason = @"eventLocalTimeout issued due to outstanding local heartbeats";
         [_logFeed infoText:_lastLocalReason];
+        [_logFeedFile infoText:_lastLocalReason];
         _currentState = [_currentState eventLocalTimeout];
     }
 
@@ -660,6 +663,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
     {
         _lastRemoteReason = @"eventRemoteTimeout issued due to outstanding remote heartbeats";
         [_logFeed infoText:_lastRemoteReason];
+        [_logFeedFile infoText:_lastRemoteReason];
         _currentState = [_currentState eventRemoteTimeout];
     }
 }
@@ -713,10 +717,11 @@ DaemonRandomValue GetDaemonRandomValue(void)
     {
         return 0;
     }
-//    if(_logLevel <= UMLOG_DEBUG)
-//    {
-        [_logFeed debugText:[NSString stringWithFormat:@" Executing: %@",command]];
-//    }
+    [_logFeed debugText:[NSString stringWithFormat:@" Executing: %@",command]];
+    if(_logLevel <= UMLOG_DEBUG)
+    {
+        [_logFeedFile debugText:[NSString stringWithFormat:@" Executing: %@",command]];
+    }
     NSArray *cmd_array = [command componentsSeparatedByCharactersInSet:[UMUtil whitespaceAndNewlineCharacterSet]];
     NSArray *lines = [UMUtil readChildProcess:cmd_array];
     r=0;
@@ -724,6 +729,7 @@ DaemonRandomValue GetDaemonRandomValue(void)
     {
         NSString *allLines = [lines componentsJoinedByString:@"\n"];
         [_logFeed debugText:allLines];
+        [_logFeedFile debugText:allLines];
     }
     return r;
 }

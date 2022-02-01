@@ -18,6 +18,11 @@
     UMTaskQueue         *_mainTaskQueue;
     UMLogConsole        *_console;
     UMLogHandler        *_mainLogHandler;
+
+    UMLogFile           *_logFile;
+    UMLogHandler        *_logFileHandler;
+    UMLogFeed           *_logFeedFile;
+
     UMHTTPServer        *_httpServer;
     
     int                 _port;
@@ -43,5 +48,5 @@
 @property(readwrite,assign)         UMLogLevel logLevel;
 @property(readwrite,assign)         int port;
 @property(readwrite,assign)         int webPort;
-
+@property(readwrite,strong,atomic)  UMLogFeed *logFeedFile;
 @end

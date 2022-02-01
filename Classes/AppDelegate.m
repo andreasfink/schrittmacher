@@ -181,6 +181,16 @@ AppDelegate *_global_appdel= NULL;
     {
         _timeout = 3.0 * _heartbeat;
     }
+    
+    s = coreConfig[@"log-file"];
+    if((s.length > 0))
+    {
+        _logFile = [[UMLogFile alloc] initWithFileName:s];
+        _logFileHandler = [[UMLogHandler alloc]init];
+        [_logFileHandler addLogDestination:_logFile];
+        _logFeedFile = [[UMLogFeed alloc]initWithHandler:_logFileHandler section:@"core"];
+        _logFeedFile.name = @"schrittmacher-log";
+    }
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
@@ -293,6 +303,7 @@ AppDelegate *_global_appdel= NULL;
     {
         _listenerLocal = [[ListenerLocal alloc]init];
         _listenerLocal.logFeed         = self.logFeed;
+        _listenerLocal.logFeedFile     = self.logFeedFile;
         _listenerLocal.logHandler      = _mainLogHandler;
         _listenerLocal.logLevel        = self.logLevel;
         _listenerLocal.localAddress    = _localAddress;
@@ -303,6 +314,7 @@ AppDelegate *_global_appdel= NULL;
 
         _listenerPeer = [[ListenerPeer alloc]init];
         _listenerPeer.logFeed          = self.logFeed;
+        _listenerPeer.logFeedFile     = self.logFeedFile;
         _listenerPeer.logHandler       = _mainLogHandler;
         _listenerPeer.logLevel         = self.logLevel;
         _listenerPeer.localAddress     = _localAddress;
@@ -329,6 +341,7 @@ AppDelegate *_global_appdel= NULL;
             }
             Daemon *d = [[Daemon alloc]init];
             d.logFeed = [[UMLogFeed alloc]initWithHandler:_mainLogHandler section:resourceName];
+            d.logFeedFile = _logFeedFile;
             d.localAddress = _localAddress;
             d.remoteAddress = _remoteAddress;
             d.sharedAddress = _sharedAddress;
