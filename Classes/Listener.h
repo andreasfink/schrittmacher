@@ -25,6 +25,7 @@
     NSString            *_lastMessage;
     NSString            *_listenerType;
     BOOL                _mustQuit;
+    UMLogFeed           *_logFeedFile;
 }
 
 @property(readwrite,strong) NSString *localAddress;
@@ -36,6 +37,7 @@
 @property(readwrite,strong) UMLogHandler *logHandler;
 @property(readwrite,strong) NSString *lastError;
 @property(readwrite,strong) NSString *lastMessage;
+@property(readwrite,strong) UMLogFeed *logFeedFile;
 
 - (int)checkForPackets;
 - (NSDictionary *)status;

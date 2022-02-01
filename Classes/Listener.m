@@ -30,11 +30,12 @@
           fromAddress:(NSString *)address
                  port:(int)port
 {
- //   if(_logLevel <= UMLOG_DEBUG)
- //   {
     NSString *s = [NSString stringWithFormat:@"RX%@[%@]:%d\n%@",_listenerType,address,port,statusData.stringValue];
-        [_logFeed debugText:s];
- //   }
+    [_logFeed debugText:s];
+    if(_logLevel <= UMLOG_DEBUG)
+    {
+        [_logFeedFile debugText:s];
+    }
     @autoreleasepool
     {
         @try
@@ -68,17 +69,20 @@
                     if(_logLevel <= UMLOG_DEBUG)
                     {
                         [daemon.logFeed debugText:[NSString stringWithFormat:@"RX <-%@: %@",address,di]];
+                        [daemon.logFeedFile debugText:[NSString stringWithFormat:@"RX <-%@: %@",address,di]];
                     }
                 }
                 else
                 {
                     [_logFeed infoText:[NSString stringWithFormat:@"Ignoring unknown resource '%@'",resource]];
+                    [_logFeedFile infoText:[NSString stringWithFormat:@"Ignoring unknown resource '%@'",resource]];
                 }
             }
         }
         @catch(NSException *e)
         {
-            [self.logFeed warningText:[NSString stringWithFormat:@"Exception: %@",e]];
+            [_logFeed warningText:[NSString stringWithFormat:@"Exception: %@",e]];
+            [_logFeedFile warningText:[NSString stringWithFormat:@"Exception: %@",e]];
         }
     }
 }

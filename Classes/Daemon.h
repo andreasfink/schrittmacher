@@ -103,6 +103,7 @@ typedef enum DaemonInterfaceState
     UMMutex         *_stopActionRunning;
     UMMutex         *_activateInterfaceRunning;
     UMMutex         *_deactivateInterfaceRunning;
+    UMLogFeed       *_logFeedFile;
 }
 
 @property (readwrite,strong) DaemonState *currentState;
@@ -154,6 +155,7 @@ typedef enum DaemonInterfaceState
 @property(readwrite,strong,atomic) UMMutex  *stopActionRunning;
 @property(readwrite,strong,atomic) UMMutex  *activateInterfaceRunning;
 @property(readwrite,strong,atomic) UMMutex  *deactivateInterfaceRunning;
+@property (readwrite,strong) UMLogFeed       *logFeedFile;
 
 
 - (void)eventReceived:(NSString *)event dict:(NSDictionary *)dict;
