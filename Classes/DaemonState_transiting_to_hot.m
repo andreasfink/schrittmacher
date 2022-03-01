@@ -132,9 +132,14 @@
 - (DaemonState *)eventStatusLocalFailure:(NSDictionary *)dict
 {
     [self logEvent:@"eventStatusLocalFailure"];
-    [daemon actionSendFailed];
-    [daemon callDeactivateInterface];
-    return [[DaemonState_Failed alloc]initWithDaemon:daemon];
+    if([[NSDate date] timeIntervalSinceDate:_goingHotStartTime] > daemon.goingHotTimeout)
+    {
+        [daemon actionSendFailed];
+        [daemon callStopAction];
+        [daemon callDeactivateInterface];
+        return [[DaemonState_Failed alloc]initWithDaemon:daemon];
+    }
+    return self;
 }
 
 - (DaemonState *)eventStatusLocalUnknown:(NSDictionary *)dict
