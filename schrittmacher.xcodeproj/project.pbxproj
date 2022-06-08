@@ -65,6 +65,8 @@
 		A6B59CC525BC3A0E0014D9E2 /* DaemonState_Failed.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DaemonState_Failed.h; sourceTree = "<group>"; };
 		A6B59CC625BC3A0E0014D9E2 /* DaemonState_Failed.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DaemonState_Failed.m; sourceTree = "<group>"; };
 		A6B862B12489DA47000A79B5 /* VERSION */ = {isa = PBXFileReference; lastKnownFileType = text; path = VERSION; sourceTree = SOURCE_ROOT; };
+		A6C2C26828510F8A00A09BA7 /* VERSION */ = {isa = PBXFileReference; lastKnownFileType = text; path = VERSION; sourceTree = "<group>"; };
+		A6C2C26928510F9700A09BA7 /* RELEASE-NOTES.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "RELEASE-NOTES.txt"; sourceTree = "<group>"; };
 		A6C60A4326897CC700EDBC5C /* SchrittmacherMetrics.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SchrittmacherMetrics.h; sourceTree = "<group>"; };
 		A6C60A4426897CC700EDBC5C /* SchrittmacherMetrics.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SchrittmacherMetrics.m; sourceTree = "<group>"; };
 		A6E54FC91B0DAB7D0090FC94 /* DaemonState_all.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DaemonState_all.h; sourceTree = "<group>"; };
@@ -87,6 +89,8 @@
 		A6018F6F1B0D388200854472 = {
 			isa = PBXGroup;
 			children = (
+				A6C2C26828510F8A00A09BA7 /* VERSION */,
+				A6C2C26928510F9700A09BA7 /* RELEASE-NOTES.txt */,
 				A66281EC1B1442E90090FC94 /* doc */,
 				A6018F7A1B0D388200854472 /* Classes */,
 				A6018F791B0D388200854472 /* Products */,
