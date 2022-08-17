@@ -58,6 +58,7 @@
 		A661864C27573028001988B0 /* ListenerPeer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ListenerPeer.h; sourceTree = "<group>"; };
 		A661864D27573028001988B0 /* ListenerPeer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ListenerPeer.m; sourceTree = "<group>"; };
 		A6798A3922BB744A0019806C /* ulib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ulib.framework; path = "/Library/Application Support/FinkTelecomServices/frameworks/ulib.framework"; sourceTree = "<absolute>"; };
+		A67BDEDE28AC804500490E1B /* schrittmacher.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = schrittmacher.entitlements; sourceTree = "<group>"; };
 		A6B59CBD25BC37AD0014D9E2 /* DaemonState_transiting_to_hot.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DaemonState_transiting_to_hot.h; sourceTree = "<group>"; };
 		A6B59CBE25BC37AD0014D9E2 /* DaemonState_transiting_to_hot.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DaemonState_transiting_to_hot.m; sourceTree = "<group>"; };
 		A6B59CC125BC37B80014D9E2 /* DaemonState_transiting_to_standby.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DaemonState_transiting_to_standby.h; sourceTree = "<group>"; };
@@ -89,6 +90,7 @@
 		A6018F6F1B0D388200854472 = {
 			isa = PBXGroup;
 			children = (
+				A67BDEDE28AC804500490E1B /* schrittmacher.entitlements */,
 				A6C2C26828510F8A00A09BA7 /* VERSION */,
 				A6C2C26928510F9700A09BA7 /* RELEASE-NOTES.txt */,
 				A66281EC1B1442E90090FC94 /* doc */,
@@ -191,7 +193,7 @@
 				TargetAttributes = {
 					A6018F771B0D388200854472 = {
 						CreatedOnToolsVersion = 6.3.2;
-						DevelopmentTeam = 2GSNWPNR77;
+						DevelopmentTeam = 38L827M334;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -364,10 +366,11 @@
 		A6018F801B0D388200854472 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = schrittmacher.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 2GSNWPNR77;
-				ENABLE_HARDENED_RUNTIME = YES;
+				DEVELOPMENT_TEAM = 38L827M334;
+				ENABLE_HARDENED_RUNTIME = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(LOCAL_LIBRARY_DIR)/Frameworks",
@@ -383,10 +386,11 @@
 		A6018F811B0D388200854472 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = schrittmacher.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 2GSNWPNR77;
-				ENABLE_HARDENED_RUNTIME = YES;
+				DEVELOPMENT_TEAM = 38L827M334;
+				ENABLE_HARDENED_RUNTIME = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(LOCAL_LIBRARY_DIR)/Frameworks",
