@@ -79,7 +79,7 @@
         [_rxSocket setIPDualStack];
         _rxSocket.localPort    = _localPort;
         _rxSocket.localHost    = [[UMHost alloc] initWithAddress:_localAddress];
-        NSLog(@"binding ListnerPeer to %@ on port %d",_localAddress,_localPort);
+        NSLog(@"binding ListenerPeer to %@ on port %d",_localAddress,_localPort);
         err = [_rxSocket bind];
         if(err)
         {
