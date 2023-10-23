@@ -16,7 +16,7 @@ REVISION=@REVISION@
 
 EXEDIR=/usr/local/sbin
 
-EXE=schrittmacher
+EXE=bin/schrittmacher
 
 CONFIG_HEADER =config.h
 CONFIGURATION=Release
