@@ -14,7 +14,7 @@ PROJECT_NAME="schrittmacher"
 AUTHOR="Andreas Fink <andreas@fink.org>"
 CONFIG_DEFINE="SCHRITTMACHER_CONFIG"
 VERSION=`head -n 1 VERSION`
-CONFIG_HEADER=schrittmacher_config.h
+CONFIG_HEADER=${PROJECT_NAME}/schrittmacher_config.h
 DEPENDENT_PKGCONFIGS="ulib"
 PKG_CONFIG_PATH="/usr/local/lib/pkgconfig"
 export PKG_CONFIG_PATH

@@ -25,10 +25,10 @@ LIBTOOL=ar rc
 RANLIB=ranlib
 BUILDNUMBER=`svn info | grep Revision | cut -f2 -d" "`
 	
-MFILES = $(wildcard Classes/*.m)
+MFILES = $(wildcard schrittmacher/*.m)
 OFILES = $(MFILES:.m=.m.o)
 
-INCLUDEDIRS=-IClasses
+INCLUDEDIRS=-Ischrittmacher
 
 all:	build/${EXE}
 
