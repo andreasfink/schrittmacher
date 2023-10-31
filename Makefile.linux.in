@@ -16,7 +16,7 @@ REVISION=@REVISION@
 
 EXEDIR=/usr/local/sbin
 
-EXE=bin/schrittmacher
+EXE=schrittmacher
 
 CONFIG_HEADER =config.h
 CONFIGURATION=Release
@@ -34,7 +34,7 @@ all:	build/${EXE}
 
 build/${EXE}: ${OFILES} 
 	./make_version
-	-mkdir -p build
+	-mkdir -p build/
 	${CC} -o build/${EXE} ${LDFLAGS} ${OFILES} ${LIBS} ${STATIC_LIBS}
 	touch version.c.in
 
