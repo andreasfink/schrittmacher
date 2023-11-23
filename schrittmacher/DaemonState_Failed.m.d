@@ -1,5 +1,6 @@
 schrittmacher/DaemonState_Failed.m.o: schrittmacher/DaemonState_Failed.m \
   schrittmacher/DaemonState_Failed.h schrittmacher/DaemonState.h \
+  /usr/local/include/GNUstep/objc/blocks_runtime.h \
   /usr/include/GNUstep/CoreFoundation/CoreFoundation.h \
   schrittmacher/DaemonState_all.h schrittmacher/Daemon.h \
   schrittmacher/SchrittmacherMetrics.h \
@@ -11,6 +12,8 @@ schrittmacher/DaemonState_Failed.m.o: schrittmacher/DaemonState_Failed.m \
 schrittmacher/DaemonState_Failed.h:
 
 schrittmacher/DaemonState.h:
+
+/usr/local/include/GNUstep/objc/blocks_runtime.h:
 
 /usr/include/GNUstep/CoreFoundation/CoreFoundation.h:
 

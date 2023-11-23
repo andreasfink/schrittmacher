@@ -2,6 +2,7 @@ schrittmacher/DaemonState_transiting_to_hot.m.o: \
   schrittmacher/DaemonState_transiting_to_hot.m \
   schrittmacher/DaemonState_transiting_to_hot.h \
   schrittmacher/DaemonState.h \
+  /usr/local/include/GNUstep/objc/blocks_runtime.h \
   /usr/include/GNUstep/CoreFoundation/CoreFoundation.h \
   schrittmacher/DaemonState_all.h schrittmacher/Daemon.h \
   schrittmacher/SchrittmacherMetrics.h \
@@ -13,6 +14,8 @@ schrittmacher/DaemonState_transiting_to_hot.m.o: \
 schrittmacher/DaemonState_transiting_to_hot.h:
 
 schrittmacher/DaemonState.h:
+
+/usr/local/include/GNUstep/objc/blocks_runtime.h:
 
 /usr/include/GNUstep/CoreFoundation/CoreFoundation.h:
 
