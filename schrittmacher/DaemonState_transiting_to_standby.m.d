@@ -2,8 +2,7 @@ schrittmacher/DaemonState_transiting_to_standby.m.o: \
   schrittmacher/DaemonState_transiting_to_standby.m \
   schrittmacher/DaemonState_transiting_to_standby.h \
   schrittmacher/DaemonState.h \
-  /usr/local/include/GNUstep/objc/blocks_runtime.h \
-  /usr/include/GNUstep/CoreFoundation/CoreFoundation.h \
+  /usr/GNUstep/System/Library/Headers/CoreFoundation/CoreFoundation.h \
   schrittmacher/DaemonState_all.h schrittmacher/Daemon.h \
   schrittmacher/SchrittmacherMetrics.h \
   schrittmacher/DaemonState_Unknown.h schrittmacher/DaemonState_Hot.h \
@@ -15,9 +14,7 @@ schrittmacher/DaemonState_transiting_to_standby.h:
 
 schrittmacher/DaemonState.h:
 
-/usr/local/include/GNUstep/objc/blocks_runtime.h:
-
-/usr/include/GNUstep/CoreFoundation/CoreFoundation.h:
+/usr/GNUstep/System/Library/Headers/CoreFoundation/CoreFoundation.h:
 
 schrittmacher/DaemonState_all.h:
 

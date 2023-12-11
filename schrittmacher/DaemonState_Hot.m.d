@@ -1,7 +1,6 @@
 schrittmacher/DaemonState_Hot.m.o: schrittmacher/DaemonState_Hot.m \
   schrittmacher/DaemonState_all.h \
-  /usr/local/include/GNUstep/objc/blocks_runtime.h \
-  /usr/include/GNUstep/CoreFoundation/CoreFoundation.h \
+  /usr/GNUstep/System/Library/Headers/CoreFoundation/CoreFoundation.h \
   schrittmacher/Daemon.h schrittmacher/SchrittmacherMetrics.h \
   schrittmacher/DaemonState.h schrittmacher/DaemonState_Unknown.h \
   schrittmacher/DaemonState_Hot.h schrittmacher/DaemonState_Standby.h \
@@ -11,9 +10,7 @@ schrittmacher/DaemonState_Hot.m.o: schrittmacher/DaemonState_Hot.m \
 
 schrittmacher/DaemonState_all.h:
 
-/usr/local/include/GNUstep/objc/blocks_runtime.h:
-
-/usr/include/GNUstep/CoreFoundation/CoreFoundation.h:
+/usr/GNUstep/System/Library/Headers/CoreFoundation/CoreFoundation.h:
 
 schrittmacher/Daemon.h:
 

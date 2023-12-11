@@ -13,6 +13,13 @@ stamp-h1
 autom4te.cache
 *.xcuserdatad/
 *.m.d
+BUILDNR
+Makefile.freebsd
+buildnumber.c
+buildnumber.h
+make_buildnr.sh
+schrittmacher/schrittmacher_config.h
+version.h
 
 #########################
 # .gitignore file for Xcode4 and Xcode5 Source projects
