@@ -1,0 +1,61 @@
+# File: Makefile
+# Project "schrittmacher"
+# (c) 2002 -2016 Andreas Fink
+# Create: Andreas Fink (andreas@fink.org)
+#
+#
+
+CC=clang
+CFLAGS= -D_REENTRANT=1 -DDARWIN=1 -arch x86_64 -g -O2 -DSCHRITTMACHER_CONFIG=Release 
+CONFIGURATION=Release
+LDFLAGS= -g
+LIBS= -Lsrc
+MAJORVER=@MAJORVER@
+MINORVER=@MINORVER@
+REVISION=@REVISION@
+
+EXEDIR=/usr/local/sbin
+
+EXE=schrittmacher
+
+CONFIG_HEADER =config.h
+CONFIGURATION=Release
+MKDEPEND=$(CC) $(CFLAGS) -MM
+LIBTOOL=ar rc
+RANLIB=ranlib
+BUILDNUMBER=`svn info | grep Revision | cut -f2 -d" "`
+	
+MFILES = $(wildcard Classes/*.m)
+OFILES = $(MFILES:.m=.m.o)
+
+INCLUDEDIRS=-IClasses
+
+all:	build/${EXE}
+
+build/${EXE}: ${OFILES} 
+	./make_version
+	-mkdir -p build
+	${CC} -o build/${EXE} ${LDFLAGS} ${OFILES} ${LIBS} ${STATIC_LIBS}
+	touch version.c.in
+
+install: build/${EXE}
+	-mkdir -p -m 755 $(DESTDIR)/usr/local/sbin
+	-mkdir -p -m 755 $(DESTDIR)/etc/schrittmacher/
+	-mkdir -p -m 755 $(DESTDIR)/etc/systemd/system/
+	-install -b -g wheel -o root -m 4755 build/${EXE} $(DESTDIR)${EXEDIR}/${EXE}
+	-install -b -g wheel -o root -m 644 debian/schrittmacher.service $(DESTDIR)/etc/systemd/system/schrittmacher.service
+	-install -b -g wheel -o root -m 644 schrittmacher.conf.example $(DESTDIR)/etc/schrittmacher/schrittmacher.conf.example
+
+clean:
+	-rm -f build/${EXE}
+	-rm -f ${OFILES}
+
+.o:	.c .h
+
+.SUFFIXES:  .o .m .c
+
+
+%.m.o:	%.m
+	${CC} -c ${CFLAGS} $<  -IClasses -o $@
+
+
